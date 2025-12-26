@@ -1,0 +1,379 @@
+   <!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 6.0//EN"
+    "http://struts.apache.org/dtds/struts-6.0.dtd">
+<struts>
+
+    <constant name="struts.custom.i18n.resources" value="ApplicationResources"/>
+	<constant name="struts.enable.DynamicMethodInvocation"
+		value="false" />
+	<constant name="struts.devMode" value="true" />
+	<constant name="struts.conversion.properties"
+		value="conversion" />
+    <constant name="struts.ui.templateSuffix" value="ftl"/>
+    
+	<constant name="struts.ui.theme" value="bootstrap" />
+
+    <constant name="struts.action.excludePattern" value=""/>	
+	
+
+	<package name="default" extends="struts-default">
+
+		<result-types>
+			<result-type name="tiles"
+				class="org.apache.struts2.views.tiles.TilesResult" />
+			<result-type name="json"
+				class="org.apache.struts2.json.JSONResult" />
+		</result-types>
+
+		<default-action-ref name="index" />
+
+		<!-- Global Result -->
+		<global-results>
+		  <result name="success" type="tiles">customer-search</result>
+		  
+		  <result name="error">/error.jsp</result>
+		  
+		   <result name="input" type="json">
+		        <param name="ignoreHierarchy">false</param>
+		        <param name="includeProperties">actionErrors\[\d+\], fieldErrors\..+$, actionMessages\[\d+\]</param>
+		    </result>
+
+<!-- 		    <result name="error" type="json"> -->
+<!-- 		        <param name="ignoreHierarchy">false</param> -->
+<!-- 		        <param name="includeProperties">actionErrors\[\d+\], fieldErrors\..+$, actionMessages\[\d+\]</param> -->
+<!-- 		    </result> -->
+
+<!-- 		    <result name="Exception" type="json"> -->
+<!-- 		        <param name="ignoreHierarchy">false</param> -->
+<!-- 		        <param name="includeProperties">actionErrors\[\d+\], fieldErrors\..+$, actionMessages\[\d+\]</param> -->
+<!-- 		    </result>			 -->
+		</global-results>
+<!-- <global-exception-mappings> -->
+<!--     <exception-mapping exception="java.lang.Throwable" result="Exception" /> -->
+<!--     <exception-mapping exception="java.lang.Exception" result="error"/> -->
+<!-- </global-exception-mappings>		 -->
+		
+
+	</package>
+
+	<package name="customer" extends="default"
+		namespace="/customer">
+
+
+		<!-- Customer page configuration -begin -->
+		<action name="index">
+			<result name="success" type="tiles">customer-search</result>
+		</action>
+
+		<!-- Customer page configuration -begin -->
+		<action name="search" method="execute"
+			class="com.mcquaids.actions.customer.SearchAction">
+			<result name="success" type="json">
+				<param name="root">customers</param>
+				<param name="excludeNullProperties">true</param>
+			</result>
+		</action>
+
+		<!-- Customer page configuration -begin -->
+		<action name="create" method="execute"
+			class="com.mcquaids.actions.customer.CreateCustomerAction">
+			<result name="success" type="tiles">customer-create-new
+			</result>
+		</action>
+
+
+		<!-- Customer page configuration -begin -->
+		<action name="edit" method="execute"
+			class="com.mcquaids.actions.customer.EditCustomerAction">
+			<result name="success" type="tiles">customer-edit</result>
+		</action>
+
+		<!-- Customer page configuration -begin -->
+		<action name="save" method="execute"
+			class="com.mcquaids.actions.customer.SaveCustomerAction">
+			<result name="success" type="tiles">customer-edit</result>
+		</action>
+	</package>
+
+
+	<package name="equipment" extends="default"
+		namespace="/equipment">
+		
+   <action name="index" class="com.mcquaids.actions.equipment.IndexEquipmentAction">
+        <result name="success" type="tiles">equipment-search</result>
+    </action>
+
+		<!-- Trailer page configuration -begin -->
+		<action name="search" method="execute"
+			class="com.mcquaids.actions.equipment.SearchEquipmentAction">
+			<result name="success" type="json">
+				<param name="root">equipments</param>
+				<param name="excludeNullProperties">true</param>
+			</result>
+		</action>
+		
+				<!-- Trailer page configuration -begin -->
+		<action name="searchByEN" method="execute"
+			class="com.mcquaids.actions.equipment.SearchEquipmentByEquipmentNumberAction">
+			<result name="success" type="json">
+				<param name="root">equipmentDTOs</param>
+				<param name="excludeNullProperties">true</param>
+			</result>
+		</action>
+
+		<!-- Trailer page configuration -begin -->
+		<action name="fetchEquipmentSubTypes" method="execute"
+			class="com.mcquaids.actions.equipment.FetchEquipmentSubTypesAction">
+			<result name="success" type="json">
+				<param name="root">equipmentSubTypes</param>
+				<param name="excludeNullProperties">true</param>
+			</result>
+		</action>
+
+
+		
+		<!-- Trailer page configuration -begin -->
+		<action name="edit" method="execute"
+			class="com.mcquaids.actions.equipment.EditEquipmentAction">
+			<result name="success-trailer" type="tiles">trailer-edit</result>
+			<result name="success-container" type="tiles">container-edit</result>
+			<result name="success-forklift" type="tiles">forklift-edit</result>			
+			<result name="success-flatbed" type="tiles">flatbed-edit</result>			
+		</action>
+
+		<!-- Trailer page configuration -begin -->
+		<action name="save" method="execute"
+			class="com.mcquaids.actions.equipment.SaveEquipmentAction">
+			<result name="success-trailer" type="tiles">trailer-edit</result>
+			<result name="success-container" type="tiles">container-edit</result>
+			<result name="success-forklift" type="tiles">forklift-edit</result>
+			<result name="success-flatbed" type="tiles">flatbed-edit</result>			
+		</action>
+		
+		
+				<!-- Trailer page configuration -begin -->
+		<action name="createEquipment" method="execute"
+			class="com.mcquaids.actions.equipment.CreateEquipmentAction">
+			<result name="success-trailer" type="tiles">trailer-create-new</result>
+			<result name="success-forklift" type="tiles">forklift-create-new</result>
+			<result name="success-flatbed" type="tiles">flatbed-create-new</result>
+			<result name="success-container" type="tiles">container-create-new
+			</result>
+		</action>
+		
+		
+		<action name="move" >
+               <result type="tiles">driver-index</result>
+        </action>
+		
+</package>		
+		
+<package name="reservation" extends="default" namespace="/reservation">
+
+    <!-- Reservation index/search -->
+    <action name="index" class="com.mcquaids.actions.reservation.IndexReservationAction">
+        <result name="success" type="tiles">reservation-search</result>
+    </action>
+
+    <action name="search" method="execute"
+        class="com.mcquaids.actions.reservation.SearchReservationAction">
+        <result name="success" type="json">
+            <param name="root">reservationQueryDTOs</param>
+            <param name="excludeNullProperties">true</param>
+        </result>
+        <result name="input" type="json">
+            <param name="root">reservationQueryDTOs</param>
+            <param name="excludeNullProperties">true</param>
+        </result>
+    </action>
+
+    <!-- Reservation create/edit/save -->
+    <action name="create" method="execute"
+        class="com.mcquaids.actions.reservation.CreateReservationAction">
+        <result name="success" type="tiles">reservation-create</result>
+    </action>
+
+    <action name="edit-reservation" method="execute"
+        class="com.mcquaids.actions.reservation.EditReservationAction">
+        <result name="success" type="tiles">reservation-edit</result>
+    </action>
+
+    <action name="save" method="execute"
+        class="com.mcquaids.actions.reservation.SaveReservationAction">
+        <result name="successOLD" type="tiles">reservation-edit</result>
+        <result name="success" type="chain">
+            <param name="actionName">edit-reservation</param>
+            <param name="namespace">/reservation</param>
+        </result>
+    </action>
+
+    <!-- Reservation equipment management -->
+    <action name="AddEquipmentToReservation" method="execute"
+        class="com.mcquaids.actions.reservationequipment.AddEquipmentToReservationAction">
+        <result name="success" type="json">
+            <param name="root">reservedEquipmentView</param>
+            <param name="excludeNullProperties">true</param>
+        </result>
+    </action>
+
+    <action name="editReservedEquipment" method="execute"
+        class="com.mcquaids.actions.reservationequipment.EditReservedEquipmentAction">
+        <result name="success" type="tiles">reserved-equipment-edit</result>
+    </action>
+
+    <action name="saveReservedEquipmentAdditionalNote" method="execute"
+        class="com.mcquaids.actions.reservationequipment.SaveReservedEquipmentAdditionalNoteAction">
+        <result name="success" type="redirectAction">
+            <param name="actionName">editReservedEquipment</param>
+            <param name="namespace">/reservation</param>
+        </result>
+    </action>
+
+    <action name="removeEquipmentFromReservation" method="execute"
+        class="com.mcquaids.actions.reservationequipment.RemoveEquipmentFromReservationAction">
+        <result name="success" type="json">
+            <param name="root">reservedEquipmentView</param>
+            <param name="excludeNullProperties">true</param>
+        </result>
+    </action>
+
+    <!-- Dispatch and conversion to lease -->
+    <action name="dispatchReservation" method="execute"
+        class="com.mcquaids.actions.reservation.DispatchReservationAction">
+        <result name="success" type="tiles">reservation-dispatch</result>
+    </action>
+
+    <action name="convertToLease" method="execute"
+        class="com.mcquaids.actions.reservation.ConvertToLeaseAction">
+        <result name="success" type="redirectAction">
+            <param name="actionName">edit-lease</param>
+            <param name="namespace">/lease</param>
+        </result>
+    </action>
+
+</package>
+
+
+
+	<package name="lease" extends="default" namespace="/lease">
+	
+	   <action name="index" class="com.mcquaids.actions.lease.IndexLeaseAction">
+        	<result name="success" type="tiles">lease-search</result>
+    	</action>
+	
+			<!-- lease page configuration -begin -->
+		<action name="search" method="execute"
+			class="com.mcquaids.actions.lease.SearchLeaseAction">
+			<result name="success" type="json">
+				<param name="root">leaseQueryDTOs</param>
+				<param name="excludeNullProperties">true</param>
+			</result>
+			<result name="input" type="json">
+				<param name="root">leaseQueryDTOs</param>
+				<param name="excludeNullProperties">true</param>
+			</result>
+		</action>
+
+		<!-- lease page configuration -begin -->
+		<action name="create" method="execute"
+			class="com.mcquaids.actions.lease.CreateLeaseAction">
+			<result name="success" type="tiles">lease-create-new
+			</result>
+		</action>
+
+
+		<!-- lease page configuration -begin -->
+		<action name="edit-lease" method="execute"
+			class="com.mcquaids.actions.lease.EditLeaseAction">
+			<result name="success" type="tiles">lease-edit</result>
+		</action>
+
+		<!-- lease page configuration -begin -->
+		<action name="save" method="execute"
+			class="com.mcquaids.actions.lease.SaveLeaseAction">
+			<result name="successOLD" type="tiles">lease-edit</result>
+		    <result name="success" type="chain">
+		        <param name="actionName">edit-lease</param>
+		        <param name="namespace">/lease</param>
+		    </result>			
+		</action>
+		
+		
+
+		
+		
+		
+		
+				<!-- Search for Equipment that will be added to a lease -begin -->
+		<action name="AddEquipmentToLease" method="execute"
+			class="com.mcquaids.actions.leasedequipment.AddEquipmentToLeaseAction">
+			<result name="success" type="json">
+				<param name="root">leasedEquipmentView</param>
+				<param name="excludeNullProperties">true</param>
+			</result>
+		</action>
+		
+				<!-- Search for Equipment that will be added to a lease -begin -->
+		<action name="editLeasedEquipment" method="execute"
+			class="com.mcquaids.actions.leasedequipment.EditLeasedEquipmentAction">
+			<result name="success" type="tiles">leased-equipment-edit</result>
+		</action>
+
+				<!-- Update for Equipment that will be added to a lease -begin -->
+		<action name="saveLeasedEquipmentAdditionalNote" method="execute"
+			class="com.mcquaids.actions.leasedequipment.SaveLeasedEquipmentAdditionalNoteAction">
+			  <result name="successOLD" type="tiles">leased-equipment-edit</result>
+			  
+		    <result name="success" type="redirectAction">
+		        <param name="actionName">editLeasedEquipment</param>
+		        <param name="namespace">/lease</param>
+		    </result>					  
+			  
+			  
+		</action>
+		
+				<!-- Update for Equipment that will be added to a lease -begin -->
+		<action name="removeEquipmentFromLease" method="execute"
+			class="com.mcquaids.actions.leasedequipment.RemoveEquipmentFromLeaseAction">
+			<result name="success" type="json">
+				<param name="root">leasedEquipmentView</param>
+				<param name="excludeNullProperties">true</param>
+			</result>
+		</action>		
+	</package>
+
+	<package name="reservation" extends="default" namespace="/reservation">
+		   <action name="index" class="com.mcquaids.actions.reservation.CreateReservationAction">
+		        <result name="success" type="tiles">create-reservation</result>
+		    </action>
+		    
+		   <action name="search" class="com.mcquaids.actions.reservation.SearchAvailableEquipmentAction">
+			<result name="success" type="json">
+				<param name="root">equipmentThatisAvailable</param>
+				<param name="excludeNullProperties">true</param>
+			</result>
+		    </action>		    
+		    
+		    
+		    
+		    
+	</package>
+	
+
+	<package name="reports" extends="default" namespace="/reports">
+		    <action name="index" >
+               <result type="tiles">reports-index</result>
+            </action>
+	
+	    <action name="equipmentAvailabilityReport" class="com.mcquaids.actions.equipment.EquipmentAvailableReportAction">
+           <result name="success" type="tiles">equipment-availability-report</result>
+        </action>
+	
+	    <action name="equipmentInspectionDueReport" class="com.mcquaids.actions.equipment.EquipmentInspectionDueReportAction">
+           <result name="success"  type="tiles">equipment-inspection-due-report</result>
+        </action>
+
+
+	</package>
+
+</struts>

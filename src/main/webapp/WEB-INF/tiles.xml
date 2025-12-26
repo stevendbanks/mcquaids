@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+
+<tiles-definitions>
+
+  <definition name="baseLayout" template="/tiles/mainlayout.jsp">
+      <put-attribute name="title"  value="McQuaids"  />
+       <put-attribute name="menu" value="/menu.jsp" />
+      <put-attribute name="header" value="/header.jsp"/>
+      <put-attribute name="navigation"   value="/tiles/navigation.html"/>
+       <put-attribute name="body" value="/WEB-INF/page/body-main.jsp" />
+      <put-attribute name="footer"   value="/tiles/footer.jsp"/>
+  </definition>
+  
+  <definition name="splashpage" extends="baseLayout">
+      <put-attribute name="title"  value="Welcome"/>
+      <put-attribute name="body"   value="/splashpage.jsp"/>      
+  </definition>
+
+  <definition name="customer-create-new" extends="baseLayout">
+      <put-attribute name="title"  value="Customer - Create New"/>
+      <put-attribute name="body"   value="/customer-edit.jsp"/>      
+  </definition>
+
+
+  <definition name="customer-search" extends="baseLayout">
+      <put-attribute name="title"  value="Customer - Search"/>
+      <put-attribute name="body"   value="/customer-search.jsp"/>      
+  </definition>
+
+  <definition name="customer-edit" extends="baseLayout">
+      <put-attribute name="title"  value="Customer - Edit"/>
+      <put-attribute name="body"   value="/customer-edit.jsp"/>      
+  </definition>
+
+  <definition name="equipment-search" extends="baseLayout">
+      <put-attribute name="title"  value="Trailer - Search"/>
+      <put-attribute name="body"   value="/equipment-search.jsp"/>      
+  </definition>
+
+
+
+  <definition name="trailer-search" extends="baseLayout">
+      <put-attribute name="title"  value="Trailer - Search"/>
+      <put-attribute name="body"   value="/trailer-search.jsp"/>      
+  </definition>
+
+
+  <definition name="flatbed-search" extends="baseLayout">
+      <put-attribute name="title"  value="Flatbed - Search"/>
+      <put-attribute name="body"   value="/flatbed-search.jsp"/>      
+  </definition>
+
+
+  <definition name="trailer-create-new" extends="baseLayout">
+      <put-attribute name="title"  value="Trailer - Create New"/>
+      <put-attribute name="body"   value="/trailer-edit.jsp"/>     
+       
+  </definition>
+
+  <definition name="trailer-edit" extends="baseLayout">
+      <put-attribute name="title"  value="Trailer - Edit"/>
+      <put-attribute name="body" value="/trailer-edit.jsp" />
+  </definition>
+
+  <definition name="forklift-create-new" extends="baseLayout">
+      <put-attribute name="title"  value="Forklift - Create New"/>
+      <put-attribute name="body"   value="/forklift-edit.jsp"/>      
+  </definition>
+
+  <definition name="forklift-edit" extends="baseLayout">
+      <put-attribute name="title"  value="Forklift - Edit"/>
+      <put-attribute name="body"   value="/forklift-edit.jsp"/>      
+  </definition>
+  
+  
+
+  <definition name="flatbed-create-new" extends="baseLayout">
+      <put-attribute name="title"  value="Flatbed - Create New"/>
+      <put-attribute name="body"   value="/flatbed-edit.jsp"/>      
+  </definition>
+
+  <definition name="flatbed-edit" extends="baseLayout">
+      <put-attribute name="title"  value="flatbed - Edit"/>
+      <put-attribute name="body"   value="/flatbed-edit.jsp"/>      
+  </definition>
+
+  <definition name="container-create-new" extends="baseLayout">
+      <put-attribute name="title"  value="Container - Create New"/>
+      <put-attribute name="body"   value="/container-edit.jsp"/>      
+  </definition>
+
+  <definition name="container-edit" extends="baseLayout">
+      <put-attribute name="title"  value="Container - Edit"/>
+      <put-attribute name="body"   value="/container-edit.jsp"/>      
+  </definition>
+
+  <definition name="lease-search" extends="baseLayout">
+      <put-attribute name="title"  value="Lease - Search"/>
+      <put-attribute name="body"   value="/lease-search.jsp"/>      
+  </definition>
+
+  <definition name="lease-create-new" extends="baseLayout">
+      <put-attribute name="title"  value="Lease - Create New"/>
+      <put-attribute name="body"   value="/lease-edit.jsp"/>      
+  </definition>
+
+
+  <definition name="lease-edit" extends="baseLayout">
+      <put-attribute name="title"  value="Lease - Edit"/>
+      <put-attribute name="body"   value="/lease-edit.jsp"/>      
+  </definition>
+  
+    <definition name="leased-equipment-edit" extends="baseLayout">
+      <put-attribute name="title"  value="Lease - Edit"/>
+      <put-attribute name="body"   value="/leased-equipment-edit.jsp"/>      
+  </definition>
+  
+ 
+  <definition name="login" extends="baseLayout">
+      <put-attribute name="title"  value="Login"/>
+      <put-attribute name="body"   value="/login.jsp"/>      
+  </definition>
+  
+  <definition name="reports-index" extends="baseLayout">
+      <put-attribute name="title"  value="Reports"/>
+      <put-attribute name="body"   value="/reports-index.jsp"/>      
+  </definition>  
+  
+    <definition name="equipment-availability-report" extends="baseLayout">
+      <put-attribute name="title"  value="Reports"/>
+      <put-attribute name="body"   value="/equipment-availability-report.jsp"/>      
+  </definition>  
+  
+    <definition name="equipment-inspection-due-report" extends="baseLayout">
+      <put-attribute name="title"  value="Reports"/>
+      <put-attribute name="body"   value="/equipment-inspection-due-report.jsp"/>      
+  </definition>   
+  
+      <definition name="driver-index" extends="baseLayout">
+      <put-attribute name="title"  value="Driver"/>
+      <put-attribute name="body"   value="/equipment-pickup-dropoff.jsp"/>      
+  </definition>   
+  
+<!-- Reservation Index/Search -->
+<definition name="reservation-search" extends="baseLayout">
+    <put-attribute name="title" value="Reservation Search"/>
+    <put-attribute name="body"  value="/reservation/reservation-search.jsp"/>
+</definition>
+
+<!-- Create Reservation -->
+<definition name="reservation-create" extends="baseLayout">
+    <put-attribute name="title" value="Create Reservation"/>
+    <put-attribute name="body"  value="/reservation/reservation-create.jsp"/>
+</definition>
+
+<!-- Edit Reservation -->
+<definition name="reservation-edit" extends="baseLayout">
+    <put-attribute name="title" value="Edit Reservation"/>
+    <put-attribute name="body"  value="/reservation/reservation-edit.jsp"/>
+</definition>
+
+<!-- Dispatch Reservation -->
+<definition name="reservation-dispatch" extends="baseLayout">
+    <put-attribute name="title" value="Dispatch Reservation"/>
+    <put-attribute name="body"  value="/reservation/reservation-dispatch.jsp"/>
+</definition>
+
+<!-- Reserved Equipment Edit -->
+<definition name="reserved-equipment-edit" extends="baseLayout">
+    <put-attribute name="title" value="Edit Reserved Equipment"/>
+    <put-attribute name="body"  value="/reservation/reserved-equipment-edit.jsp"/>
+</definition>
+  
+ 
+  
+</tiles-definitions>

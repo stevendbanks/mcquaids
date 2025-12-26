@@ -1,0 +1,61 @@
+# Eclipse
+.metadata/
+.project
+.classpath
+.settings/
+
+# Build folders
+bin/
+target/
+build/
+out/
+
+# Gradle
+.gradle/
+build/
+
+# Maven
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+.release-please/
+
+# IntelliJ (if ever used alongside)
+*.iml
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Java
+*.class
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+
+# Exported archives and rundirs
+*.war
+*.ear
+*.jar
+*.zip
+*.tar.gz
+
+# Eclipse launch configuration
+*.launch
+
+# Eclipse specific local settings
+.recommenders/
+.settings/
+bin/
+
+# Local Eclipse code formatting or codel? (optional)
+*.prefs
+
+# Ignore Gradle wrapper jars and caches
+gradle/wrapper/gradle-wrapper.jar
+.gradle/
