@@ -2,7 +2,6 @@ package com.mcquaids.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.dao.DataAccessException;
@@ -29,7 +28,7 @@ public class LeaseEquipmentDAO {
 	}
 
 	// Create
-    public void createLeasedEquipment(String leaseID, String equipmentNumber, String notes) throws DuplicateKeyException {
+    public void createLeasedEquipment(String leaseID, Integer equipmentNumber, String notes) throws DuplicateKeyException {
     	
         String query = "INSERT INTO lease_equipment (LeaseID, EquipmentNumber, DateAddedToLease, Notes) VALUES (:LeaseID, :EquipmentNumber, :DateAddedToLease, :Notes)";
         MapSqlParameterSource params = new MapSqlParameterSource();
@@ -50,12 +49,12 @@ public class LeaseEquipmentDAO {
     }
 
     // Read
-    public LeasedEquipmentView editLeasedEquipmentView(String pLeaseID, String pEquipmentNumber) {
+    public LeasedEquipmentView editLeasedEquipmentView(String pLeaseID, Integer equipmentNumber) {
         String query = "SELECT * FROM leased_equipment_view WHERE LeaseID = :LeaseID AND EquipmentNumber = :EquipmentNumber";
         
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("LeaseID", pLeaseID);
-        params.addValue("EquipmentNumber", pEquipmentNumber);
+        params.addValue("EquipmentNumber", equipmentNumber);
         
         return  template.queryForObject(query, params, new LeasedEquipmentViewRowMapper());
     }
@@ -136,15 +135,8 @@ public class LeaseEquipmentDAO {
 	        view.setInspectionDate(rs.getDate("InspectionDate"));
 	        
 //          Convert JSON string to Map if needed
-          String propertiesJson = rs.getString("Properties");
-          if (propertiesJson != null) {
-        	  view.setProperties(JsonUtils.setPropertiesFromJson(propertiesJson)); 
-          } else {
-        	  view.setProperties(new HashMap<>());
-          }	        
-	        
-	        
-	        
+	        String propertiesJson = rs.getString("Properties");
+        	view.setProperties(JsonUtils.setPropertiesFromJson(propertiesJson)); 
 	        view.setAvailabilityStatusCode(rs.getString("AvailabilityStatusCode"));
 	        view.setAvailabilityStatusText(rs.getString("availabilityStatusText"));
 	        view.setConditionStatusCode(rs.getString("ConditionStatusCode"));
@@ -152,7 +144,6 @@ public class LeaseEquipmentDAO {
 	        view.setMaintenanceStatusCode(rs.getString("MaintenanceStatusCode"));
 	        view.setMaintenanceStatusText(rs.getString("maintenanceStatusText"));
 	        view.setCleaningStatusCode(rs.getString("CleaningStatusCode"));
-	        view.setCleaningStatusTest(rs.getString("cleaningStatusTest"));
 	        view.setBookingStatusCode(rs.getString("BookingStatusCode"));
 	        view.setBookingStatusCodeText(rs.getString("bookingStatusCodeText"));
 
@@ -178,13 +169,13 @@ public class LeaseEquipmentDAO {
         String query = "SELECT * FROM leased_equipment_view WHERE EquipmentNumber = :EquipmentNumber";
         
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("EquipmentNumber", pEquipmentNumber);
+        params.addValue("EquipmentNumber", pEquipmentNumber); 
         
         return  template.queryForObject(query, params, new LeasedEquipmentViewRowMapper());
 
 	}
 
-	public boolean updateLeasedEquipmentAdditionalNote(String leaseID, String equipmentNumber, String notes) {
+	public boolean updateLeasedEquipmentAdditionalNote(String leaseID, Integer equipmentNumber, String notes) {
         String query = "UPDATE lease_equipment SET Notes = :Notes WHERE LeaseID = :LeaseID AND EquipmentNumber = :EquipmentNumber";
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("LeaseID",leaseID);
@@ -192,7 +183,7 @@ public class LeaseEquipmentDAO {
         params.addValue("Notes", notes);
 
         try {
-            int rowsAffected = template.update(query, params);
+            int rowsAffected = template.update(query, params); 
             if (rowsAffected == 0) {
                 // No rows updated - handle accordingly
                 return false;

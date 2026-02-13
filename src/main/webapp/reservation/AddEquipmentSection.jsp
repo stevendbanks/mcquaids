@@ -1,57 +1,81 @@
-<div class="card mt-4 no-print">
-    <div class="card-body">
-        <h5 class="card-title">Add Equipment to Reservation xxx</h5>
+<%@ taglib prefix="s" uri="/struts-tags" %>
 
-        <!-- Hidden fields (kept exactly as you had them) -->
-        <input type="hidden" id="selectedEquipmentInput">
-        <input type="hidden" id="equipmentTypeID">
-        <input type="hidden" id="equipmentSubTypeID">
+<!-- Show full Add Equipment card ONLY when equipment is selected -->
+<s:if test="%{reservedEquipment != null 
+              && reservedEquipment.equipmentNumber != null 
+              && !reservedEquipment.equipmentNumber.isEmpty()}">
 
-        <div class="form-row">
-            <div class="col-sm-2">
-                <label for="equipmentTypeText">Equipment Type</label>
-                <input type="text" id="equipmentTypeText"
-                       class="form-control" readonly>
-            </div>
+    <div class="card mt-4 no-print">
+        <div class="card-body">
+            <h5 class="card-title">Add Equipment to Reservation</h5>
 
-            <div class="col-sm-2">
-                <label for="equipmentSubTypeText">SubType</label>
-                <input type="text" id="equipmentSubTypeText"
-                       class="form-control" readonly>
-            </div>
+            <!-- Begin Struts Form -->
+            <s:form action="AddEquipmentToReservation" method="post">
 
-            <div class="col-sm-2">
-                <label for="equipmentQty">Quantity</label>
-                <input type="number" id="equipmentQty"
-                       class="form-control" min="1" value="1">
-            </div>
+                <!-- Required by the action -->
+                <s:hidden name="reservationID" value="%{reservationID}" />
+                <s:hidden name="equipmentNumber"
+                          id="selectedEquipmentInput"
+                          value="%{reservedEquipment.equipmentNumber}" />
 
-            <div class="col-sm-5">
-                <label for="equipmentNotes">Notes</label>
-                <input type="text" id="equipmentNotes"
-                       class="form-control" placeholder="Optional">
-            </div>
+                <div class="form-row">
+                    <div class="col-sm-2">
+                        <label>Equipment Type</label>
+                        <input type="text"
+                               class="form-control"
+                               readonly
+                               value="<s:property value='reservedEquipment.equipmentTypeText'/>">
+                    </div>
+
+                    <div class="col-sm-2">
+                        <label>SubType</label>
+                        <input type="text"
+                               class="form-control"
+                               readonly
+                               value="<s:property value='reservedEquipment.equipmentSubTypeText'/>">
+                    </div>
+
+                    <div class="col-sm-8">
+                        <label for="equipmentNotes">Notes</label>
+                        <s:textfield name="equipmentNotes"
+                                     id="equipmentNotes"
+                                     cssClass="form-control"
+                                     placeholder="Optional" />
+                    </div>
+                </div>
+
+                <!-- Specs panel -->
+                <table class="w-100 mt-3">
+                    <tbody>
+
+                        <!-- Fake line-item row for JS renderer -->
+                        <tr id="add-equipment-row"
+                            class="line-item"
+                            data-id="add"
+                            data-type="equipment"
+                            data-props='<s:property value="reservedEquipment.propertiesAsJson" escapeHtml="false"/>'
+                            style="display:none;">
+                        </tr>
+
+                        <!-- Matching properties panel row -->
+                        <tr id="props-add" class="properties-panel" style="display:none;">
+                            <td colspan="5"></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <!-- Footer with Save + Search buttons -->
+                <div class="card-footer d-flex justify-content-between mt-3">
+                    <button class="btn btn-success" type="submit">
+                        <i class="fa fa-plus"></i> Add Equipment
+                    </button>
+                </div>
+
+            </s:form>
+            <!-- End Struts Form -->
+
         </div>
-        
-		<!-- Read-only Spec Panel -->
-		<div id="addEquipmentSpecPanel" class="spec-panel" style="display:none;">
-		    <div class="spec-header">Specifications</div>
-		    <div id="addEquipmentSpecGrid" class="spec-grid"></div>
-		</div>        
     </div>
 
-    <!-- Unified action bar -->
-    <div class="card-footer d-flex justify-content-between">
-        <button class="btn btn-outline-primary"
-                type="button"
-                onclick="DisplayEquipmentSearch()">
-            <i class="fa fa-search"></i> Search Equipment
-        </button>
-
-        <button class="btn btn-success"
-                type="button"
-                onclick="addEquipmentToReservation()">
-            <i class="fa fa-plus"></i> Add Equipment
-        </button>
-    </div>
-</div>
+</s:if>

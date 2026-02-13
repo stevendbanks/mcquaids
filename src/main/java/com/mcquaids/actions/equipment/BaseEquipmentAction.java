@@ -34,7 +34,7 @@ public class BaseEquipmentAction extends ActionSupport {
 	
 	protected String leaseID;
 	
-	protected String equipmentNumber;
+	protected Integer equipmentNumber;
 	
 	protected Integer equipmentType;
 	
@@ -193,7 +193,7 @@ public class BaseEquipmentAction extends ActionSupport {
 	/**
 	 * @return the equipmentNumber
 	 */
-	public String getEquipmentNumber() {
+	public Integer getEquipmentNumber() {
 		return equipmentNumber;
 	}
 
@@ -217,7 +217,7 @@ public class BaseEquipmentAction extends ActionSupport {
 	/**
 	 * @param equipmentNumber the equipmentNumber to set
 	 */
-	public void setEquipmentNumber(String equipmentNumber) {
+	public void setEquipmentNumber(Integer equipmentNumber) {
 		this.equipmentNumber = equipmentNumber;
 	}
 

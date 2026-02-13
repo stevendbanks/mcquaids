@@ -8,6 +8,24 @@ import com.opensymphony.xwork2.Action;
 	
 	private String leaseID;
 	
+	private  Integer reservationID;
+	
+	/**
+	 * @return the reservationID
+	 */
+	public Integer getReservationID() {
+		return reservationID;
+	}
+
+
+	/**
+	 * @param reservationID the reservationID to set
+	 */
+	public void setReservationID(Integer reservationID) {
+		this.reservationID = reservationID;
+	}
+
+
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
@@ -19,6 +37,23 @@ import com.opensymphony.xwork2.Action;
 
 	
 	public String execute() {
+		System.out.println("Entered EditReservationAction->reservationID=" + reservationID);
+		
+		try {
+		super.reservation =    reservationService.getReservation(reservationID);
+		pageTitle = "Reservation #" + reservation.getReservationIDAsDisplay();
+
+		super.reservationLineItemsDTO = reservationService.getReservationLineItems(reservationID);
+		
+		if (reservedEquipmentID == null) {
+			// do nothing
+		} else {
+		  super.reservedEquipment = equipmentService.findEquipment(reservedEquipmentID);
+		}
+		
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 		return Action.SUCCESS;
 	}
 

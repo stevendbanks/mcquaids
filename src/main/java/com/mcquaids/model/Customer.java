@@ -106,7 +106,9 @@ public class Customer  extends User implements Serializable  {
 	}
 
 
-
+   public String getFullName() {
+	   return this.lastName + ", " + this.firstName;
+   }
 
 
 

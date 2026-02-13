@@ -178,11 +178,11 @@
     <action name="search" method="execute"
         class="com.mcquaids.actions.reservation.SearchReservationAction">
         <result name="success" type="json">
-            <param name="root">reservationQueryDTOs</param>
+            <param name="root">reservationViewDTO</param>
             <param name="excludeNullProperties">true</param>
         </result>
         <result name="input" type="json">
-            <param name="root">reservationQueryDTOs</param>
+            <param name="root">reservationViewDTO</param>
             <param name="excludeNullProperties">true</param>
         </result>
     </action>
@@ -207,35 +207,55 @@
         </result>
     </action>
 
-    <!-- Reservation equipment management -->
-    <action name="AddEquipmentToReservation" method="execute"
-        class="com.mcquaids.actions.reservationequipment.AddEquipmentToReservationAction">
-        <result name="success" type="json">
-            <param name="root">reservedEquipmentView</param>
-            <param name="excludeNullProperties">true</param>
-        </result>
-    </action>
+	<action name="AddEquipmentToReservation"
+	        class="com.mcquaids.actions.reservation.lineItems.AddEquipmentToReservationAction">
+	    <result name="success" type="redirectAction">
+	        <param name="actionName">edit-reservation</param>
+	        <param name="reservationID">${reservationID}</param>
+	    </result>
+	     <result name="error" type="tiles">reservation-edit</result>
+	</action>
 
     <action name="editReservedEquipment" method="execute"
-        class="com.mcquaids.actions.reservationequipment.EditReservedEquipmentAction">
+        class="com.mcquaids.actions.reservation.lineItems.EditReservationLineItemAction">
         <result name="success" type="tiles">reserved-equipment-edit</result>
     </action>
 
-    <action name="saveReservedEquipmentAdditionalNote" method="execute"
-        class="com.mcquaids.actions.reservationequipment.SaveReservedEquipmentAdditionalNoteAction">
+    <action name="substituteEquipment" method="execute"
+        class="com.mcquaids.actions.reservation.lineItems.SubstituteEquipmentAction">
+			<result name="success" type="chain">
+			    <param name="actionName">edit-reservation</param>
+			    <param name="namespace">/reservation</param>
+			    <param name="reservationID">${reservationID}</param>
+			</result>
+    </action>
+
+
+
+    <action name="SaveReservedEquipmentAdditionalNote" method="execute"
+        class="com.mcquaids.actions.reservation.lineItems.SaveReservedEquipmentAdditionalNoteAction">
         <result name="success" type="redirectAction">
             <param name="actionName">editReservedEquipment</param>
             <param name="namespace">/reservation</param>
         </result>
     </action>
 
-    <action name="removeEquipmentFromReservation" method="execute"
-        class="com.mcquaids.actions.reservationequipment.RemoveEquipmentFromReservationAction">
+	<action name="removeEquipmentFromReservation"
+	        method="execute"
+	        class="com.mcquaids.actions.reservation.lineItems.RemoveEquipmentFromReservationAction">
+	
         <result name="success" type="json">
-            <param name="root">reservedEquipmentView</param>
-            <param name="excludeNullProperties">true</param>
+            <param name="ignoreHierarchy">false</param>
+            <param name="includeProperties">actionMessages.*</param>
         </result>
-    </action>
+
+        <result name="error" type="json">
+            <param name="ignoreHierarchy">false</param>
+            <param name="includeProperties">actionErrors.*</param>
+        </result>
+
+	
+	</action>
 
     <!-- Dispatch and conversion to lease -->
     <action name="dispatchReservation" method="execute"
