@@ -8,13 +8,11 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
-
-import org.json.JSONObject;
 
 import com.mcquaids.model.interfaces.IEquipment;
 import com.mcquaids.utils.DateStringUtil;
+import com.mcquaids.utils.JsonUtils;
 
 /**
  * 
@@ -43,7 +41,7 @@ public class Equipment implements Serializable, IEquipment {
 	protected String bookingStatusCode;
 
 
-	protected Map<String, Object> properties;
+	protected Map<String, String> properties;
 	
 	
 	protected DateStringUtil dateStringUtil = new DateStringUtil();
@@ -106,9 +104,7 @@ public class Equipment implements Serializable, IEquipment {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		
-		System.out.println("SDBXXXX");
-		
+				
 	}
 
 	public String getEquipmentNumber() {
@@ -418,35 +414,20 @@ public class Equipment implements Serializable, IEquipment {
 	/**
 	 * @return the propertiesTest
 	 */
-	public Map<String, Object> getProperties() {
+	public Map<String, String> getProperties() {
 		return properties;
 	}
 
 	/**
 	 * @param propertiesTest the propertiesTest to set
 	 */
-	public void setProperties(Map<String, Object> properties) {
+	public void setProperties(Map<String, String> properties) {
 		this.properties = properties;
 	}
 	
 	public String getPropertiesAsJson() {
-	    Map<String, Object> cleanedMap = new HashMap<>();
-	    for (Map.Entry<String, Object> entry : this.properties.entrySet()) {
-	        Object value = entry.getValue();
-	        if (value instanceof java.util.List) {
-	            java.util.List<?> list = (java.util.List<?>) value;
-	            if (list.size() == 1) {
-	                cleanedMap.put(entry.getKey(), list.get(0));
-	            } else {
-	                cleanedMap.put(entry.getKey(), list);
-	            }
-	        } else {
-	            cleanedMap.put(entry.getKey(), value);
-	        }
-	    }
+		 return JsonUtils.toJson(this.properties);
 
-	    JSONObject json = new JSONObject(cleanedMap);
-	    return json.toString();
 	}
 
 	

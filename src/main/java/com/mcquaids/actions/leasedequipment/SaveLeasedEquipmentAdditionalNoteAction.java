@@ -14,13 +14,13 @@ public class SaveLeasedEquipmentAdditionalNoteAction extends BaseEquipmentAction
 		super();
 	}
 
-	
+	 
 	public String execute() {
 		
 		System.out.println(leasedEquipmentView.getNotes());
 		
 		
-		if (!leaseService.updateLeasedEquipmentAdditionalNote(leaseID, equipmentNumber, leasedEquipmentView.getNotes())) { 
+		if (!leaseService.updateLeasedEquipmentAdditionalNote(leaseID, equipmentNumber, leasedEquipmentView.getNotes())) {  
 			addActionError("Leased Equipment could not be updated");
 			return "input";
 		}

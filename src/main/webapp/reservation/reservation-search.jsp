@@ -15,6 +15,7 @@
         <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
 
         <div class="form-row">
+            <input type="hidden" class="form-control" id="customerID" />
             <div class="form-group col-sm-3">
                 <div class="input-group">
                     <div class="floating-label">
@@ -99,7 +100,7 @@ function searchReservations() {
 }
 
 function resetOtherFields(changedElementId) {
-    var ids = [ 'reservationID', 'customerID' ];
+    var ids = [ 'reservationID', 'customerID',  'customerName'];
     ids.forEach(function(id) {
         if (id !== changedElementId) {
             $('#' + id).val('');

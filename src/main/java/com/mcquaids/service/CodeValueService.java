@@ -17,6 +17,13 @@ public class CodeValueService extends DaoDataSource {
 
 	}
 	
+	
+	public List<CodeValue> queryLookupTable(String pCodeTypeTableName) {
+
+	      return codeValueDAO.queryLookupTable( pCodeTypeTableName);
+	}
+	
+	
 	public List<CodeValue> findCodeValues(String pCodeTypeTableEnglishDescription) {
 
 	      return codeValueDAO.queryCodeValues(pCodeTypeTableEnglishDescription);

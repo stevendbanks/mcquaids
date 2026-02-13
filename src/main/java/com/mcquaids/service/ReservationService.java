@@ -7,55 +7,49 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.mcquaids.dao.ReservationDAO;
 import com.mcquaids.dao.ReservationLineItemDAO;
-import com.mcquaids.model.Equipment;
 import com.mcquaids.model.Reservation;
 import com.mcquaids.model.ReservationLineItem;
 import com.mcquaids.model.ReservationLineItemDTO;
 import com.mcquaids.model.ReservationQueryDTO;
+import com.mcquaids.model.ReservationViewDTO;
 
 public class ReservationService {
 
-    private ReservationDAO reservationDAO;
-    
-    private ReservationLineItemDAO reservationLineItemDAO;
+    private final ReservationDAO reservationDAO;
+    private final ReservationLineItemDAO reservationLineItemDAO;
+
+    private final CustomerService customerService;
 
     private String errorMessage;
-
-	private EquipmentService equipmentService;
-	private CustomerService customerService;
-
-	private Equipment equipment;
 
     public ReservationService() {
         JdbcTemplate jdbcTemplate = DaoDataSource.jdbcTemplate;
         this.reservationDAO = new ReservationDAO(jdbcTemplate);
         this.reservationLineItemDAO = new ReservationLineItemDAO(jdbcTemplate);
-    	this.equipmentService = new EquipmentService();
 
-    	this.customerService = new CustomerService();
+        new EquipmentService();
+        this.customerService = new CustomerService();
     }
 
     // ------------------------------------------------------------
     // Reservation CRUD
     // ------------------------------------------------------------
-    public void createReservation(Reservation reservation) {
-        reservationDAO.createReservation(reservation);
+    public Reservation createReservation(Reservation reservation) {
+        Integer newId = reservationDAO.createReservation(reservation);
+        return reservationDAO.getReservation(newId);
     }
 
-    public Reservation getReservation(String reservationID) {
-    	Reservation reservation = reservationDAO.getReservation(reservationID);
-    	reservation.setCustomer(customerService.edit(reservation.getCustomerID()));
-    	return reservation;
-    	
+    public Reservation getReservation(Integer reservationID) {
+        Reservation reservation = reservationDAO.getReservation(reservationID);
+        reservation.setCustomer(customerService.edit(reservation.getCustomerID()));
+        return reservation;
     }
 
     public void updateReservation(Reservation reservation) {
         reservationDAO.updateReservation(reservation);
     }
-    
 
-
-    public void deleteReservation(String reservationID, String customerID) {
+    public void deleteReservation(Integer reservationID, String customerID) {
         reservationDAO.deleteReservation(reservationID, customerID);
     }
 
@@ -66,16 +60,18 @@ public class ReservationService {
     // ------------------------------------------------------------
     // Reservation View (reservation_view)
     // ------------------------------------------------------------
-    public List<ReservationQueryDTO> getReservationDetails(String reservationID,
-                                                           String customerID,
-                                                           String reservationStatusCode) {
+    public List<ReservationQueryDTO> getReservationDetails(
+            Integer reservationID,
+            String customerID,
+            String reservationStatusCode) {
+
         return reservationDAO.getReservationDetails(reservationID, customerID, reservationStatusCode);
     }
 
     // ------------------------------------------------------------
     // Reservation Equipment (Base Table)
     // ------------------------------------------------------------
-    public List<ReservationLineItem> getReservedEquipmentByReservationID(String reservationID) {
+    public List<ReservationLineItem> getReservedEquipmentByReservationID(Integer reservationID) {
         return reservationLineItemDAO.getReservedEquipmentByReservationID(reservationID);
     }
 
@@ -83,30 +79,26 @@ public class ReservationService {
         return reservationLineItemDAO.getReservationLineItem(reservationLineItemID);
     }
 
+    // ------------------------------------------------------------
+    // Add Equipment to Reservation (NEW simplified version)
+    // ------------------------------------------------------------
     public ReservationLineItemDTO addEquipmentToReservation(
-            String reservationID,
-            String equipmentNumber,
-            int quantity,
+            Integer reservationID,
+            Integer equipmentNumber,
             String notes) {
 
-		
-		//  get the Equipment Record as we will be storing the properties, type, and subtype in the reservation table.  We are not reserving this exact piece of equipment, so we just need the properties.
-		equipment = equipmentService.edit(equipmentNumber);
-    	
         try {
-        	int reservationLineItemID = reservationLineItemDAO.createReservationLineitem(
-                    reservationID,
-                    equipment.getEquipmentType(),
-                    equipment.getEquipmentSubType(),
-                    quantity,
-                    notes,
-                    equipment.getProperties()
-            );
+            Integer reservationLineItemID =
+                    reservationLineItemDAO.createReservationLineItem(
+                            reservationID,
+                            equipmentNumber,
+                            notes
+                    ); 
 
             return reservationLineItemDAO.viewReservationLineItem(reservationLineItemID);
 
         } catch (DuplicateKeyException e) {
-            this.errorMessage = "Error - This reservation line item already exists.  Please modify the existing one rather than adding another one.";
+            this.errorMessage = "Error - This reservation line item already exists.";
             return null;
         }
     }
@@ -116,23 +108,72 @@ public class ReservationService {
     }
 
     public void removeEquipmentFromReservation(int reservationLineItemID) {
-    	reservationLineItemDAO.deleteReservationLineItem(reservationLineItemID);
+    	
+    	ReservationLineItem x = reservationLineItemDAO.getReservationLineItem(reservationLineItemID);
+    	Reservation y = reservationDAO.getReservation(x.getReservationID());
+    	
+    	if (y.getReservationStatusCode().equals("1001-01")) {
+    		reservationLineItemDAO.deleteReservationLineItem(reservationLineItemID);
+    	} else {
+    		System.out.println("Invalid ReservationStatusCode:" + y.getReservationStatusCode() );
+ 		    this.errorMessage = "Error - Reservation Status must be DRAFT in order to remove the equipment. Please use the other actions";
+    	}
     }
+    
+    
+    
+    public Integer substituteEquipmentInReservation(Integer oldReservationLineItemID, Integer newEquipmentNumber) {
+    	Integer reservationID = null;
+        
+    	
+        if (oldReservationLineItemID == null || newEquipmentNumber == null) {
+        	this.errorMessage = "Invalid substitution request.";
+        }
+
+        // Load the existing line item
+        
+        ReservationLineItem oldItem =
+                this.viewReservationLineItem(oldReservationLineItemID);
+
+        if (oldItem == null) {
+        	this.errorMessage ="The original reservation line item could not be found.";
+        } else {
+        	reservationID = oldItem.getReservationID();	
+        }
+
+      /// *************** SDBANKS - should we be validating that the reservationID and the   oldReservationLineItemID belong to the same reservation????
+      //  reservationID = oldItem.getReservationID();
+
+        System.out.println("SDBANKS - 9000");        
+    	reservationLineItemDAO.deleteReservationLineItem(oldReservationLineItemID);
+System.out.println("SDBANKS - 10000");
+
+            // Add the new equipment
+            ReservationLineItem newItem =
+                    this.addEquipmentToReservation(
+                            reservationID,
+                            newEquipmentNumber,
+                            ""          // notes empty for now
+                   );
+
+            if (newItem == null) {
+            	this.errorMessage ="Unable to add the replacement equipment.";
+            }    	
+    	return reservationID;
+    	
+    }
+    
 
     // ------------------------------------------------------------
-    // Reservation Line Item View (ReservationLineItemView)
+    // Reservation Line Item View (DTO)
     // ------------------------------------------------------------
-    public List<ReservationLineItemDTO> getReservationLineItems(String reservationID) {
+    public List<ReservationLineItemDTO> getReservationLineItems(Integer reservationID) {
         return reservationLineItemDAO.getReservationLineItems(reservationID);
     }
-    
-    
-    // ------------------------------------------------------------
-    // Reservation Line Item View (ReservationLineItemView)
-    // ------------------------------------------------------------
-    public ReservationLineItemDTO viewReservationLineItem(int reservationLineitemID) { 
-        return reservationLineItemDAO.viewReservationLineItem(reservationLineitemID);
-    }    
+
+    public ReservationLineItemDTO viewReservationLineItem(Integer reservationLineItemID) { 
+        return reservationLineItemDAO.viewReservationLineItem(reservationLineItemID);
+    }
 
     // ------------------------------------------------------------
     // Error Handling
@@ -143,5 +184,9 @@ public class ReservationService {
 
     public void setErrorMessage(String msg) {
         this.errorMessage = msg;
+    }
+
+    public List<ReservationViewDTO> findReservationsByCriteria(Integer reservationID, String customerID) {
+        return reservationDAO.findReservationsByCriteria(reservationID, customerID);
     }
 }

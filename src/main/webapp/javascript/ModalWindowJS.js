@@ -2,11 +2,15 @@
 // This function is triggered when an element with the class 'customer-row' is clicked.
 // It sets the value of the element with id 'customerID' to the data-id of the clicked element and hides the modal.
 $(document).on('click', '.customer-row', function() {
-	$('#customerID').val($(this).data('id'));
-	$('#ModalCustomerSearch').modal('hide'); // This line closes the modal
-	// Manually trigger the onchange event For the customerID field.  HACK to force the execution.
-	var event = new Event('change');
-	customerID.dispatchEvent(event);	
+    $('#customerID').val($(this).data('id'));
+    $('#fullName').val($(this).data('fullname'));
+    $('#ModalCustomerSearch').modal('hide');
+
+    // Trigger the onchange event if you still want it
+    $('#customerID').trigger('change');
+
+    // 🔥 Run the reservation search immediately
+//    searchReservations();
 });
 
 // This function is triggered when the modal is hidden.
@@ -41,7 +45,12 @@ $('#searchCustomerModalButton').on('click', function(e) {
 			} else {
 				$('#ModalerrorMessage').hide();
 				response.forEach(function(customer) {
-					var row = $('<tr>').addClass('customer-row').attr('data-id', customer.userID);
+
+				var row = $('<tr>')
+				    .addClass('customer-row')
+				    .attr('data-id', customer.userID)
+				    .attr('data-fullname', customer.fullName);					
+					
 					row.append($('<td>').text(customer.userID));
 					row.append($('<td>').text(customer.lastName + ", " + customer.firstName));
 					row.append($('<td>').text(customer.email));
@@ -101,12 +110,6 @@ function addEquipmentToLease() {
 
 	});
 }
-
-function DisplayEquipmentSearch() {
-	alert("Hello");
-    $('#modalEquipmentSearchDialog').modal('show');
-}
-
 
 // This function is triggered when the 'modalSearchEquipmentButton' is clicked.
 // It prevents the default action and calls the searchEquipment function.

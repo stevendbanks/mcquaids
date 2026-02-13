@@ -12,6 +12,7 @@ import com.mcquaids.model.EquipmentQueryDTO;
 import com.mcquaids.model.Flatbed;
 import com.mcquaids.model.Forklift;
 import com.mcquaids.model.ShippingContainer;
+import com.mcquaids.utils.PropertyHydrator;
 
 public class EquipmentService {
     private EquipmentDAO equipmentDAO;
@@ -25,14 +26,14 @@ public class EquipmentService {
         this.equipmentDAO = new EquipmentDAO(jdbcTemplate);
     }
 
-	public Equipment edit(String pEquipmentNumber) {
+	public Equipment edit(Integer pEquipmentNumber) {
    	    Equipment equipment = equipmentDAO.findByEquipmentNumber(pEquipmentNumber);
    	    return equipment;
    	    
 	}
 
-	public List<EquipmentQueryDTO> queryEquipmentByEquipmentNUmber(String equipmentNumber) {
-			return equipmentDAO.queryEquipmentByEquipmentNUmber(equipmentNumber); 
+	public List<EquipmentQueryDTO> queryEquipmentByEquipmentNUmber(Integer equipmentNumber) {
+			return equipmentDAO.queryEquipmentByEquipmentNUmber(equipmentNumber);  
    }
 
 	public List<EquipmentQueryDTO> queryEquipment(Integer pEquipmentType, String pEquipmentSubType, String availabilityStatusCode,
@@ -121,6 +122,12 @@ public class EquipmentService {
 	 */
 	public void setErrors(Map<String, String> errors) {
 		this.errors = errors;
+	}
+
+	public EquipmentQueryDTO findEquipment(Integer reservedEquipmentID) {
+	    EquipmentQueryDTO x = equipmentDAO.findEquipment(reservedEquipmentID);
+        x.setProperties(PropertyHydrator.hydrateFromJson(x.getPropertiesAsJson()));
+		return x;
 	}
 	
 	

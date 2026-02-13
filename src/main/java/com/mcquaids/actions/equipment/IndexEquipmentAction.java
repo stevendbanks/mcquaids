@@ -12,6 +12,12 @@ import com.opensymphony.xwork2.Action;
 	
 	private String title = "Search For Equipment";
 	
+	private String caller;
+	
+	private Integer reservationId;
+	
+	private Integer reservationLineItemID;
+	
 
 	public IndexEquipmentAction() {
 		super();
@@ -59,6 +65,48 @@ import com.opensymphony.xwork2.Action;
 	 */
 	public void setId(String id) {
 		this.id = id;
+	}
+
+
+	/**
+	 * @return the caller
+	 */
+	public String getCaller() {
+		return caller;
+	}
+
+
+	/**
+	 * @param caller the caller to set
+	 */
+	public void setCaller(String caller) {
+		this.caller = caller;
+	}
+
+
+	/**
+	 * @return the reservationId
+	 */
+	public Integer getReservationId() {
+		return reservationId;
+	}
+
+
+	/**
+	 * @param reservationId the reservationId to set
+	 */
+	public void setReservationId(Integer reservationID) {
+		this.reservationId = reservationID;
+	}
+
+
+	public Integer getReservationLineItemID() {
+		return reservationLineItemID;
+	}
+
+
+	public void setReservationLineItemID(Integer reservationLineItemID) {
+		this.reservationLineItemID = reservationLineItemID;
 	}
 
 

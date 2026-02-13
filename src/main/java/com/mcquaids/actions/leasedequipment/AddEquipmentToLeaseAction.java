@@ -14,7 +14,6 @@ import com.mcquaids.model.LeasedEquipmentView;
 	private static final long serialVersionUID = 1L;
 	private List<EquipmentQueryDTO> equipments = new ArrayList<>();
 
-	private String equipmentNumber;
 	private Integer equipmentType;
 	private String equipmentSubType;
 	
@@ -40,8 +39,8 @@ import com.mcquaids.model.LeasedEquipmentView;
 	public String execute() {
 		System.out.println("AddEquipmentToLease {equipmentNumber=" + equipmentNumber + ",leaseID=" + leaseID);
 		try {
-			if (!equipmentNumber.equals("")) {
-				leasedEquipmentView = leaseService.addEquipmentToLease(leaseID, equipmentNumber, notes);
+			if (null != equipmentNumber ) {
+				leasedEquipmentView = leaseService.addEquipmentToLease(leaseID, equipmentNumber, notes); 
 				
 				if (StringUtils.isNotBlank(leaseService.getErrorMessage())) {
 					addActionError(leaseService.getErrorMessage());
@@ -80,20 +79,7 @@ import com.mcquaids.model.LeasedEquipmentView;
 		this.equipments = equipments;
 	}
 
-	/**
-	 * @return the Equipment Number
-	 */
-	public String getEquipmentNumber() {
-			return equipmentNumber;
-	}
 
-	/**
-	 * @param equipmentNumber to set
-	 */
-	public void setEquipmentNumber(String equipmentNumber) {
-		this.equipmentNumber = equipmentNumber;
-	}
-	
 	
 	/**
 	 * @return the trailerType

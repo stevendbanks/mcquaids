@@ -56,7 +56,7 @@ public class EquipmentDAO {
 		}
 	}
 
-	public Equipment findByEquipmentNumber(String pEquipmentNumber) {
+	public Equipment findByEquipmentNumber(Integer pEquipmentNumber) {
 	    String sql = "SELECT equip.*, cv.EnglishDescription AS equipmentSubTypeText FROM equipment equip INNER JOIN codevalue cv ON equip.EquipmentSubType = cv.CodeValue WHERE equip.EquipmentNumber = ?";
 	    return jdbcTemplate.queryForObject(sql, new EquipmentRowMapper(), pEquipmentNumber);
 	}
@@ -141,7 +141,7 @@ public class EquipmentDAO {
 	}
 	
 	
-	public List<EquipmentQueryDTO> queryEquipmentByEquipmentNUmber(String pEquipmentNumber) {
+	public List<EquipmentQueryDTO> queryEquipmentByEquipmentNUmber(Integer equipmentNumber) {
 		
 		
 		StringBuilder sql = new StringBuilder(
@@ -150,12 +150,10 @@ public class EquipmentDAO {
 
 		MapSqlParameterSource parameters = new MapSqlParameterSource();
 
-		if (StringUtils.isNotEmpty(pEquipmentNumber)) {
+		if (null != equipmentNumber) {
 			sql.append(" AND EquipmentNumber = :EquipmentNumber");
-			parameters.addValue("EquipmentNumber", pEquipmentNumber);
+			parameters.addValue("EquipmentNumber", equipmentNumber);
 		}
-		
-		System.out.println(sql.toString());
 		
 		NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(
 				jdbcTemplate.getDataSource());
@@ -280,5 +278,36 @@ public class EquipmentDAO {
 		addEquipment(equipment);
 		return 0;
 	}
+
+	public EquipmentQueryDTO findEquipment(Integer reservedEquipmentID) {
+
+	    StringBuilder sql = new StringBuilder(
+	        "SELECT * FROM qryEquipmentDetails " +
+	        "WHERE 1 = 1 "
+	    );
+
+	    MapSqlParameterSource parameters = new MapSqlParameterSource();
+
+	    if (reservedEquipmentID != null) {
+	        sql.append(" AND EquipmentNumber = :reservedEquipmentID");
+	        parameters.addValue("reservedEquipmentID", reservedEquipmentID);
+	    }
+
+	    NamedParameterJdbcTemplate namedParameterJdbcTemplate =
+	        new NamedParameterJdbcTemplate(jdbcTemplate.getDataSource());
+
+	    try {
+	        return namedParameterJdbcTemplate.queryForObject(
+	            sql.toString(),
+	            parameters,
+	            new EquipmentQueryDTORowMapper()
+	        );
+	    } catch (Exception ex) {
+	        ex.printStackTrace();
+	        return null;
+	    }
+	}	
+	
+	
 
 }

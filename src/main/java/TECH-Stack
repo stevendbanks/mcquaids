@@ -1,0 +1,19 @@
+Struts 6.xx application
+Uses java 13 SE
+uses JdbcTemplate for DAO objects to access the database.  The actual Jdbc Object is passed to the DAO in the constructor from the Service Object.
+    public NameDAO(NamedParameterJdbcTemplate template) {
+        this.template = template;
+    }
+
+On the UI, I use 
+JSP, 
+Apache tiles, 
+Bootstrap 4.6.2
+jquery-3.2.1.min
+
+
+• Servlet container: Apache Tomcat 9.0.89 (Java EE / javax.* environment)
+• JSP/JSTL: JSP 2.3 + JSTL 1.2 (http://java.sun.com/jsp/jstl/core)
+
+
+
