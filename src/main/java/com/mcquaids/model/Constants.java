@@ -7,10 +7,10 @@ public class Constants {
 	public static final String CONTAINER_STRING = "Container";
 	public static final String FORKLIFT_STRING = "Forklift";
 
-	public static final int TRAILER = 1002;
-	public static final int FLATBED = 1003;
-	public static final int CONTAINER = 1004;
-	public static final int FORKLIFT = 1005;
+	public static final int TRAILER = 2;
+	public static final int FLATBED = 3;
+	public static final int CONTAINER = 4;
+	public static final int FORKLIFT = 5;
 
 	public static final int EQUIPMENT_AVAILABILTY_CODE_TYPES = 1008;  // Code type for Equipment Availability values
 

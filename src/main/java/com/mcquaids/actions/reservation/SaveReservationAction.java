@@ -19,6 +19,14 @@ import com.opensymphony.xwork2.Action;
 
 	
 	public String execute() {
+		System.out.println("SDBANKS->reservationID=" + reservationID);
+		if (actionType.equals("CREATE")) {
+				reservation = reservationService.createReservation(reservation);
+		} else {
+			  	reservationService.updateReservation(reservation);
+		}
+		
+		reservationID = reservation.getReservationID();   //  the edit Reservation action uses this ID, not the one in the reservation
 		return Action.SUCCESS;
 	}
 

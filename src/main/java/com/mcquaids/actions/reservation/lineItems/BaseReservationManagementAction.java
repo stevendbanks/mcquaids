@@ -1,8 +1,5 @@
 package com.mcquaids.actions.reservation.lineItems;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.mcquaids.model.Equipment;
 import com.mcquaids.model.ReservationLineItem;
 import com.mcquaids.model.ReservationLineItemDTO;
@@ -24,18 +21,18 @@ public class BaseReservationManagementAction extends ActionSupport {
 	protected Equipment equipment;
 	protected String equipmentTypeText;
 
-	protected String equipmentNumber;
+	protected Integer equipmentNumber;
 	protected Integer equipmentType;
 	protected String equipmentSubType;
 	
-	protected int equipmentQty;
-	protected String  equipmentNotes;
+//	protected int equipmentQty;
+//	protected String  equipmentNotes;
 	
 	
 
 	protected String actionTypeText = "Reserve";
 	
-	protected String reservationID;
+	protected Integer reservationID;
 	
 	protected int reservationLineItemID;
 	
@@ -47,7 +44,7 @@ public class BaseReservationManagementAction extends ActionSupport {
 	protected EquipmentService equipmentService = new EquipmentService();
 	protected ReservationService reservationService = new ReservationService();
 
-	protected Map<String, String> errors = new HashMap<>();
+//	protected Map<String, String> errors = new HashMap<>();
 
 	
 	/**
@@ -105,19 +102,19 @@ public class BaseReservationManagementAction extends ActionSupport {
 		this.codeValues = codeValues;
 	}
 
-	/**
-	 * @param errors the errors to set
-	 */
-	public void setErrors(Map<String, String> errors) {
-		this.errors = errors;
-	}
-
-
-
-	public Map<String, String> getErrors() {
-		return errors;
-	}
-
+//	/**
+//	 * @param errors the errors to set
+//	 */
+//	public void setErrors(Map<String, String> errors) {
+//		this.errors = errors;
+//	}
+//
+//
+//
+//	public Map<String, String> getErrors() {
+//		return errors;
+//	}
+//
 
 	/**
 	 * @return the equipment
@@ -140,7 +137,7 @@ public class BaseReservationManagementAction extends ActionSupport {
 	/**
 	 * @return the equipmentNumber
 	 */
-	public String getEquipmentNumber() {
+	public Integer getEquipmentNumber() {
 		return equipmentNumber;
 	}
 
@@ -148,7 +145,7 @@ public class BaseReservationManagementAction extends ActionSupport {
 	/**
 	 * @param equipmentNumber the equipmentNumber to set
 	 */
-	public void setEquipmentNumber(String equipmentNumber) {
+	public void setEquipmentNumber(Integer equipmentNumber) {
 		this.equipmentNumber = equipmentNumber;
 	}
 
@@ -215,7 +212,7 @@ public class BaseReservationManagementAction extends ActionSupport {
 	/**
 	 * @return the reservationID
 	 */
-	public String getReservationID() {
+	public Integer getReservationID() {
 		return reservationID;
 	}
 
@@ -227,7 +224,7 @@ public class BaseReservationManagementAction extends ActionSupport {
 	/**
 	 * @param reservationID the reservationID to set
 	 */
-	public void setReservationID(String reservationID) {
+	public void setReservationID(Integer reservationID) {
 		this.reservationID = reservationID;
 	}
 
@@ -315,55 +312,17 @@ public class BaseReservationManagementAction extends ActionSupport {
 		this.reservationLineItemDTO = reservationLineItemDTO;
 	}
 
+	
+	protected String jsonErrorMessage;
+	protected String jsonSuccessMessage;
 
-
-
-
-
-	/**
-	 * @return the equipmentQty
-	 */
-	public int getEquipmentQty() {
-		return equipmentQty;
+	public String getJsonErrorMessage() {
+	    return jsonErrorMessage;
 	}
 
-
-
-
-
-
-	/**
-	 * @param equipmentQty the equipmentQty to set
-	 */
-	public void setEquipmentQty(int equipmentQty) {
-		this.equipmentQty = equipmentQty;
-	}
-
-
-
-
-
-
-	/**
-	 * @return the equipmentNotes
-	 */
-	public String getEquipmentNotes() {
-		return equipmentNotes;
-	}
-
-
-
-
-
-
-	/**
-	 * @param equipmentNotes the equipmentNotes to set
-	 */
-	public void setEquipmentNotes(String equipmentNotes) {
-		this.equipmentNotes = equipmentNotes;
-	}
-
-		
+	public String getJsonSuccessMessage() {
+	    return jsonSuccessMessage;
+	}		
 	
 
 }

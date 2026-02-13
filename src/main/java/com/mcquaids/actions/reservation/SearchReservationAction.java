@@ -13,18 +13,22 @@ import com.opensymphony.xwork2.Action;
 	}
 
 
+
 	public SearchReservationAction() {
 		super();
 	}
 
 	
 	public String execute() {
+		
+		System.out.println(customerID);
+		try {
+			reservationViewDTO  = reservationService.findReservationsByCriteria(reservationID, customerID);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		
 		return Action.SUCCESS;
 	}
-
-
-	
-	
-
 	
 }

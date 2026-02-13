@@ -8,39 +8,37 @@
 
     <Loggers>
 
-        <!-- Struts core logging -->
-        <Logger name="com.opensymphony.xwork2" level="info" additivity="false">
+        <!-- Turn up Struts core logging -->
+        <Logger name="com.opensymphony.xwork2" level="debug" additivity="false">
             <AppenderRef ref="STDOUT"/>
         </Logger>
 
-        <!-- OGNL conversion (parameter binding details) -->
-        <Logger name="com.opensymphony.xwork2.ognl" level="info" additivity="false">
+        <!-- OGNL conversion (critical for parameter binding errors) -->
+        <Logger name="com.opensymphony.xwork2.ognl" level="debug" additivity="false">
             <AppenderRef ref="STDOUT"/>
         </Logger>
 
         <!-- Type conversion layer -->
-        <Logger name="com.opensymphony.xwork2.util" level="info" additivity="false">
+        <Logger name="com.opensymphony.xwork2.util" level="debug" additivity="false">
             <AppenderRef ref="STDOUT"/>
         </Logger>
 
-        <!-- ParametersInterceptor (warnings/errors + info-level detail) -->
+        <!-- ParametersInterceptor (this is the one throwing your warnings) -->
         <Logger name="com.opensymphony.xwork2.interceptor.ParametersInterceptor"
-                level="info" additivity="false">
+                level="debug" additivity="false">
             <AppenderRef ref="STDOUT"/>
         </Logger>
 
         <!-- Struts dispatcher -->
-        <Logger name="org.apache.struts2.dispatcher" level="info" additivity="false">
+        <Logger name="org.apache.struts2.dispatcher" level="debug" additivity="false">
             <AppenderRef ref="STDOUT"/>
         </Logger>
 
-        <!-- Tiles (unchanged) -->
+        <!-- Tiles (optional) -->
         <Logger name="org.apache.tiles" level="info"/>
 
-        <!-- Root logger -->
         <Root level="warn">
             <AppenderRef ref="STDOUT"/>
         </Root>
-
     </Loggers>
 </Configuration>

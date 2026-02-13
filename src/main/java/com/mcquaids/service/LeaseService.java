@@ -69,12 +69,12 @@ public class LeaseService {
     
     
     // Add LeasedEquipment to a Lease
-    public LeasedEquipmentView addEquipmentToLease(String leaseID, String equipmentNumber, String notes) {
+    public LeasedEquipmentView addEquipmentToLease(String leaseID, Integer equipmentNumber, String notes) {
     	
         try {
         	//  Check if the piece of equipment is available for Lease.
         	Equipment equipment = equipmentService.edit(equipmentNumber);
-        	if (null == equipment) {
+        	if (null == equipment) { 
         		this.errorMessage = "Error- Equipment Number {"  + equipmentNumber  +"} does not exist";
         		return null;
         	}
@@ -101,9 +101,9 @@ public class LeaseService {
     }
     
 
-	public LeasedEquipmentView editLeasedEquipment(String pLeaseID, String pEquipmentNumber) {
+	public LeasedEquipmentView editLeasedEquipment(String pLeaseID, Integer pEquipmentNumber) {
 		
-		LeasedEquipmentView x =  leaseEquipmentDAO.editLeasedEquipmentView(pLeaseID, pEquipmentNumber);
+		LeasedEquipmentView x =  leaseEquipmentDAO.editLeasedEquipmentView(pLeaseID, pEquipmentNumber); 
 		if (null == x) {
 			System.out.println("LeasedEquipmentView = NULL");
 		}
@@ -162,9 +162,11 @@ public class LeaseService {
 		this.errorMessage = errorMessage;
 	}
 
-	public boolean updateLeasedEquipmentAdditionalNote(String leaseID, String equipmentNumber, String notes) {
-		 return leaseEquipmentDAO.updateLeasedEquipmentAdditionalNote(leaseID, equipmentNumber, notes);
+	public boolean updateLeasedEquipmentAdditionalNote(String leaseID, Integer equipmentNumber, String notes) {
+		 return leaseEquipmentDAO.updateLeasedEquipmentAdditionalNote(leaseID, equipmentNumber, notes); 
 	}
+
+
 
 
 	

@@ -1,112 +1,69 @@
 package com.mcquaids.model;
 
-import java.util.Date;
-import java.util.Map;
-
-import com.mcquaids.utils.JsonUtils;
+import java.time.LocalDate;
 
 public class ReservationLineItem {
 
-    private int reservationLineItemID;
-    private String reservationID;
-    private int equipmentNumber;    
-    private String equipmentType;
-    private String equipmentSubType;
-    private int quantity;
-    private String notes;
-    private Map<String, String> properties;
-    private Date dateAdded;
+    private Integer reservationLineItemID;
+    private Integer reservationID;
+    private int equipmentNumber;
+    private String lineItemNotes;
+    private LocalDate dateAdded;
 
-    public int getReservationLineItemID() {
+    // --- Getters and Setters ---
+
+    public Integer getReservationLineItemID() {
         return reservationLineItemID;
     }
 
-    public void setReservationLineItemID(int reservationLineItemID) {
+    public void setReservationLineItemID(Integer reservationLineItemID) {
         this.reservationLineItemID = reservationLineItemID;
     }
 
-    public String getReservationID() {
+    public Integer getReservationID() {
         return reservationID;
     }
 
-    public void setReservationID(String reservationID) {
+    public void setReservationID(Integer reservationID) {
         this.reservationID = reservationID;
     }
 
-    /**
-	 * @return the equipmentNumber
-	 */
-	public int getEquipmentNumber() {
-		return equipmentNumber;
-	}
-
-	/**
-	 * @param equipmentNumber the equipmentNumber to set
-	 */
-	public void setEquipmentNumber(int equipmentNumber) {
-		this.equipmentNumber = equipmentNumber;
-	}
-
-	public String getEquipmentType() {
-        return equipmentType;
+    public String getReservationIDAsDisplay() {
+        return "R" + String.format("%05d", this.reservationID);
     }
 
-    public void setEquipmentType(String equipmentType) {
-        this.equipmentType = equipmentType;
+    public int getEquipmentNumber() {
+        return equipmentNumber;
     }
 
-    public String getEquipmentSubType() {
-        return equipmentSubType;
+    public void setEquipmentNumber(int equipmentNumber) {
+        this.equipmentNumber = equipmentNumber;
     }
 
-    public void setEquipmentSubType(String equipmentSubType) {
-        this.equipmentSubType = equipmentSubType;
+    public String getLineItemNotes() {
+        return lineItemNotes;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public void setLineItemNotes(String lineItemNotes) {
+        this.lineItemNotes = lineItemNotes;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
-    public Map<String, String> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(Map<String, String> properties) {
-        this.properties = properties;
-    }
-    
-    public String getPropertiesJson() {
-        return JsonUtils.toJson(properties);
-    }
-
-    public Date getDateAdded() {
+    public LocalDate getDateAdded() {
         return dateAdded;
     }
 
-    public void setDateAdded(Date dateAdded) {
+    public void setDateAdded(LocalDate dateAdded) {
         this.dateAdded = dateAdded;
     }
 
-	@Override
-	public String toString() {
-		return "ReservationLineItem [reservationLineItemID=" + reservationLineItemID + ", reservationID="
-				+ reservationID + ", equipmentNumber=" + equipmentNumber + ", equipmentType=" + equipmentType
-				+ ", equipmentSubType=" + equipmentSubType + ", quantity=" + quantity + ", notes=" + notes
-				+ ", properties=" + properties + ", dateAdded=" + dateAdded + "]";
-	}
-    
-    
-    
+    @Override
+    public String toString() {
+        return "ReservationLineItem{" +
+                "reservationLineItemID=" + reservationLineItemID +
+                ", reservationID=" + reservationID +
+                ", equipmentNumber=" + equipmentNumber +
+                ", lineItemNotes='" + lineItemNotes + '\'' +
+                ", dateAdded=" + dateAdded +
+                '}';
+    }
 }

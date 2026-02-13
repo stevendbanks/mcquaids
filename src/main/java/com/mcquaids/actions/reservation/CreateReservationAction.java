@@ -1,5 +1,6 @@
 package com.mcquaids.actions.reservation;
 
+import com.mcquaids.model.Reservation;
 import com.opensymphony.xwork2.Action;
 
  public class CreateReservationAction extends BaseReservationAction {
@@ -19,6 +20,9 @@ import com.opensymphony.xwork2.Action;
 
 	
 	public String execute() {
+		pageTitle = "Create Reservation";
+		reservation = new Reservation();
+		reservation.setReservationStatusCode("1001-01");  // Set the Reservation to DRAFT
 		return Action.SUCCESS;
 	}
 

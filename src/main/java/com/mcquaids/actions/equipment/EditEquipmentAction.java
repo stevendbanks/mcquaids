@@ -12,6 +12,7 @@ public class EditEquipmentAction extends BaseEquipmentAction {
 
 	
 	public String execute() {
+		System.out.println("SDB->equipmentNumber="+ equipmentNumber);
 		equipment = equipmentService.edit(equipmentNumber);
 		if (null == equipment) {
 			addActionError("Equipment Number (" + equipmentNumber + ") Not Found");

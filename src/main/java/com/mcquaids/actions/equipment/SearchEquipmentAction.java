@@ -13,7 +13,6 @@ import com.opensymphony.xwork2.ActionSupport;
 //	private List<Equipment> equipments = new ArrayList<>();
 	private List<EquipmentQueryDTO> equipments = new ArrayList<>();
 
-	private String equipmentNumber;
 	private Integer equipmentType;
 	private String equipmentSubType;
 	
@@ -45,7 +44,7 @@ import com.opensymphony.xwork2.ActionSupport;
 				    }
 				} 
 			} else {
-				equipments = equipmentService.queryEquipmentByEquipmentNUmber(equipmentNumber);
+				equipments = equipmentService.queryEquipmentByEquipmentNUmber(equipmentNumber); 
 			}
 			
 			if (equipments.size() <1 ) {
@@ -65,23 +64,6 @@ import com.opensymphony.xwork2.ActionSupport;
 		
 		return ActionSupport.SUCCESS;
 	}
-	
-
-
-	/**
-	 * @return the Equipment Number
-	 */
-	public String getEquipmentNumber() {
-			return equipmentNumber;
-	}
-
-	/**
-	 * @param equipmentNumber to set
-	 */
-	public void setEquipmentNumber(String equipmentNumber) {
-		this.equipmentNumber = equipmentNumber;
-	}
-	
 	
 
 

@@ -2,9 +2,12 @@ package com.mcquaids.model;
 
 import java.util.Date;
 
+import com.mcquaids.model.lookup.CodeValues;
+import com.mcquaids.utils.PropertyHydrator;
+
 public class Reservation {
 
-    private String reservationID;
+    private Integer reservationID;
 
     private String customerID;
     private Customer customer;
@@ -12,19 +15,28 @@ public class Reservation {
     private String reservationStatusCode;
     private Date startDate;
     private Date endDate;
-    private String notes;
+    private String instructions;
     private String leaseID;
     private Date dateCreated;
     private Date dateUpdated;
 
-    public String getReservationID() {
+    public Integer getReservationID() {
         return reservationID;
     }
 
-    public void setReservationID(String reservationID) {
+    public void setReservationID(Integer reservationID) {
         this.reservationID = reservationID;
     }
+    
+    public String getReservationIDAsDisplay() {
+        return "R" + String.format("%05d", this.reservationID);
+    }
 
+    public String getReservationStatusText() {
+    	return  CodeValues.getKeyValue("reservationStatus", reservationStatusCode);
+    }
+    
+    
     public String getCustomerID() {
         return customerID;
     }
@@ -71,12 +83,12 @@ public class Reservation {
         this.endDate = endDate;
     }
 
-    public String getNotes() {
-        return notes;
+    public String getInstructions() {
+        return instructions;
     }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
+    public void setInstructions(String notes) {
+        this.instructions = notes;
     }
 
     public String getLeaseID() {
@@ -106,7 +118,7 @@ public class Reservation {
 	@Override
 	public String toString() {
 		return "Reservation [reservationID=" + reservationID + ", customerID=" + customerID + ", reservationStatusCode="
-				+ reservationStatusCode + ", startDate=" + startDate + ", endDate=" + endDate + ", notes=" + notes
+				+ reservationStatusCode + ", startDate=" + startDate + ", endDate=" + endDate + ", instructions=" + instructions
 				+ ", leaseID=" + leaseID + ", dateCreated=" + dateCreated + ", dateUpdated=" + dateUpdated + "]";
 	}
     

@@ -54,34 +54,34 @@ public class CodeValues { // extends CodeTypes {
 	static {
 		CodeValueService codeValueService = new CodeValueService();
 		
-		queryCodeValues(codeValueService, reservationStatuses, "Reservation Status"); // Looks up the Codetype table  EnglishDescription name in DB
+		queryLookupTable(codeValueService, reservationStatuses, "lkp_reservationstatus"); // Looks up the Codetype table  EnglishDescription name in DB
 
 		
-		queryCodeValues(codeValueService, provinces, "Province");
-		queryCodeTypes(codeValueService, equipmentTypes, "yes");
-		queryCodeValues(codeValueService, trailerTypes, "Trailer");
-		queryCodeValues(codeValueService, flatbedTypes, "Flatbed");
-		queryCodeValues(codeValueService, forkliftTypes, "Forklift");
-//		queryCodeValues(codeValueService, containerTypes, "Container");
-		queryCodeValues(codeValueService, containerTypes, "Container");
-		queryCodeValues(codeValueService, containerSizes, "Container Sizes");
-		queryCodeValues(codeValueService, containerDoors, "container Doors");
+		queryLookupTable(codeValueService, provinces, "lkp_provinces");
+		queryLookupTable(codeValueService, equipmentTypes, "lkp_equipmenttypes");
+		queryLookupTable(codeValueService, trailerTypes, "lkp_trailersubtypes");
+		queryLookupTable(codeValueService, flatbedTypes, "lkp_flatbedsubtypes");
+		queryLookupTable(codeValueService, forkliftTypes, "lkp_forkliftsubtypes");
 
-		queryCodeValues(codeValueService, availabilityStatuses, "Availability Status");
-		queryCodeValues(codeValueService, conditionStatuses, "Condition Status");
-		queryCodeValues(codeValueService, maintenanceStatuses, "Maintenance Status");
-		queryCodeValues(codeValueService, cleaningStatuses, "Cleaning Status");
-		queryCodeValues(codeValueService, leaseStatuses, "Lease Status");
-		queryCodeValues(codeValueService, trailerLengths, "Trailer Lengths");
-		queryCodeValues(codeValueService, doorLocations, "Door Locations");
-		queryCodeValues(codeValueService, doorTypes, "Door Types");
+		queryLookupTable(codeValueService, containerTypes, "lkp_containersubtypes");
+		queryLookupTable(codeValueService, containerSizes, "lkp_containersizes");
+		queryLookupTable(codeValueService, containerDoors, "lkp_containerdoors");
 
-		queryCodeValues(codeValueService, floorTypes, "Floor Types");
-		queryCodeValues(codeValueService, axelTypes, "Axel Types");
+		queryLookupTable(codeValueService, availabilityStatuses, "lkp_availabilitystatuses");
+		queryLookupTable(codeValueService, conditionStatuses, "lkp_conditionstatuses");
+		queryLookupTable(codeValueService, maintenanceStatuses, "lkp_maintenancestatuses");
+		queryLookupTable(codeValueService, cleaningStatuses, "lkp_cleaningstatuses");
+		queryLookupTable(codeValueService, leaseStatuses, "lkp_leasestatuses");
+		queryLookupTable(codeValueService, trailerLengths, "lkp_trailerlengths");
+		queryLookupTable(codeValueService, doorLocations, "lkp_doorlocations");
+		queryLookupTable(codeValueService, doorTypes, "lkp_doortypes");
+
+		queryLookupTable(codeValueService, floorTypes, "lkp_floortypes");
+		queryLookupTable(codeValueService, axelTypes, "lkp_axeltypes");
 
 		
 		
-		queryCodeValues(codeValueService, leaseTerminationReasonCodes, "Lease Termination Reason Code");
+		queryLookupTable(codeValueService, leaseTerminationReasonCodes, "lkp_leaseterminationreasoncodes");
 		
 		
 		
@@ -103,27 +103,41 @@ public class CodeValues { // extends CodeTypes {
 	}
 
 
-	/**
-	 * @param codeValueService
-	 * @param hashmap
-	 * @param pCodeTypeDescription - The CodeType English Description.
-	 */
-	private static void queryCodeValues(CodeValueService codeValueService, HashMap<String, String> hashmap, String pCodeTypeDescription) {
-		List<CodeValue> x = codeValueService.findCodeValues(pCodeTypeDescription);
-		for (CodeValue cv : x) {
-			hashmap.put(cv.getCodeValue(), cv.getEnglishDescription());
-		}
-	}
-	
-	
-	private static void queryCodeTypes(CodeValueService codeValueService,  HashMap<String, String> hashmap, String isTypeOfEquipment) {
-		
-		List<CodeValue> x = codeValueService.findCodeTypes(isTypeOfEquipment);
-		for (CodeValue cv : x) {
-			hashmap.put(cv.getCodeValue(), cv.getEnglishDescription());
-		}
-	}
+//	/**
+//	 * @param codeValueService
+//	 * @param hashmap
+//	 * @param pCodeTypeDescription - The CodeType English Description.
+//	 */
+//	private static void queryCodeValues(CodeValueService codeValueService, HashMap<String, String> hashmap, String pCodeTypeDescription) {
+//		List<CodeValue> x = codeValueService.findCodeValues(pCodeTypeDescription);
+//		for (CodeValue cv : x) {
+//			hashmap.put(cv.getCodeValue(), cv.getEnglishDescription());
+//		}
+//	}
+//	
+//	
+//	
+//	
+//	
+//	private static void queryCodeTypes(CodeValueService codeValueService,  HashMap<String, String> hashmap, String isTypeOfEquipment) {
+//		
+//		List<CodeValue> x = codeValueService.findCodeTypes(isTypeOfEquipment);
+//		for (CodeValue cv : x) {
+//			hashmap.put(cv.getCodeValue(), cv.getEnglishDescription());
+//		}
+//	}
 
+	
+	
+	private static void queryLookupTable(CodeValueService codeValueService,  HashMap<String, String> hashmap, String pCodeTypeTableName) {
+		
+		List<CodeValue> x = codeValueService.queryLookupTable(pCodeTypeTableName);
+		for (CodeValue cv : x) {
+			hashmap.put(cv.getCodeValue(), cv.getEnglishDescription());
+		}
+	}	
+	
+	
 
 
 	/**
@@ -254,16 +268,16 @@ public class CodeValues { // extends CodeTypes {
 	public void setEquipmentSubTypes(int pEquipmentTypeCode) {
 
 		switch(pEquipmentTypeCode) {
-		  case 1002:
+		  case 2:
 			  this.equipmentSubTypes = masterMap.get("trailerTypes");
 		    break;
-		  case 1003:
+		  case 3:
 			  this.equipmentSubTypes = masterMap.get("flatbedTypes");
 		    break;
-		  case 1004:
+		  case 4:
 			  this.equipmentSubTypes = masterMap.get("containerTypes");
 		    break;
-		  case 1005:
+		  case 5:
 			  this.equipmentSubTypes = masterMap.get("forkliftTypes");
 		    break;
 		  default:
@@ -284,13 +298,13 @@ public class CodeValues { // extends CodeTypes {
 	public HashMap<String, String> getEquipmentSubTypes(int pEquipmentTypeCode) {
 
 		switch(pEquipmentTypeCode) {
-		  case 1002:
+		  case 2:
 			  return masterMap.get("trailerTypes");
-		  case 1003:
+		  case 3:
 			  return masterMap.get("flatbedTypes");
-		  case 1004:
+		  case 4:
 			  return masterMap.get("containerTypes");
-		  case 1005:
+		  case 5:
 			  return masterMap.get("forkliftTypes");
 		  default:
 		    return null;
@@ -304,7 +318,66 @@ public class CodeValues { // extends CodeTypes {
 	}    
     
 	
+	public static String getKeyValue(String key, String value) {
+	    Map<String, String> map = null;
 
+	    switch (key) {
+	        case "province":
+	            map = provinces;
+	            break;
+	        case "equipmentType":
+	            map = equipmentTypes;
+	            break;
+	        case "trailerType":
+	            map = trailerTypes;
+	            break;
+	        case "flatbedType":
+	            map = flatbedTypes;
+	            break;
+	        case "forkliftType":
+	            map = forkliftTypes;
+	            break;
+
+	        case "availabilityStatus":
+	            map = availabilityStatuses;
+	            break;
+	        case "conditionStatus":
+	            map = conditionStatuses;
+	            break;
+	        case "maintenanceStatus":
+	            map = maintenanceStatuses;
+	            break;
+	        case "cleaningStatus":
+	            map = cleaningStatuses;
+	            break;
+	        case "leaseStatus":
+	            map = leaseStatuses;
+	            break;
+	        case "reservationStatus":
+	            map = reservationStatuses;
+	            break;
+
+	        // ⭐ NEW CASES — these match your JSON keys
+	        case "axel":
+	            map = axelTypes;
+	            break;
+	        case "doorType":
+	            map = doorTypes;
+	            break;
+	        case "doorLocation":
+	            map = doorLocations;
+	            break;
+	        case "floor":
+	            map = floorTypes;
+	            break;
+
+	        default:
+	            return value;
+	    }
+
+	    if (map == null) return value;
+	    return map.getOrDefault(value, value);
+	}
 
  
 

@@ -44,19 +44,6 @@ import com.opensymphony.xwork2.ActionSupport;
 	
 
 
-	/**
-	 * @return the Equipment Number
-	 */
-	public String getEquipmentNumber() {
-			return equipmentNumber;
-	}
-
-	/**
-	 * @param equipmentNumber to set
-	 */
-	public void setEquipmentNumber(String equipmentNumber) {
-		this.equipmentNumber = equipmentNumber;
-	}
 	
 
 	/**

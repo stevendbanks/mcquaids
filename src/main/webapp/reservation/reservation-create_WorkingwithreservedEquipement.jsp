@@ -110,6 +110,110 @@
     </div>
 </div>  
 
+        <!-- Requested Equipment list -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Reserved Equipment</h5>
+
+                <div class="mb-3 no-print">
+                    <button type="button"
+                            class="btn btn-sm btn-outline-primary"
+                            onclick="expandAllDetails()">
+                        Expand All
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-sm btn-outline-secondary"
+                            onclick="collapseAllDetails()">
+                        Collapse All
+                    </button>
+                </div>
+
+                <table id="equipmentTable" class="table mt-4">
+                    <thead>
+                    <tr>
+                        <th scope="col">Equipment Type</th>
+                        <th scope="col">SubType</th>
+                        <th scope="col">Notes</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="reservationLineItemsTable">
+                    <s:iterator value="reservationLineItemsDTO" var="item">
+
+                        <!-- Main row -->
+<tr class="line-item"
+    data-id="<s:property value='#item.reservationLineItemID'/>"
+    data-type="<s:property value='#item.equipmentTypeText'/>"
+    data-props='<s:property value="#item.equipmentPropertiesAsJson" escapeHtml="false" />'>
+
+    <!-- Equipment Type -->
+    <td><s:property value="#item.equipmentTypeText"/></td>
+
+    <!-- SubType -->
+    <td><s:property value="#item.equipmentSubTypeText"/></td>
+
+    <!-- Notes -->
+    <td><s:property value="#item.lineItemNotes"/></td>
+
+    <!-- Details button -->
+    <td class="text-right">
+        <button type="button"
+                class="btn btn-sm btn-secondary toggle-properties">
+            Details
+        </button>
+    </td>
+
+    <!-- Actions dropdown -->
+<td class="text-right">
+    <div class="btn-group">
+        <button type="button"
+                class="btn btn-sm btn-outline-dark dropdown-toggle"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false">
+            Actions
+        </button>
+
+        <div class="dropdown-menu dropdown-menu-right">
+            <button class="dropdown-item"
+                    type="button"
+                    onclick="removeLineItem('<s:property value="#item.reservationLineItemID"/>')">
+                Remove
+            </button>
+
+            <button class="dropdown-item"
+                    type="button"
+                    onclick="substituteLineItem('<s:property value="#item.reservationLineItemID"/>')">
+                Substitute
+            </button>
+
+            <button class="dropdown-item"
+                    type="button"
+                    onclick="markReturned('<s:property value="#item.reservationLineItemID"/>')">
+                Mark Returned
+            </button>
+        </div>
+    </div>
+</td>
+
+</tr>
+
+                        <!-- Hidden expandable row -->
+                        <tr id="props-<s:property value='#item.reservationLineItemID'/>"
+                            class="properties-panel"
+                            style="display:none;">
+                            <td colspan="5"></td>
+                        </tr>
+
+                    </s:iterator>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <!-- Save Reservation + Search Equipment buttons -->
         <div class="form-group no-print">
             <div class="d-flex justify-content-between mt-4">
@@ -119,13 +223,21 @@
                         value="Save Reservation"
                         cssClass="btn btn-primary btn-lg"/>
 
+                <!-- Search Equipment -->
+                <button type="button"
+                        class="btn btn-outline-primary btn-lg"
+                        onclick="DisplayEquipmentSearch()">
+                    <i class="fa fa-search"></i> Search Equipment
+                </button>
+
             </div>
         </div>
 
     </s:form>
     <!-- End Save Reservation form -->
 
-
+    <!-- Add Equipment section -->
+    <jsp:include page="AddEquipmentSection.jsp"/>
 
 </div>
 
