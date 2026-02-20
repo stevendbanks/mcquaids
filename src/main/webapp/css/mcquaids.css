@@ -110,6 +110,12 @@ body {
     min-width: 0;
 }
 
+textarea.auto-expand {
+    overflow: hidden;
+    resize: none;
+    min-height: 38px; /* matches Bootstrap form-control height */
+}
+
 
 /* Print mode */
 @media print {

@@ -14,7 +14,7 @@
 
 	<s:form action="save" method="post" namespace="/equipment"
 		theme="bootstrap">
-		<s:textfield name="equipment.equipmentType" />
+		<s:hidden name="equipment.equipmentType" />
 		<s:hidden name="equipmentSaveActionType" />
 		
 		<jsp:include page="equipment-subform.jsp">

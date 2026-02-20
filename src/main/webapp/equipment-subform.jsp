@@ -9,7 +9,7 @@
 			<label for="equipmentNumber">Equipment Number</label>
 			<s:textfield name="equipment.equipmentNumber" 
 				cssErrorClass="fieldError" cssClass="form-control"
-				placeholder="Equipment #" disabled="%{!editable}" />
+				placeholder="Equipment #" disabled="%{!editable}" readonly="true" />
 		</div>
 	</div>
 	<div class="col-sm-4">
@@ -131,7 +131,7 @@
 	<div class="row">
 		<div class="col-sm-12">
 			<s:textarea   name="equipment.specialNotes"
-				cssErrorClass="fieldError" cssClass="form-control" disabled="%{!editable}"/>
+				cssErrorClass="fieldError" cssClass="form-control auto-expand" disabled="%{!editable}"/>
 		</div>
 	</div>
 </div>

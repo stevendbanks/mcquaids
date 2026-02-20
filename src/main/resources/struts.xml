@@ -88,13 +88,20 @@
 			<result name="success" type="tiles">customer-edit</result>
 		</action>
 
-		<!-- Customer page configuration -begin -->
-		<action name="save" method="execute"
-			class="com.mcquaids.actions.customer.SaveCustomerAction">
-			<result name="success" type="tiles">customer-edit</result>
-		</action>
-	</package>
+	<action name="save" method="execute"
+	        class="com.mcquaids.actions.customer.SaveCustomerAction">
+	
+	    <!-- Normal customer save flow -->
+	    <result name="success" type="tiles">customer-edit</result>
+	
+	    <!-- Reservation workflow redirect -->
+	    <result name="reservationRedirect" type="redirect">
+	        <param name="location">${redirectUrl}</param>
+	    </result>
+	
+	</action>
 
+   </package>
 
 	<package name="equipment" extends="default"
 		namespace="/equipment">
@@ -200,8 +207,8 @@
 
     <action name="save" method="execute"
         class="com.mcquaids.actions.reservation.SaveReservationAction">
-        <result name="successOLD" type="tiles">reservation-edit</result>
         <result name="success" type="chain">
+            <param name="ignoreHierarchy">false</param>
             <param name="actionName">edit-reservation</param>
             <param name="namespace">/reservation</param>
         </result>
@@ -271,9 +278,9 @@
         </result>
     </action>
 
-</package>
-
-
+		    
+	</package>
+	
 
 	<package name="lease" extends="default" namespace="/lease">
 	
@@ -319,11 +326,6 @@
 		</action>
 		
 		
-
-		
-		
-		
-		
 				<!-- Search for Equipment that will be added to a lease -begin -->
 		<action name="AddEquipmentToLease" method="execute"
 			class="com.mcquaids.actions.leasedequipment.AddEquipmentToLeaseAction">
@@ -362,23 +364,7 @@
 		</action>		
 	</package>
 
-	<package name="reservation" extends="default" namespace="/reservation">
-		   <action name="index" class="com.mcquaids.actions.reservation.CreateReservationAction">
-		        <result name="success" type="tiles">create-reservation</result>
-		    </action>
-		    
-		   <action name="search" class="com.mcquaids.actions.reservation.SearchAvailableEquipmentAction">
-			<result name="success" type="json">
-				<param name="root">equipmentThatisAvailable</param>
-				<param name="excludeNullProperties">true</param>
-			</result>
-		    </action>		    
-		    
-		    
-		    
-		    
-	</package>
-	
+
 
 	<package name="reports" extends="default" namespace="/reports">
 		    <action name="index" >
