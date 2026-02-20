@@ -9,7 +9,7 @@ On the UI, I use
 JSP, 
 Apache tiles, 
 Bootstrap 4.6.2
-jquery-3.2.1.min
+JQuery 3.6.0
 
 
 • Servlet container: Apache Tomcat 9.0.89 (Java EE / javax.* environment)

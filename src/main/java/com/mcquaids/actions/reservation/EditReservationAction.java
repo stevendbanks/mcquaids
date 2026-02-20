@@ -1,73 +1,108 @@
 package com.mcquaids.actions.reservation;
 
+import com.mcquaids.model.Customer;
 import com.opensymphony.xwork2.Action;
 
- public class EditReservationAction extends BaseReservationAction {
+public class EditReservationAction extends BaseReservationAction {
 
-	private static final long serialVersionUID = 1L;
-	
-	private String leaseID;
-	
-	private  Integer reservationID;
-	
-	/**
-	 * @return the reservationID
-	 */
-	public Integer getReservationID() {
-		return reservationID;
-	}
+    private static final long serialVersionUID = 1L;
 
+    private String leaseID;
 
-	/**
-	 * @param reservationID the reservationID to set
-	 */
-	public void setReservationID(Integer reservationID) {
-		this.reservationID = reservationID;
-	}
+    // Explicit flag to indicate return from a selector (customer or equipment)
+    private boolean fromSelector;
 
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
+    public EditReservationAction() {
+        super();
+    }
 
+    public boolean isFromSelector() {
+        return fromSelector;
+    }
 
-	public EditReservationAction() {
-		super();
-	}
+    public void setFromSelector(boolean fromSelector) {
+        this.fromSelector = fromSelector;
+    }
 
-	
-	public String execute() {
-		System.out.println("Entered EditReservationAction->reservationID=" + reservationID);
-		
-		try {
-		super.reservation =    reservationService.getReservation(reservationID);
-		pageTitle = "Reservation #" + reservation.getReservationIDAsDisplay();
+    @Override
+    public String execute() {
 
-		super.reservationLineItemsDTO = reservationService.getReservationLineItems(reservationID);
-		
-		if (reservedEquipmentID == null) {
-			// do nothing
-		} else {
-		  super.reservedEquipment = equipmentService.findEquipment(reservedEquipmentID);
-		}
-		
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return Action.SUCCESS;
-	}
+        try {
+            // Normalize reservationID from posted reservation if needed
+            if (reservationID == null && reservation != null) {
+                reservationID = reservation.getReservationID();
+            }
 
+            // Fix-up for chained SaveReservation
+            if (reservationID != null &&
+                reservation != null &&
+                reservation.getReservationID() == null) {
+                reservation.setReservationID(reservationID);
+            }
 
-	public String getLeaseID() {
-		return leaseID;
-	}
+            System.out.println(
+                "reservationID=" + reservationID +
+                "; reservedEquipmentID=" + reservedEquipmentID +
+                "; fromSelector=" + fromSelector
+            );
 
+            // Detect posted reservation state (customer selector case)
+            boolean hasPostedReservationState =
+                    reservation != null &&
+                    reservation.getCustomerID() != null;
 
-	public void setLeaseID(String leaseID) {
-		this.leaseID = leaseID;
-	}
-	
-	
+            // Only preserve form state when coming from selector AND we have posted fields
+            boolean preserveFormState = fromSelector && hasPostedReservationState;
 
-	
+            // ALWAYS load reservation from DB unless preserving form state
+            if (reservationID != null && !preserveFormState) {
+                super.reservation = reservationService.getReservation(reservationID);
+            }
+
+            // ALWAYS load line items when reservationID exists
+            if (reservationID != null) {
+                super.reservationLineItemsDTO =
+                        reservationService.getReservationLineItems(reservationID);
+            }
+
+            // ALWAYS load reserved equipment if parameter is present
+            if (reservedEquipmentID != null) {
+                super.reservedEquipment = equipmentService.findEquipment(reservedEquipmentID);
+            }
+
+            // Page title logic
+            if (reservationID == null) {
+                pageTitle = "New Reservation";
+            } else if (preserveFormState) {
+                pageTitle = "Reservation #" + reservationID + " (unsaved changes)";
+            } else {
+                pageTitle = "Reservation #" + reservationID;
+            }
+
+            // Enrich customer if present
+            if (reservation != null && reservation.getCustomerID() != null) {
+                Customer fullCustomer =
+                    customerService.edit(reservation.getCustomerID().toString());
+                reservation.setCustomer(fullCustomer);
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return Action.SUCCESS;
+    }
+
+    public String getLeaseID() {
+        return leaseID;
+    }
+
+    public void setLeaseID(String leaseID) {
+        this.leaseID = leaseID;
+    }
+
 }

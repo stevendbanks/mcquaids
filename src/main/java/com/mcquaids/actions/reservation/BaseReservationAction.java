@@ -10,6 +10,7 @@ import com.mcquaids.model.Reservation;
 import com.mcquaids.model.ReservationLineItemDTO;
 import com.mcquaids.model.ReservationViewDTO;
 import com.mcquaids.model.lookup.CodeValues;
+import com.mcquaids.service.CustomerService;
 import com.mcquaids.service.EquipmentService;
 import com.mcquaids.service.LeaseService;
 import com.mcquaids.service.ReservationService;
@@ -37,6 +38,7 @@ public class BaseReservationAction extends ActionSupport {
 	protected String actionTypeText = "Reserve";
 	
 	protected String pageTitle;
+	protected String caller;
 	
 	protected Integer reservationID;
 	protected Integer reservedEquipmentID;
@@ -57,10 +59,12 @@ public class BaseReservationAction extends ActionSupport {
 	protected ReservationService reservationService = new ReservationService();
 	protected LeaseService leaseService = new LeaseService();
 
+	protected CustomerService customerService = new CustomerService();
+
 	protected String actionType;
 	protected Map<String, String> errors = new HashMap<>();
 
-	protected Reservation reservation;
+	protected Reservation reservation = new Reservation();
 
 	
 	/**
@@ -149,6 +153,30 @@ public class BaseReservationAction extends ActionSupport {
 	 */
 	public void setPageTitle(String pageTitle) {
 		this.pageTitle = pageTitle;
+	}
+
+
+
+
+
+
+	/**
+	 * @return the caller
+	 */
+	public String getCaller() {
+		return caller;
+	}
+
+
+
+
+
+
+	/**
+	 * @param caller the caller to set
+	 */
+	public void setCaller(String caller) {
+		this.caller = caller;
 	}
 
 

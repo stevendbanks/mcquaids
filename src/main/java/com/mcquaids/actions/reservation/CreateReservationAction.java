@@ -1,5 +1,6 @@
 package com.mcquaids.actions.reservation;
 
+import com.mcquaids.model.Customer;
 import com.mcquaids.model.Reservation;
 import com.opensymphony.xwork2.Action;
 
@@ -20,9 +21,17 @@ import com.opensymphony.xwork2.Action;
 
 	
 	public String execute() {
+		System.out.println("SDBANKS- Entered execute.  customerID="  + reservation.getCustomerID() );
 		pageTitle = "Create Reservation";
-		reservation = new Reservation();
 		reservation.setReservationStatusCode("1001-01");  // Set the Reservation to DRAFT
+		
+        // Enrich customer object if customerID is present
+        if (reservation.getCustomerID() != null) {
+            Customer fullCustomer = customerService.edit(reservation.getCustomerID().toString());   // Just in read-only 
+            System.out.println(fullCustomer.toString());
+            reservation.setCustomer(fullCustomer);		
+        }
+		
 		return Action.SUCCESS;
 	}
 
