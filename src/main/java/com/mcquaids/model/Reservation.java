@@ -19,9 +19,17 @@ public class Reservation {
     private String leaseID;
     private Date dateCreated;
     private Date dateUpdated;
+    
+ // Delivery Address Fields
+    private String deliveryStreet;
+    private String deliveryCity;
+    private String deliveryProvince;
+    private String deliveryPostal;
+    private String deliveryCountry;
+    private Boolean deliverySameAsCustomer;
 
     public Integer getReservationID() {
-        return reservationID;
+        return this.reservationID;
     }
 
     public void setReservationID(Integer reservationID) {
@@ -57,6 +65,90 @@ public class Reservation {
 	 */
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
+	}
+
+	/**
+	 * @return the deliveryStreet
+	 */
+	public String getDeliveryStreet() {
+		return deliveryStreet;
+	}
+
+	/**
+	 * @param deliveryStreet the deliveryStreet to set
+	 */
+	public void setDeliveryStreet(String deliveryStreet) {
+		this.deliveryStreet = deliveryStreet;
+	}
+
+	/**
+	 * @return the deliveryCity
+	 */
+	public String getDeliveryCity() {
+		return deliveryCity;
+	}
+
+	/**
+	 * @param deliveryCity the deliveryCity to set
+	 */
+	public void setDeliveryCity(String deliveryCity) {
+		this.deliveryCity = deliveryCity;
+	}
+
+	/**
+	 * @return the deliveryProvince
+	 */
+	public String getDeliveryProvince() {
+		return deliveryProvince;
+	}
+
+	/**
+	 * @param deliveryProvince the deliveryProvince to set
+	 */
+	public void setDeliveryProvince(String deliveryProvince) {
+		this.deliveryProvince = deliveryProvince;
+	}
+
+	/**
+	 * @return the deliveryPostal
+	 */
+	public String getDeliveryPostal() {
+		return deliveryPostal;
+	}
+
+	/**
+	 * @param deliveryPostal the deliveryPostal to set
+	 */
+	public void setDeliveryPostal(String deliveryPostal) {
+		this.deliveryPostal = deliveryPostal;
+	}
+
+	/**
+	 * @return the deliveryCountry
+	 */
+	public String getDeliveryCountry() {
+		return deliveryCountry;
+	}
+
+	/**
+	 * @param deliveryCountry the deliveryCountry to set
+	 */
+	public void setDeliveryCountry(String deliveryCountry) {
+		this.deliveryCountry = deliveryCountry;
+	}
+
+	/**
+	 * @return the deliverySameAsCustomer
+	 */
+	public Boolean getDeliverySameAsCustomer() {
+		return deliverySameAsCustomer;
+	}
+
+	/**
+	 * @param deliverySameAsCustomer the deliverySameAsCustomer to set
+	 */
+	public void setDeliverySameAsCustomer(Boolean deliverySameAsCustomer) {
+		this.deliverySameAsCustomer = deliverySameAsCustomer;
 	}
 
 	public String getReservationStatusCode() {

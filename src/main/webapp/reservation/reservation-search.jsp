@@ -1,12 +1,4 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Reservation Search</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-</head>
-<body>
 <div class="container">
     <div class="mb-5">
         <h1 class="mt-4 mb-4">Search Reservations</h1>
@@ -35,9 +27,11 @@
                         <label for="customerName">Customer Name</label>
                     </div>
                     <div class="input-group-append">
-                        <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#ModalCustomerSearch">
-                            <i class="fa fa-search"></i>
-                        </button>
+						<button type="button"
+						        class="btn btn-outline-secondary"
+						        onclick="navigateToCustomerSearchFromReservationSearch()">
+						    <i class="fa fa-search"></i>
+						</button>                    
                     </div>
                 </div>
             </div>
@@ -109,8 +103,23 @@ function resetOtherFields(changedElementId) {
 }
 </script>
 
-<jsp:include page="../ModalCustomerSearch.jsp" />
+<script>
+$(document).ready(function () {
+    const params = new URLSearchParams(window.location.search);
 
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-</body>
-</html>
+    const customerID = params.get("customerID");
+    const customerName = params.get("customerName");
+
+    if (customerID || customerName) {
+        if (customerID) {
+            $("#customerID").val(customerID);
+        }
+        if (customerName) {
+            $("#customerName").val(customerName);
+        }
+
+        // Trigger the search automatically
+        searchReservations();
+    }
+});
+</script>

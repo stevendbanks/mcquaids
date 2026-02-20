@@ -313,16 +313,16 @@ public class BaseEquipmentAction extends ActionSupport {
 
 	protected String setJSPTitle(String titlePrefix) {
 		switch(this.equipment.getEquipmentType() ) {
-		  case 1002:
+		  case 2:
 			  equipmentTypeText= titlePrefix + " Trailer";
 		    break;
-		  case 1003:
+		  case 3:
 			  equipmentTypeText= titlePrefix + " Flatbed";
 		    break;
-		  case 1004:
+		  case 4:
 			  equipmentTypeText= titlePrefix + " Container";
 		    break;
-		  case 1005:
+		  case 5:
 			  equipmentTypeText= titlePrefix + " Forklift";
 		    break;
 		  default:

@@ -32,6 +32,8 @@ public class ReservationDAO {
     // CREATE
     // ------------------------------------------------------------
     public Integer createReservation(Reservation reservation) {
+    	
+    	
 
         String sql = "INSERT INTO reservation " +
                      "(CustomerID, ReservationStatusCode, StartDate, EndDate, Instructions, LeaseID, DateCreated) " +

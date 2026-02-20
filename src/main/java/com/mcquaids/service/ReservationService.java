@@ -35,8 +35,14 @@ public class ReservationService {
     // Reservation CRUD
     // ------------------------------------------------------------
     public Reservation createReservation(Reservation reservation) {
+    	 Reservation x = null;
+    	try {
         Integer newId = reservationDAO.createReservation(reservation);
-        return reservationDAO.getReservation(newId);
+         x = reservationDAO.getReservation(newId);
+    	} catch (Exception ex) {
+    		ex.printStackTrace();
+    	}
+        return x;
     }
 
     public Reservation getReservation(Integer reservationID) {
