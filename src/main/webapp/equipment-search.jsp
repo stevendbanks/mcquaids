@@ -173,27 +173,38 @@ function buildActionCell(equipmentNumber, caller, reservationId, leaseId, reserv
     // Normalize caller to avoid null/undefined issues
     caller = (caller || "").trim();
 
-    console.log("buildActionCell: caller=" + caller + 
-                ", reservationId=" + reservationId + 
-                ", leaseId=" + leaseId + 
+    console.log("buildActionCell: caller=" + caller +
+                ", reservationId=" + reservationId +
+                ", leaseId=" + leaseId +
                 ", reservationLineItemID=" + reservationLineItemID);
 
     // RESERVE workflow
-    if (caller === 'RESERVE') {
-        return $('<td>').html(
-            '<a class="btn btn-primary btn-sm" ' +
-            'href="/mcquaids/reservation/edit-reservation?reservationID=' +
-            reservationId + '&reservedEquipmentID=' + equipmentNumber + '">' +
-            'Reserve</a>'
-        );
-    }
+if (caller === 'RESERVE') {
+
+    // Read all incoming params (same pattern as customer search)
+    const params = new URLSearchParams(window.location.search);
+
+    // Add selected equipment
+    params.set("reservedEquipmentID", equipmentNumber);
+
+    // NEW: Explicit selector flag
+    params.set("fromSelector", "true");
+
+    // Build return URL
+    const returnUrl = '/mcquaids/reservation/edit-reservation?' + params.toString();
+
+    return $('<td>').html(
+        '<a class="btn btn-primary btn-sm" href="' + returnUrl + '">Reserve</a>'
+    );
+}
 
     // LEASE workflow
     if (caller === 'LEASE') {
         return $('<td>').html(
             '<a class="btn btn-primary btn-sm" ' +
-            'href="/mcquaids/lease/edit-lease?leaseID=' +
-            leaseId + '&leasedEquipmentID=' + equipmentNumber + '">' +
+            'href="/mcquaids/lease/edit-lease?' +
+                'leaseID=' + leaseId +
+                '&leasedEquipmentID=' + equipmentNumber + '">' +
             'Add to Lease</a>'
         );
     }
@@ -203,8 +214,8 @@ function buildActionCell(equipmentNumber, caller, reservationId, leaseId, reserv
         return $('<td>').html(
             '<a class="btn btn-primary btn-sm" ' +
             'href="/mcquaids/reservation/substituteEquipment?' +
-            'oldReservationLineItemID=' + reservationLineItemID +
-            '&newEquipmentNumber=' + equipmentNumber + '">' +
+                'oldReservationLineItemID=' + reservationLineItemID +
+                '&newEquipmentNumber=' + equipmentNumber + '">' +
             'Substitute</a>'
         );
     }
@@ -264,10 +275,21 @@ function fetchSubTypes() {
 
 <script>
 function createEquipment() {
-    var equipmentType = document.getElementById("equipmentType").value;
+    var equipmentType = document.getElementById("equipmentType").value.trim();
+
+    // Validation: must choose a type
+    if (!equipmentType) {
+        var errorDiv = document.getElementById("errorMessage");
+        errorDiv.textContent = "Please select an equipment type before creating equipment.";
+        errorDiv.style.display = "block";
+        return; // Stop execution
+    }
+
+    // Clear any previous error
+    document.getElementById("errorMessage").style.display = "none";
+
     var url = '/mcquaids/equipment/createEquipment?equipmentType=' + encodeURIComponent(equipmentType);
     window.location.href = url;
-    alert(url);
 }
 </script>
 

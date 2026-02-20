@@ -35,5 +35,15 @@ function checkInput(input) {
     }
 }
 
+function autoExpand(el) {
+    el.style.height = "auto";
+    el.style.height = el.scrollHeight + "px";
+}
 
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("textarea.auto-expand").forEach(ta => {
+        autoExpand(ta);          // expand on load
+        ta.addEventListener("input", () => autoExpand(ta)); // expand as user types
+    });
+});
 

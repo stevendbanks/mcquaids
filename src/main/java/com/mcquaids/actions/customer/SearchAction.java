@@ -1,73 +1,61 @@
 package com.mcquaids.actions.customer;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.mcquaids.model.Customer;
 import com.mcquaids.service.CustomerService;
 import com.opensymphony.xwork2.ActionSupport;
 
-// public class SearchAction extends BaseCustomerAction {
-	
-	public class SearchAction	extends ActionSupport {
+public class SearchAction extends ActionSupport {
 
 	private static final long serialVersionUID = 1L;
+
 	private List<Customer> customers = new ArrayList<>();
+	private CustomerService customerService = new CustomerService();
 
-	private CustomerService customerService;
-	
-	String phoneNumber = null;;
-	String customerID = null;;
-	String customerName = null;
-	String email = null;
-	String street = null;
-	String city = null;
-	String province = null;
-	String Country = null;
-	String postalCode = null;
-	
+	// Search fields
+	private String phoneNumber;
+	private String customerID;
+	private String customerName;
+	private String email;
 
-//	public SearchAction(ICustomerService customerService) {
-//		super();
-//		this.customerService = customerService;
-//	}
-	
-    /**
- * 
- */
-public SearchAction() {
-	super();
-	customerService = new CustomerService();
-}	
-	
+	// Caller parameters
+	private String caller;
+	private String reservationId;
+
 	public String execute() {
 		try {
-            
-			customers = customerService.queryCustomers(customerID, customerName, phoneNumber, email, street, city, province, Country, postalCode);
+			customers = customerService.queryCustomers(customerID, customerName, phoneNumber, email, null, null, null,
+					null, null);
+
+			if (customers == null || customers.isEmpty()) {
+				addActionError("No matching customers found.");
+				return INPUT;
+			}
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
+			addActionError("An unknown error occurred: " + ex.getMessage());
+			return INPUT;
 		}
-		return "success";
+
+		return SUCCESS;
 	}
-	
-	
 
+	@Override
+	public void validate() {
+		if (isEmpty(customerID) && isEmpty(customerName) && isEmpty(phoneNumber) && isEmpty(email)) {
 
+			addActionError("Returning all customers because no filters were applied.");
+		}
+	}
 
-	protected Map<String, String> errors = new HashMap<>();
-    
-    public Map<String, String> getErrors() {
-        return errors; 
-    }	
-	
+	private boolean isEmpty(String s) {
+		return s == null || s.trim().isEmpty();
+	}
 
-//	public void validate() {
-//		if (null == phoneNumber && null == customerID  && null == customerName && null == email) {
-//			errors.put("validation", "You must Enter a value in one of the search fields.");
-//		}
-//	}
+	// Getters and setters...
 
 	public List<Customer> getCustomers() {
 		return customers;
@@ -77,38 +65,35 @@ public SearchAction() {
 		this.customers = customers;
 	}
 
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
-
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public String getCustomerID() {
-		return customerID;
-	}
-
-	public void setCustomerID(String pCustomerID) {
-		this.customerID = pCustomerID;
-	}
-
-	public String getCustomerName() {
-		return customerName;
+	public void setCustomerID(String customerID) {
+		this.customerID = customerID;
 	}
 
 	public void setCustomerName(String customerName) {
 		this.customerName = customerName;
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
 	public void setEmail(String email) {
 		this.email = email;
 	}
 
-	
-	
+	public void setCaller(String caller) {
+		this.caller = caller;
+	}
+
+	public void setReservationId(String reservationId) {
+		this.reservationId = reservationId;
+	}
+
+	public String getCaller() {
+		return caller;
+	}
+
+	public String getReservationId() {
+		return reservationId;
+	}
 }

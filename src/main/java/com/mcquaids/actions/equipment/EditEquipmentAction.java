@@ -21,6 +21,7 @@ public class EditEquipmentAction extends BaseEquipmentAction {
 		
 		codeValues = new CodeValues();
 		codeValues.setEquipmentSubTypes(equipment.getEquipmentType());
+		this.equipmentTypeText =  CodeValues.getKeyValue("equipmentType", Integer.toString(equipment.getEquipmentType()));
 		
 		title = setJSPTitle("Edit");
 		
