@@ -5,7 +5,7 @@
               && reservedEquipment.equipmentNumber != null 
               && !reservedEquipment.equipmentNumber.isEmpty()}">
 
-    <div class="card mt-4 no-print">
+    <div id="add-equipment-card" class="card mt-4 no-print">
         <div class="card-body">
             <h5 class="card-title">Add Equipment to Reservation</h5>
 
@@ -67,7 +67,7 @@
 
                 <!-- Footer with Save + Search buttons -->
                 <div class="card-footer d-flex justify-content-between mt-3">
-                    <button class="btn btn-success" type="submit">
+                	<button class="btn btn-success" type="button" onclick="addEquipmentToReservation()">
                         <i class="fa fa-plus"></i> Add Equipment
                     </button>
                 </div>
