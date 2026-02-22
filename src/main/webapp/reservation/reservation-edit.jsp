@@ -129,8 +129,7 @@
             </div>
         </div>
 
-        <!-- Add Equipment Section (original placement) -->
-        <jsp:include page="AddEquipmentSection.jsp"/>
+
 
         <!-- Requested Equipment list -->
         <div class="card mb-4">
@@ -240,6 +239,8 @@
 
             </div>
         </div>
+        
+        
 
         <!-- Save Reservation + Search Equipment buttons -->
         <div class="form-group no-print">
@@ -257,58 +258,11 @@
 
             </div>
         </div>
+        
+        <!-- Add Equipment Section (original placement) -->
+        <jsp:include page="AddEquipmentSection.jsp"/>        
 
     </s:form>
 
 </div>
 
-
-<script>
-function DisplayCustomerSearch() {
-    const params = buildReservationParams();
-    window.location.href = '/mcquaids/customer/index?' + params.toString();
-}
-  
-function DisplayEquipmentSearch() {
-    const params = buildReservationParams();
-    window.location.href = '/mcquaids/equipment/index?' + params.toString();
-}  
-  
-function buildReservationParams() {
-    const params = new URLSearchParams();
-
-    // Identify the workflow
-    params.set("caller", "RESERVE");
-
-    // Helper to safely read field values
-    function safeGet(id) {
-        const el = document.getElementById(id);
-        return el ? el.value : "";
-    }
-
-    // Reservation ID
-    const reservationID = safeGet("reservationID");
-    if (reservationID) {
-        params.set("reservation.reservationID", reservationID);
-    }
-
-    // Reservation fields
-    params.set("reservation.startDate", safeGet("reservationStartDate"));
-    params.set("reservation.endDate", safeGet("reservationEndDate"));
-    params.set("reservation.instructions", safeGet("instructions"));
-    params.set("reservation.reservationStatusCode", safeGet("reservationStatusCode"));
-
-    // Customer fields
-    params.set("reservation.customerID", safeGet("customerID"));
-    params.set("reservation.customer.fullName", safeGet("fullName"));
-
-    return params;
-}
-
-    function safeGet(id) {
-        const el = document.getElementById(id);
-        return el ? el.value : "";
-    }   
-    
-    
-</script>

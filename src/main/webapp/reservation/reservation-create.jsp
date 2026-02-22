@@ -1,12 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Create Reservation</title>
-</head>
-<body>
 
 <div class="container">
 
@@ -118,49 +112,3 @@
 <!-- End Save Reservation form -->
 
 </div>
-
-<script>
-
-    function DisplayEquipmentSearch() {
-        const reservationID = document.getElementById("reservationID").value;
-        window.location.href =
-            '/mcquaids/equipment/index?caller=RESERVE&reservation.reservationID=' + reservationID;
-    }
-
-    function DisplayCustomerSearch() {
-
-        const params = new URLSearchParams();
-
-        // Identify the workflow
-        params.set("caller", "RESERVE");
-
-        // Include reservationID if editing an existing reservation
-        const reservationID = document.getElementById("reservationID").value;
-        if (reservationID) {
-            params.set("reservation.reservationID", reservationID);
-        }
-
-        // Helper to safely read field values
-        function safeGet(id) {
-            const el = document.getElementById(id);
-            return el ? el.value : "";
-        }
-
-        // Pass reservation fields using OGNL names
-        params.set("reservation.startDate", safeGet("reservationStartDate"));
-        params.set("reservation.endDate", safeGet("reservationEndDate"));
-        params.set("reservation.instructions", safeGet("instructions"));
-
-        // Customer fields (if present)
-        params.set("reservation.customerID", safeGet("customerID"));
-        params.set("reservation.customer.fullName", safeGet("fullName"));
-        params.set("reservation.reservationStatusCode", safeGet("reservationStatusCode"));
-
-        // Redirect to Customer Search
-        window.location.href = '/mcquaids/customer/index?' + params.toString();
-    }
-
-</script>
-
-</body>
-</html>
