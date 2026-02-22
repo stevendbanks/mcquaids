@@ -112,17 +112,15 @@ function formatKey(key) {
 }
 
 async function addEquipmentToReservation() {
-    console.error("addEquipmentToReservation called");
+    console.log("addEquipmentToReservation called");
 
     const reservationID = document.getElementById("reservationID").value;
     const equipmentNumber = document.getElementById("selectedEquipmentInput").value;
-    const equipmentQty = document.getElementById("equipmentQty").value;
     const equipmentNotes = document.getElementById("equipmentNotes").value;
 
     const payload = new URLSearchParams();
     payload.append("reservationID", reservationID);
     payload.append("equipmentNumber", equipmentNumber);
-    payload.append("equipmentQty", equipmentQty);
     payload.append("equipmentNotes", equipmentNotes);
 
     try {
@@ -136,18 +134,110 @@ async function addEquipmentToReservation() {
 
         if (!response.ok) {
             console.error("Server error:", response.status);
+            showActionMessage("Server error while adding equipment.", "danger");
             return;
         }
 
         const data = await response.json();
 
-        // data.reservedEquipmentView contains the new line item
-        appendRequestedEquipmentRow(data.reservedEquipmentView);
+        // 1. Add the new line item to the table
+        appendRequestedEquipmentRow(data.reservationLineItemDTO);
+
+        // 2. Hide the Add Equipment card
+        const card = document.getElementById("add-equipment-card");
+        if (card) {
+            card.style.display = "none";
+        }
+
+        // 3. Show success message using your existing alert system
+        if (data.actionMessages && data.actionMessages.length > 0) {
+            showActionMessage(data.actionMessages[0], "success");
+        }
 
     } catch (err) {
         console.error("Fetch error:", err);
+        showActionMessage("Network error while adding equipment.", "danger");
     }
 }
+
+function appendRequestedEquipmentRow(item) {
+    const tbody = document.getElementById("reservationLineItemsTable");
+
+    // --- 1. Create MAIN row ---
+    const mainRow = document.createElement("tr");
+    mainRow.classList.add("line-item");
+    mainRow.dataset.id = item.reservationLineItemID;
+    mainRow.dataset.type = item.equipmentTypeText;
+    mainRow.dataset.props = item.equipmentPropertiesAsJson;
+
+    mainRow.innerHTML = `
+        <td>${item.equipmentNumber}</td>
+        <td>${item.equipmentTypeText}</td>
+        <td>${item.equipmentSubTypeText}</td>
+        <td>${item.lineItemNotes || ""}</td>
+
+        <td class="text-right">
+            <button type="button" class="btn btn-sm btn-secondary toggle-properties">
+                Details
+            </button>
+        </td>
+
+        <td class="text-right">
+            <div class="btn-group">
+                <button type="button"
+                        class="btn btn-sm btn-outline-dark dropdown-toggle"
+                        data-toggle="dropdown">
+                    Actions
+                </button>
+
+                <div class="dropdown-menu dropdown-menu-right">
+                    <button class="dropdown-item"
+                            type="button"
+                            onclick="removeLineItem('${item.reservationLineItemID}')">
+                        Remove
+                    </button>
+
+                    <button class="dropdown-item"
+                            type="button"
+                            onclick="substituteLineItem('${item.reservationLineItemID}')">
+                        Substitute
+                    </button>
+
+                    <button class="dropdown-item"
+                            type="button"
+                            onclick="markReturned('${item.reservationLineItemID}')">
+                        Mark Returned
+                    </button>
+                </div>
+            </div>
+        </td>
+    `;
+
+    // --- 2. Create PROPERTIES row ---
+    const propsRow = document.createElement("tr");
+    propsRow.id = `props-${item.reservationLineItemID}`;
+    propsRow.classList.add("properties-panel");
+    propsRow.style.display = "none";
+    propsRow.innerHTML = `<td colspan="5"></td>`;
+
+    // --- 3. Append both rows ---
+    tbody.appendChild(mainRow);
+    tbody.appendChild(propsRow);
+
+    // --- 4. Re-bind the Details toggle ---
+    mainRow.querySelector(".toggle-properties").addEventListener("click", function () {
+        const panel = propsRow;
+        if (panel.style.display === "none") {
+            panel.style.display = "";
+            loadPropertiesPanel(panel, item.equipmentTypeText, item.reservationLineItemID);
+        } else {
+            panel.style.display = "none";
+        }
+    });
+}
+
+
+
 
 // Section 2.0  this section is about removing line items, which is only allowed in Draft status. The server will enforce this as well, but we want to prevent the user from trying if they can't do it.
 function removeLineItem(lineItemId) {
@@ -227,8 +317,61 @@ function markReturned(lineItemId) {
 }
 
 
+function DisplayCustomerSearch() {
+    const params = buildReservationParams();
+    window.location.href = '/mcquaids/customer/index?' + params.toString();
+}
+  
+function DisplayEquipmentSearch() {
+    const params = buildReservationParams();
+    window.location.href = '/mcquaids/equipment/index?' + params.toString();
+}  
+  
+function buildReservationParams() {
+    const params = new URLSearchParams();
+
+    // Identify the workflow
+    params.set("caller", "RESERVE");
+
+    // Helper to safely read field values
+    function safeGet(id) {
+        const el = document.getElementById(id);
+        return el ? el.value : "";
+    }
+
+    // Reservation ID
+    const reservationID = safeGet("reservationID");
+    if (reservationID) {
+        params.set("reservation.reservationID", reservationID);
+    }
+
+    // Reservation fields
+    params.set("reservation.startDate", safeGet("reservationStartDate"));
+    params.set("reservation.endDate", safeGet("reservationEndDate"));
+    params.set("reservation.instructions", safeGet("instructions"));
+    params.set("reservation.reservationStatusCode", safeGet("reservationStatusCode"));
+
+    // Customer fields
+    params.set("reservation.customerID", safeGet("customerID"));
+    params.set("reservation.customer.fullName", safeGet("fullName"));
+
+    return params;
+}
+
+    function safeGet(id) {
+        const el = document.getElementById(id);
+        return el ? el.value : "";
+    }   
+
+
 window.removeLineItem = removeLineItem;
 window.substituteLineItem = substituteLineItem;
 window.markReturned = markReturned;
 window.expandAllDetails = expandAllDetails;
 window.collapseAllDetails = collapseAllDetails;
+window.DisplayCustomerSearch = DisplayCustomerSearch;
+window.DisplayEquipmentSearch = DisplayEquipmentSearch;
+window.addEquipmentToReservation = addEquipmentToReservation;
+
+
+
