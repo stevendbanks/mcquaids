@@ -4,7 +4,10 @@
 
 <div class="container">
 
-<script type="module" src="/mcquaids/javascript/pages/reservation-edit.js"></script>
+    <script src="/mcquaids/javascript/common/workflow.js"></script>
+	<script type="module" src="/mcquaids/javascript/workflows/reservation-delivery-address-workflow.js"></script>
+    <script type="module" src="/mcquaids/javascript/pages/reservation-edit.js"></script>
+
 
 <!-- Error Message -->
 <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
@@ -15,7 +18,7 @@
 
 <!-- Main Save Reservation form -->
 <s:form action="save" method="post" namespace="/reservation" theme="bootstrap">
-    <s:hidden name="actionType" value="CREATE"/>
+    <s:hidden name="actionType"/>  <%--  will be CREATE or EDIT --%>
 
 <div class="card mb-4">
     <div class="card-body">

@@ -43,4 +43,23 @@ public class PropertyHydrator {
 
         return hydrated;
     }
+    
+    /**
+     * Takes a raw property map and returns a hydrated version.
+     */
+    public static String hydrate( int equipmentType, String equipmentSubType) {
+
+         String hydrated;
+
+         // Use your existing CodeValues lookup
+         CodeValues cv = new CodeValues();
+        String displayValue = cv.getEquipmentSubTypeText(equipmentType, equipmentSubType);
+
+        hydrated = displayValue;
+
+        return hydrated;
+    }
+    
+    
+    
 }

@@ -1,127 +1,50 @@
 package com.mcquaids.service;
 
-
-
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.mcquaids.dao.EquipmentLocationHistoryDAO;
 import com.mcquaids.model.EquipmentLocationHistory;
-import com.mcquaids.model.Reservation;
+
+import java.util.List;
 
 public class EquipmentLocationHistoryService {
 
     private final EquipmentLocationHistoryDAO locationDao;
 
     public EquipmentLocationHistoryService() {
-        JdbcTemplate jdbcTemplate = DaoDataSource.jdbcTemplate;
-        this.locationDao = new EquipmentLocationHistoryDAO(jdbcTemplate); 
+        JdbcTemplate jdbcTemplate = DaoDataSource.jdbcTemplate; 
+        this.locationDao = new EquipmentLocationHistoryDAO(jdbcTemplate);
     }
 
     /**
-     * Deliver equipment to the reservation's delivery address.
+     * Returns the currently open (active) location interval for a piece of equipment.
+     * This represents where the equipment is right now.
+     *
+     * @param equipmentNumber the equipment identifier
+     * @return the open EquipmentLocationHistory entry, or null if none exists
      */
-    public void deliverEquipment(int equipmentNumber, Reservation reservation) {
-
-        // Close previous location
-        locationDao.closeCurrentLocation(equipmentNumber);
-
-        // Build new history entry
-        EquipmentLocationHistory history = new EquipmentLocationHistory();
-        history.setEquipmentNumber(equipmentNumber);
-        history.setStreet(reservation.getDeliveryStreet());
-        history.setCity(reservation.getDeliveryCity());
-        history.setProvince(reservation.getDeliveryProvince());
-        history.setPostal(reservation.getDeliveryPostal());
-        history.setCountry(reservation.getDeliveryCountry());
-        history.setLocationType("DELIVERY_SITE");
-        history.setReservationId(reservation.getReservationID());
-        history.setNotes("Delivered per reservation");
-
-        // Insert new location
-        locationDao.insertLocationHistory(history);
+    public EquipmentLocationHistory getCurrentLocation(int equipmentNumber) {
+        return locationDao.findOpenLocation(equipmentNumber);
     }
 
     /**
-     * Return equipment to the yard.
+     * Returns the full location history for a piece of equipment.
+     *
+     * @param equipmentNumber the equipment identifier
+     * @return list of all historical location intervals
      */
-    public void returnEquipment(int equipmentNumber) {
-
-        // Close previous location
-        locationDao.closeCurrentLocation(equipmentNumber);
-
-        // Build new history entry
-        EquipmentLocationHistory history = new EquipmentLocationHistory();
-        history.setEquipmentNumber(equipmentNumber);
-        history.setLocationType("ON_PREMISE");
-
-        // You can refine these yard details later or load from config
-        history.setStreet("Yard");
-        history.setCity("Charlottetown");
-        history.setProvince("PE");
-        history.setCountry("Canada");
-        history.setNotes("Returned to yard");
-
-        // Insert new location
-        locationDao.insertLocationHistory(history);
+    public List<EquipmentLocationHistory> getHistoryForEquipment(int equipmentNumber) {
+        return locationDao.findHistoryForEquipment(equipmentNumber);
     }
 
-    /**
-     * Swap equipment: driver chooses a different trailer than requested.
-     */
-    public void swapEquipment(int requestedEquipment,
-                              int actualEquipment,
-                              Reservation reservation,
-                              String reason) {
-
-        // Close previous location of the actual equipment
-        locationDao.closeCurrentLocation(actualEquipment);
-
-        // Build new history entry
-        EquipmentLocationHistory history = new EquipmentLocationHistory();
-        history.setEquipmentNumber(actualEquipment);
-        history.setStreet(reservation.getDeliveryStreet());
-        history.setCity(reservation.getDeliveryCity());
-        history.setProvince(reservation.getDeliveryProvince());
-        history.setPostal(reservation.getDeliveryPostal());
-        history.setCountry(reservation.getDeliveryCountry());
-        history.setLocationType("SWAP_SITE");
-        history.setReservationId(reservation.getReservationID());
-
-        String notes = "Driver substituted " + actualEquipment +
-                       " for requested " + requestedEquipment +
-                       ". Reason: " + reason;
-        history.setNotes(notes);
-
-        // Insert new location
-        locationDao.insertLocationHistory(history);
-    }
 
     /**
-     * Move equipment manually (yard move, maintenance, etc.)
+     * Returns all location history entries associated with a reservation.
+     *
+     * @param reservationId the reservation identifier
+     * @return list of location intervals tied to the reservation
      */
-    public void moveEquipmentManually(int equipmentNumber,
-                                      String street,
-                                      String city,
-                                      String province,
-                                      String postal,
-                                      String country,
-                                      String notes) {
-
-        // Close previous location
-        locationDao.closeCurrentLocation(equipmentNumber);
-
-        // Build new history entry
-        EquipmentLocationHistory history = new EquipmentLocationHistory();
-        history.setEquipmentNumber(equipmentNumber);
-        history.setStreet(street);
-        history.setCity(city);
-        history.setProvince(province);
-        history.setPostal(postal);
-        history.setCountry(country);
-        history.setLocationType("ON_PREMISE");
-        history.setNotes(notes);
-
-        // Insert new location
-        locationDao.insertLocationHistory(history);
+    public List<EquipmentLocationHistory> getHistoryForReservation(int reservationId) {
+        return locationDao.findHistoryForReservation(reservationId);
     }
 }

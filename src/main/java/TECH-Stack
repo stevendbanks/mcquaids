@@ -5,12 +5,14 @@ Backend:
 - Java 13 SE
 - DAO layer uses JdbcTemplate / NamedParameterJdbcTemplate
 - Service layer constructs DAOs manually and injects JDBC templates via DAO constructors
+
 - No annotations for DI, controllers, or validation
 - All Struts actions configured in struts.xml
 - All layouts defined in tiles.xml
 - JSON responses use Struts 6 JSON plugin (no <root>, includeProperties filters)
 - JSON response shape: { reservationLineItemDTO: {...}, actionMessages: [...] }
 - Tomcat 9 (javax environment)
+- do not use Interfaces in the design
 
 
 Frontend:
@@ -31,3 +33,9 @@ Workflow:
 - Stateless, selector-driven UI
 - JSPs remain declarative
 - JS handles all dynamic updates
+
+Sample constructor for new Services	
+    public EquipmentLocationHistoryService() {
+        JdbcTemplate jdbcTemplate = DaoDataSource.jdbcTemplate;
+        this.locationDao = new EquipmentLocationHistoryDAO(jdbcTemplate); 
+    }

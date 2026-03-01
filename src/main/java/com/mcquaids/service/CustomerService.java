@@ -1,20 +1,28 @@
 package com.mcquaids.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import com.mcquaids.dao.CustomerDAO;
+import com.mcquaids.dao.LeaseDAO;
+import com.mcquaids.dao.LeaseEquipmentDAO;
 import com.mcquaids.dao.UserDAO;
-import com.mcquaids.dao.interfaces.IUserDAO;
 import com.mcquaids.model.Customer;
+import com.mcquaids.model.CustomerEquipmentDTO;
 
 public class CustomerService  {
 
-	private IUserDAO userDAO;
+	private UserDAO userDAO;
+	private CustomerDAO customerDAO;
 
 	/**
 	* 
 	*/
 	public CustomerService() {
 		userDAO = new UserDAO();
+		customerDAO = new CustomerDAO();
 	}
 
 	public Customer saveNewCustomer(Customer customer) {
@@ -46,9 +54,21 @@ public class CustomerService  {
 			String street, String city, String province, String country, String postalCode) {
 
 		return userDAO.queryCustomers(userID, customerName, phone, email, street, city, province, country, postalCode);
-		
-		
 	}
+	
+	 public List<CustomerEquipmentDTO> getEquipmentForCustomer(String customerID) {
+	        if (customerID == null || customerID.trim().isEmpty()) {
+	            return new ArrayList<>();
+	        }
+
+	        try {
+	            return customerDAO.getEquipmentForCustomer(customerID);
+	        } catch (Exception ex) {
+	            ex.printStackTrace();
+	            return new ArrayList<>();
+	        }
+	    }
+	
 
 
 

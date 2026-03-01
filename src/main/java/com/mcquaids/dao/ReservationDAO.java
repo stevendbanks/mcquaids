@@ -1,17 +1,16 @@
 package com.mcquaids.dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
-import com.mcquaids.model.Customer;
+import com.mcquaids.dao.rowmappers.ReservationQueryDTORowMapper;
+import com.mcquaids.dao.rowmappers.ReservationRowMapper;
+import com.mcquaids.dao.rowmappers.ReservationViewRowMapper;
 import com.mcquaids.model.Reservation;
 import com.mcquaids.model.ReservationQueryDTO;
 import com.mcquaids.model.ReservationViewDTO;
@@ -32,12 +31,18 @@ public class ReservationDAO {
     // CREATE
     // ------------------------------------------------------------
     public Integer createReservation(Reservation reservation) {
-    	
-    	
 
         String sql = "INSERT INTO reservation " +
-                     "(CustomerID, ReservationStatusCode, StartDate, EndDate, Instructions, LeaseID, DateCreated) " +
-                     "VALUES (:CustomerID, :ReservationStatusCode, :StartDate, :EndDate, :Instructions, :LeaseID, NOW())";
+                     "(CustomerID, ReservationStatusCode, StartDate, EndDate, Instructions, LeaseID, " +
+                     "DeliveryStreet, DeliveryCity, DeliveryProvince, DeliveryPostalCode, DeliveryCountry, DeliverySameAsCustomer, " +
+                     "SecondaryStreet, SecondaryCity, SecondaryProvince, SecondaryPostalCode, SecondaryCountry, SecondaryDeliveryDate, " +
+                     "AdditionalPersonName, AdditionalPersonPhone, AdditionalPersonEmail, " +
+                     "DateCreated) " +
+                     "VALUES (:CustomerID, :ReservationStatusCode, :StartDate, :EndDate, :Instructions, :LeaseID, " +
+                     ":DeliveryStreet, :DeliveryCity, :DeliveryProvince, :DeliveryPostalCode, :DeliveryCountry, :DeliverySameAsCustomer, " +
+                     ":SecondaryStreet, :SecondaryCity, :SecondaryProvince, :SecondaryPostalCode, :SecondaryCountry, :SecondaryDeliveryDate, " +
+                     ":AdditionalPersonName, :AdditionalPersonPhone, :AdditionalPersonEmail, " +
+                     "NOW())";
 
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("CustomerID", reservation.getCustomerID());
@@ -46,6 +51,27 @@ public class ReservationDAO {
         params.addValue("EndDate", reservation.getEndDate());
         params.addValue("Instructions", reservation.getInstructions());
         params.addValue("LeaseID", reservation.getLeaseID());
+
+        // Primary delivery
+        params.addValue("DeliveryStreet", reservation.getDeliveryStreet());
+        params.addValue("DeliveryCity", reservation.getDeliveryCity());
+        params.addValue("DeliveryProvince", reservation.getDeliveryProvince());
+        params.addValue("DeliveryPostalCode", reservation.getDeliveryPostalCode());
+        params.addValue("DeliveryCountry", reservation.getDeliveryCountry());
+        params.addValue("DeliverySameAsCustomer", reservation.getDeliverySameAsCustomer());
+
+        // Secondary delivery
+        params.addValue("SecondaryStreet", reservation.getSecondaryStreet());
+        params.addValue("SecondaryCity", reservation.getSecondaryCity());
+        params.addValue("SecondaryProvince", reservation.getSecondaryProvince());
+        params.addValue("SecondaryPostalCode", reservation.getSecondaryPostalCode());
+        params.addValue("SecondaryCountry", reservation.getSecondaryCountry());
+        params.addValue("SecondaryDeliveryDate", reservation.getSecondaryDeliveryDate());
+
+        // Additional Person (MVP fields)
+        params.addValue("AdditionalPersonName", reservation.getAdditionalPersonName());
+        params.addValue("AdditionalPersonPhone", reservation.getAdditionalPersonPhone());
+        params.addValue("AdditionalPersonEmail", reservation.getAdditionalPersonEmail());
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         template.update(sql, params, keyHolder);
@@ -57,7 +83,6 @@ public class ReservationDAO {
     // READ (single)
     // ------------------------------------------------------------
     public Reservation getReservation(Integer reservationID) {
-    	System.out.println("SDBANKS-> reservationID=" + reservationID);
         String sql = "SELECT * FROM reservation WHERE ReservationID = :ReservationID";
 
         MapSqlParameterSource params = new MapSqlParameterSource();
@@ -66,10 +91,14 @@ public class ReservationDAO {
         return template.queryForObject(sql, params, new ReservationRowMapper());
     }
 
-    // ------------------------------------------------------------
-    // UPDATE
-    // ------------------------------------------------------------
+
+ // ------------------------------------------------------------
+ // UPDATE
+ // ------------------------------------------------------------
     public void updateReservation(Reservation reservation) {
+   	 
+   	 System.out.println("SDBANKs- Entered updateReservation()");
+   	 System.out.println(reservation.toString());
 
         String sql = "UPDATE reservation SET " +
                      "CustomerID = :CustomerID, " +
@@ -78,6 +107,26 @@ public class ReservationDAO {
                      "EndDate = :EndDate, " +
                      "Instructions = :Instructions, " +
                      "LeaseID = :LeaseID, " +
+                     "DeliveryStreet = :DeliveryStreet, " +
+                     "DeliveryCity = :DeliveryCity, " +
+                     "DeliveryProvince = :DeliveryProvince, " +
+                     "DeliveryPostalCode = :DeliveryPostalCode, " +
+                     "DeliveryCountry = :DeliveryCountry, " +
+                     "DeliverySameAsCustomer = :DeliverySameAsCustomer, " +
+
+                     // Secondary delivery
+                     "SecondaryStreet = :SecondaryStreet, " +
+                     "SecondaryCity = :SecondaryCity, " +
+                     "SecondaryProvince = :SecondaryProvince, " +
+                     "SecondaryPostalCode = :SecondaryPostalCode, " +
+                     "SecondaryCountry = :SecondaryCountry, " +
+                     "SecondaryDeliveryDate = :SecondaryDeliveryDate, " +
+
+                     // Additional Person (MVP fields)
+                     "AdditionalPersonName = :AdditionalPersonName, " +
+                     "AdditionalPersonPhone = :AdditionalPersonPhone, " +
+                     "AdditionalPersonEmail = :AdditionalPersonEmail, " +
+
                      "DateUpdated = NOW() " +
                      "WHERE ReservationID = :ReservationID";
 
@@ -89,6 +138,27 @@ public class ReservationDAO {
         params.addValue("EndDate", reservation.getEndDate());
         params.addValue("Instructions", reservation.getInstructions());
         params.addValue("LeaseID", reservation.getLeaseID());
+
+        // Delivery address
+        params.addValue("DeliveryStreet", reservation.getDeliveryStreet());
+        params.addValue("DeliveryCity", reservation.getDeliveryCity());
+        params.addValue("DeliveryProvince", reservation.getDeliveryProvince());
+        params.addValue("DeliveryPostalCode", reservation.getDeliveryPostalCode());
+        params.addValue("DeliveryCountry", reservation.getDeliveryCountry());
+        params.addValue("DeliverySameAsCustomer", reservation.getDeliverySameAsCustomer());
+        
+        // Secondary delivery
+        params.addValue("SecondaryStreet", reservation.getSecondaryStreet());
+        params.addValue("SecondaryCity", reservation.getSecondaryCity());
+        params.addValue("SecondaryProvince", reservation.getSecondaryProvince());
+        params.addValue("SecondaryPostalCode", reservation.getSecondaryPostalCode());
+        params.addValue("SecondaryCountry", reservation.getSecondaryCountry());
+        params.addValue("SecondaryDeliveryDate", reservation.getSecondaryDeliveryDate());
+
+        // Additional Person (MVP fields)
+        params.addValue("AdditionalPersonName", reservation.getAdditionalPersonName());
+        params.addValue("AdditionalPersonPhone", reservation.getAdditionalPersonPhone());
+        params.addValue("AdditionalPersonEmail", reservation.getAdditionalPersonEmail());
 
         template.update(sql, params);
     }
@@ -117,25 +187,43 @@ public class ReservationDAO {
 
         StringBuilder sql = new StringBuilder(
             "SELECT ReservationID, CustomerID, ReservationStatusCode, StartDate, EndDate, " +
-            "Instructions, LeaseID, DateCreated, DateUpdated, CustomerNotes, CustomerCreatedDateTime, " +
-            "CustomerCreatedUserID, FirstName, LastName, Phone, Email, street, City, Province, " +
-            "Country,  PostalCode, reservationStatusDescription " +
+            "Instructions, LeaseID, DateCreated, DateUpdated, " +
+
+            // Primary delivery
+            "DeliveryStreet, DeliveryCity, DeliveryProvince, DeliveryPostalCode, DeliveryCountry, DeliverySameAsCustomer, " +
+
+            // Secondary delivery
+            "SecondaryStreet, SecondaryCity, SecondaryProvince, SecondaryPostalCode, SecondaryCountry, SecondaryDeliveryDate, " +
+
+            // Additional Person (MVP fields)
+            "AdditionalPersonName, AdditionalPersonPhone, AdditionalPersonEmail, " +
+
+            // Customer fields
+            "CustomerNotes, CustomerCreatedDateTime, CustomerCreatedUserID, " +
+
+            // User fields
+            "FirstName, LastName, Phone, Email, street, City, Province, Country, PostalCode, " +
+
+            // Status description
+            "reservationStatusDescription " +
+
             "FROM reservation_view WHERE 1=1 "
         );
 
         MapSqlParameterSource params = new MapSqlParameterSource();
 
-        if (reservationID != null ) {
+        if (reservationID != null) {
             sql.append(" AND ReservationID = :ReservationID ");
             params.addValue("ReservationID", reservationID);
         }
 
         if (customerID != null && !customerID.trim().isEmpty()) {
             sql.append(" AND CustomerID = :CustomerID ");
-            params.addValue("CustomerID",customerID);
+            params.addValue("CustomerID", customerID);
         }
 
         return template.query(sql.toString(), params, new ReservationViewRowMapper());
+
     }
     
     
@@ -173,131 +261,7 @@ public class ReservationDAO {
      return template.query(sql, params, new ReservationQueryDTORowMapper());
  }
 
-    // ------------------------------------------------------------
-    // ROW MAPPERS
-    // ------------------------------------------------------------
-    private static class ReservationRowMapper implements RowMapper<Reservation> {
-        @Override
-        public Reservation mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Reservation r = new Reservation();
 
-            r.setReservationID(rs.getInt("ReservationID"));
-            r.setCustomerID(rs.getString("CustomerID"));
-            r.setReservationStatusCode(rs.getString("ReservationStatusCode"));
-            r.setStartDate(rs.getDate("StartDate"));
-            r.setEndDate(rs.getDate("EndDate"));
-            r.setInstructions(rs.getString("Instructions"));
-            r.setLeaseID(rs.getString("LeaseID"));
-            r.setDateCreated(rs.getTimestamp("DateCreated"));
-            r.setDateUpdated(rs.getTimestamp("DateUpdated"));
-
-            return r;
-        }
-    }
-
-    private static class ReservationQueryDTORowMapper implements RowMapper<ReservationQueryDTO> {
-
-        @Override
-        public ReservationQueryDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-
-            ReservationQueryDTO dto = new ReservationQueryDTO();
-
-            // ------------------------------
-            // Base Reservation fields
-            // ------------------------------
-            dto.setReservationID(rs.getInt("ReservationID"));
-            dto.setCustomerID(rs.getString("CustomerID"));
-            dto.setReservationStatusCode(rs.getString("ReservationStatusCode"));
-            dto.setStartDate(rs.getDate("StartDate"));
-            dto.setEndDate(rs.getDate("EndDate"));
-            dto.setInstructions(rs.getString("Instructions"));
-            dto.setLeaseID(rs.getString("LeaseID"));
-            dto.setDateCreated(rs.getTimestamp("DateCreated"));
-            dto.setDateUpdated(rs.getTimestamp("DateUpdated"));
-
-            // ------------------------------
-            // Description fields
-            // ------------------------------
-            dto.setReservationStatusDescription(rs.getString("reservationStatusDescription"));
-
-            // ------------------------------
-            // Build Customer object
-            // ------------------------------
-            Customer customer = new Customer();
-            customer.setUserID(rs.getString("CustomerID"));
-            customer.setNotes(rs.getString("CustomerNotes"));
-            customer.setCreatedDateTime(rs.getTimestamp("CustomerCreatedDateTime"));
-            customer.setCreatedUserID(rs.getString("CustomerCreatedUserID"));
-
-            // User table fields
-            customer.setFirstName(rs.getString("FirstName"));
-            customer.setLastName(rs.getString("LastName"));
-            customer.setPhone(rs.getString("Phone"));
-            customer.setEmail(rs.getString("Email"));
-            customer.setStreet(rs.getString("street"));
-            customer.setCity(rs.getString("City"));
-            customer.setProvince(rs.getString("Province"));
-            customer.setCountry(rs.getString("Country"));
-
-            dto.setCustomer(customer);
-
-            return dto;
-        }
-    }
-
-    public class ReservationViewRowMapper implements RowMapper<ReservationViewDTO> {
-
-        @Override
-        public ReservationViewDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-
-            ReservationViewDTO dto = new ReservationViewDTO();
-
-            // -----------------------------
-            // 1. Base Reservation fields
-            // -----------------------------
-            dto.setReservationID(rs.getInt("ReservationID"));
-            dto.setCustomerID(rs.getString("CustomerID"));
-            dto.setReservationStatusCode(rs.getString("ReservationStatusCode"));
-            dto.setStartDate(rs.getTimestamp("StartDate"));
-            dto.setEndDate(rs.getTimestamp("EndDate"));
-            dto.setInstructions(rs.getString("Instructions"));
-            dto.setLeaseID(rs.getString("LeaseID"));
-            dto.setDateCreated(rs.getTimestamp("DateCreated"));
-            dto.setDateUpdated(rs.getTimestamp("DateUpdated"));
-
-            // -----------------------------
-            // 2. Build Customer (which extends User)
-            // -----------------------------
-            Customer customer = new Customer();
-
-            // User fields (inherited by Customer)
-            customer.setUserID(rs.getString("CustomerID"));   // same as reservation.CustomerID
-            customer.setFirstName(rs.getString("FirstName"));
-            customer.setLastName(rs.getString("LastName"));
-            customer.setStreet(rs.getString("street"));
-            customer.setCity(rs.getString("City"));
-            customer.setProvince(rs.getString("Province"));
-            customer.setCountry(rs.getString("Country"));
-            customer.setPostalCode(rs.getString("postalCode")); // only if your view includes it
-            customer.setPhone(rs.getString("Phone"));
-            customer.setEmail(rs.getString("Email"));
-
-            // Customer-specific fields
-            customer.setNotes(rs.getString("CustomerNotes"));
-            customer.setCreatedDateTime(rs.getTimestamp("CustomerCreatedDateTime"));
-            customer.setCreatedUserID(rs.getString("CustomerCreatedUserID"));
-
-            // Attach customer to reservation
-            dto.setCustomer(customer);
-
-            // -----------------------------
-            // 3. View-only fields
-            // -----------------------------
-            dto.setReservationStatusDescription(rs.getString("reservationStatusDescription"));
-
-            return dto;
-        }
-    }   
     
     
 }

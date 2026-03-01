@@ -24,6 +24,11 @@
 			<result-type name="json"
 				class="org.apache.struts2.json.JSONResult" />
 		</result-types>
+		
+		    <interceptors>
+        <interceptor name="json" class="org.apache.struts2.json.JSONInterceptor" />
+    </interceptors>
+		
 
 		<default-action-ref name="index" />
 
@@ -87,6 +92,34 @@
 			class="com.mcquaids.actions.customer.EditCustomerAction">
 			<result name="success" type="tiles">customer-edit</result>
 		</action>
+		
+		<action name="customerAddress" 
+		        class="com.mcquaids.actions.customer.EditCustomerAction">
+		
+		    <result name="success" type="json">
+		             <param name="ignoreHierarchy">false</param>
+		        <param name="includeProperties">
+					customer.*, actionMessages.*
+		        </param>
+		    </result>
+		</action>		
+		
+		<action name="saveDeliveryAddress"
+		        class="com.mcquaids.actions.customer.SaveDeliveryAddressAction">
+
+    <interceptor-ref name="json"/>
+    <interceptor-ref name="defaultStack"/>
+
+		<result name="success" type="json">
+		    <param name="ignoreHierarchy">false</param>
+		    <param name="includeProperties">
+		        actionMessages.*, 
+		        actionErrors.*
+		    </param>
+		</result>		    
+		
+		</action>		
+		
 
 	<action name="save" method="execute"
 	        class="com.mcquaids.actions.customer.SaveCustomerAction">
@@ -100,6 +133,15 @@
 	    </result>
 	
 	</action>
+	
+			<!-- Customers Reserved Equipment page configuration -->
+		<action name="viewCustomerEquipment" method="execute"
+			class="com.mcquaids.actions.customer.ViewCustomerEquipmentAction">
+			<result name="success" type="json">
+				<param name="root">customerEquipmentDTO</param>
+				<param name="excludeNullProperties">false</param>
+			</result>
+		</action>
 
    </package>
 
@@ -167,7 +209,18 @@
 			<result name="success-container" type="tiles">container-create-new
 			</result>
 		</action>
-		
+
+<action name="equipmentEvent"
+        class="com.mcquaids.actions.admin.events.AdminEquipmentEventAction">
+    
+    <result type="json">
+        <param name="includeProperties">
+            actionMessages\[\],
+            actionErrors\[\]
+        </param>
+    </result>
+
+</action>	
 		
 		<action name="move" >
                <result type="tiles">driver-index</result>
@@ -226,7 +279,6 @@
 	<action name="AddEquipmentToReservation"
 	        class="com.mcquaids.actions.reservation.lineItems.AddEquipmentToReservationAction">
 		<result name="success" type="json">
-		    <!-- Remove <param name="root">action</param> -->
 		    <param name="ignoreHierarchy">false</param>
 		    <param name="includeProperties">
 		        actionMessages.*,
@@ -285,6 +337,11 @@
         class="com.mcquaids.actions.reservation.DispatchReservationAction">
         <result name="success" type="tiles">reservation-dispatch</result>
     </action>
+    
+    <action name="createDispatchPlan"
+        class="com.mcquaids.actions.reservation.ReservationDispatchAction">
+    		<result name="dispatchPlan" type="tiles">dispatch-plan</result>
+	</action>
 
     <action name="convertToLease" method="execute"
         class="com.mcquaids.actions.reservation.ConvertToLeaseAction">

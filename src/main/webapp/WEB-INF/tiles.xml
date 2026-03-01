@@ -155,7 +155,7 @@
 <!-- Create Reservation -->
 <definition name="reservation-create" extends="baseLayout">
     <put-attribute name="title" value="Create Reservation"/>
-    <put-attribute name="body"  value="/reservation/reservation-create.jsp"/>
+    <put-attribute name="body"  value="/reservation/reservation-edit.jsp"/>
 </definition>
 
 <!-- Edit Reservation -->
@@ -165,10 +165,11 @@
 </definition>
 
 <!-- Dispatch Reservation -->
-<definition name="reservation-dispatch" extends="baseLayout">
+<definition name="dispatch-plan" extends="baseLayout">
     <put-attribute name="title" value="Dispatch Reservation"/>
-    <put-attribute name="body"  value="/reservation/reservation-dispatch.jsp"/>
+    <put-attribute name="body"  value="/reservation/reservation-dispatch-plan.jsp"/>
 </definition>
+
 
 <!-- Reserved Equipment Edit -->
 <definition name="reserved-equipment-edit" extends="baseLayout">

@@ -20,6 +20,16 @@
 
                 <!-- Identity -->
                 <h6 class="text-muted mb-3">Identity</h6>
+                
+                <div class="row">
+                     <div class="col-sm-12">
+                       <div class="form-group">
+                           <label for="businessName">Business Name (If Applicable)</label>
+                           <s:textfield id="businessName" name="customer.businessName"
+                                        cssClass="form-control" theme="simple"/>
+                       </div>
+                     </div>
+                </div>       
 
                 <div class="row">
                     <div class="col-sm-6">
@@ -87,7 +97,7 @@
                 </div>
 
                 <!-- Address -->
-                <h6 class="text-muted mt-4 mb-3">Address</h6>
+                <h6 class="text-muted mt-4 mb-3">Billing Address</h6>
 
                 <div class="form-group">
                     <label for="street">Street</label>
