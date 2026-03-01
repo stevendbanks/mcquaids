@@ -116,4 +116,14 @@ public class EquipmentLocationHistory {
     public void setNotes(String notes) {
         this.notes = notes;
     }
+    
+    public Address toAddress() {
+        Address address = new Address();
+        address.setStreet(this.street);
+        address.setCity(this.city);
+        address.setProvince(this.province);
+        address.setPostalCode(this.postal);
+        address.setCountry(this.country);
+        return address;
+    }
 }

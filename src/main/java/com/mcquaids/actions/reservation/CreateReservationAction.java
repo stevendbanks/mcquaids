@@ -24,6 +24,7 @@ import com.opensymphony.xwork2.Action;
 		System.out.println("SDBANKS- Entered execute.  customerID="  + reservation.getCustomerID() );
 		pageTitle = "Create Reservation";
 		reservation.setReservationStatusCode("1001-01");  // Set the Reservation to DRAFT
+	    actionType = "CREATE";
 		
         // Enrich customer object if customerID is present
         if (reservation.getCustomerID() != null) {

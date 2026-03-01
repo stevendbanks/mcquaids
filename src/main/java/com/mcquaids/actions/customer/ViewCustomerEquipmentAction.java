@@ -1,28 +1,34 @@
 package com.mcquaids.actions.customer;
 
+import java.util.List;
+
+import com.mcquaids.model.CustomerEquipmentDTO;
 import com.mcquaids.service.CustomerService;
 
- public class EditCustomerAction extends BaseCustomerAction {
+ public class ViewCustomerEquipmentAction extends BaseCustomerAction {
 
 	private static final long serialVersionUID = 1L;
 	
 	
-	private String title = "Edit Customer";
+	private String title = "View Customer Equipment";
 	
 	private String userID;
 	
 	private String customerID;
+
+
+	private List<CustomerEquipmentDTO> customerEquipmentDTO;
 	
-	private String returnParams;
+	
 
 
-	public EditCustomerAction() {
+	public ViewCustomerEquipmentAction() {
 		super();
 	}
 
 	
 	public String execute() {
-//		codeValues = new CodeValues();
+
 		CustomerService customerService = new CustomerService();
 		
 		// Temporary compatibility layer during migration
@@ -30,11 +36,10 @@ import com.mcquaids.service.CustomerService;
 		    userID = customerID;
 		}		
 		
-		customer = customerService.edit(userID);
+		customerEquipmentDTO  = customerService.getEquipmentForCustomer(userID);
 		
-		System.out.println(customer.toString());
 
-		addActionMessage("Delivery Address Found");
+		addActionMessage("Customer Equipment");
 		return "success";
 	}
 
@@ -78,6 +83,22 @@ import com.mcquaids.service.CustomerService;
 	 */
 	public void setCustomerID(String customerID) {
 		this.customerID = customerID;
+	}
+
+
+	/**
+	 * @return the customerEquipmentDTO
+	 */
+	public List<CustomerEquipmentDTO> getCustomerEquipmentDTO() {
+		return customerEquipmentDTO;
+	}
+
+
+	/**
+	 * @param customerEquipmentDTO the customerEquipmentDTO to set
+	 */
+	public void setCustomerEquipmentDTO(List<CustomerEquipmentDTO> customerEquipmentDTO) {
+		this.customerEquipmentDTO = customerEquipmentDTO;
 	}
 
 	

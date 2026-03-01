@@ -36,14 +36,16 @@ function buildReservationParams() {
 function buildReturnParamsFromJson() {
     const params = new URLSearchParams();
 
-    // Always include caller
-    params.set("caller", "RESERVE");
 
     const json = document.getElementById("returnParams")?.value;
     if (!json) {
         console.warn("No returnParams found");
         return params;
     }
+
+    // Always include caller
+    params.set("caller", "RESERVE");
+
 
     let data;
     try {
@@ -68,26 +70,25 @@ function buildReturnParamsFromJson() {
 
 
 
-function navigateToCustomerSearchOLD() {
-    console.error("Navigating to customer search");
-    const params = buildReservationParams();
-    window.location.href = '/mcquaids/customer/index?' + params.toString();
-}
+
 
 function navigateToCustomerSearch() {
-    console.log("Navigating to customer search");
+    console.log("workflow.js -> navigateToCustomerSearch()");
 
     let params;
 
     // If returnParams exists → we are on a customer screen
     if (document.getElementById("returnParams")) {
-        params = buildReturnParamsFromJson();
+      params = buildReturnParamsFromJson();
+        window.location.href = '/mcquaids/customer/index?' + params.toString();
+
     } else {
         // Otherwise → we are on a reservation screen
         params = buildReservationParams();
+       window.location.href = '/mcquaids/customer/index?' + params.toString();
+
     }
 
-    window.location.href = '/mcquaids/customer/index?' + params.toString();
 }
 
 

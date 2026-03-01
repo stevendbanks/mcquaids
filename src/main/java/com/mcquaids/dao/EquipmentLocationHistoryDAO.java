@@ -1,6 +1,5 @@
 package com.mcquaids.dao;
 
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -18,84 +17,118 @@ public class EquipmentLocationHistoryDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    /**
-     * Close the current active location entry for this equipment.
-     */
-    public void closeCurrentLocation(int equipmentNumber) {
+    // ---------------------------------------------------------------------
+    // Find the open (active) location interval
+    // ---------------------------------------------------------------------
+    public EquipmentLocationHistory findOpenLocation(int equipmentNumber) {
 
-        String sql = "UPDATE equipment_location_history "
-                   + "SET EndDateTime = NOW() "
-                   + "WHERE EquipmentNumber = ? "
-                   + "AND EndDateTime IS NULL";
+        String sql =
+            "SELECT LocationHistoryID, EquipmentNumber, Street, City, Province, " +
+            "Postal, Country, LocationType, StartDateTime, EndDateTime, " +
+            "ReservationID, Notes " +
+            "FROM equipment_location_history " +
+            "WHERE EquipmentNumber = ? " +
+            "AND EndDateTime IS NULL " +
+            "LIMIT 1";
 
-        jdbcTemplate.update(sql, equipmentNumber);
-    }
-
-    /**
-     * Insert a new location history entry.
-     */
-    public void insertLocationHistory(EquipmentLocationHistory history) {
-
-        String sql = "INSERT INTO equipment_location_history "
-                   + "(EquipmentNumber, Street, City, Province, Postal, Country, "
-                   + "LocationType, StartDateTime, ReservationID, Notes) "
-                   + "VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?)";
-
-        jdbcTemplate.update(sql,
-                history.getEquipmentNumber(),
-                history.getStreet(),
-                history.getCity(),
-                history.getProvince(),
-                history.getPostal(),
-                history.getCountry(),
-                history.getLocationType(),
-                history.getReservationId(),
-                history.getNotes()
-        );
-    }
-
-    /**
-     * Get the current (active) location for this equipment.
-     */
-    public EquipmentLocationHistory getCurrentLocation(int equipmentNumber) {
-
-        String sql = "SELECT LocationHistoryID, EquipmentNumber, Street, City, Province, "
-                   + "Postal, Country, LocationType, StartDateTime, EndDateTime, "
-                   + "ReservationID, Notes "
-                   + "FROM equipment_location_history "
-                   + "WHERE EquipmentNumber = ? "
-                   + "AND EndDateTime IS NULL "
-                   + "LIMIT 1";
-
-        List<EquipmentLocationHistory> results = jdbcTemplate.query(sql,
-                new EquipmentLocationHistoryRowMapper(),
-                equipmentNumber
-        );
+        List<EquipmentLocationHistory> results =
+            jdbcTemplate.query(sql, new EquipmentLocationHistoryRowMapper(), equipmentNumber);
 
         return results.isEmpty() ? null : results.get(0);
     }
 
-    /**
-     * Get full movement history for this equipment.
-     */
-    public List<EquipmentLocationHistory> getHistory(int equipmentNumber) {
+    // ---------------------------------------------------------------------
+    // Update an existing location interval (used to close intervals)
+    // ---------------------------------------------------------------------
+    public void update(EquipmentLocationHistory history) {
 
-        String sql = "SELECT LocationHistoryID, EquipmentNumber, Street, City, Province, "
-                   + "Postal, Country, LocationType, StartDateTime, EndDateTime, "
-                   + "ReservationID, Notes "
-                   + "FROM equipment_location_history "
-                   + "WHERE EquipmentNumber = ? "
-                   + "ORDER BY StartDateTime DESC";
+        String sql =
+            "UPDATE equipment_location_history SET " +
+            "Street = ?, City = ?, Province = ?, Postal = ?, Country = ?, " +
+            "LocationType = ?, StartDateTime = ?, EndDateTime = ?, " +
+            "ReservationID = ?, Notes = ? " +
+            "WHERE LocationHistoryID = ?";
 
-        return jdbcTemplate.query(sql,
-                new EquipmentLocationHistoryRowMapper(),
-                equipmentNumber
+        jdbcTemplate.update(sql,
+            history.getStreet(),
+            history.getCity(),
+            history.getProvince(),
+            history.getPostal(),
+            history.getCountry(),
+            history.getLocationType(),
+            history.getStartDateTime(),
+            history.getEndDateTime(),
+            history.getReservationId(),
+            history.getNotes(),
+            history.getLocationHistoryID()
         );
     }
 
-    /**
-     * RowMapper for EquipmentLocationHistory.
-     */
+    // ---------------------------------------------------------------------
+    // Insert new location interval (service provides timestamps)
+    // ---------------------------------------------------------------------
+    public void insertLocationHistory(EquipmentLocationHistory history) {
+
+        String sql =
+            "INSERT INTO equipment_location_history " +
+            "(EquipmentNumber, Street, City, Province, Postal, Country, " +
+            "LocationType, StartDateTime, EndDateTime, ReservationID, Notes) " +
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        jdbcTemplate.update(sql,
+            history.getEquipmentNumber(),
+            history.getStreet(),
+            history.getCity(),
+            history.getProvince(),
+            history.getPostal(),
+            history.getCountry(),
+            history.getLocationType(),
+            history.getStartDateTime(),
+            history.getEndDateTime(),
+            history.getReservationId(),
+            history.getNotes()
+        );
+    }
+
+    // ---------------------------------------------------------------------
+    // Full history for equipment
+    // ---------------------------------------------------------------------
+    public List<EquipmentLocationHistory> findHistoryForEquipment(int equipmentNumber) {
+
+        String sql =
+            "SELECT LocationHistoryID, EquipmentNumber, Street, City, Province, " +
+            "Postal, Country, LocationType, StartDateTime, EndDateTime, " +
+            "ReservationID, Notes " +
+            "FROM equipment_location_history " +
+            "WHERE EquipmentNumber = ? " +
+            "ORDER BY StartDateTime DESC";
+
+        return jdbcTemplate.query(sql,
+            new EquipmentLocationHistoryRowMapper(),
+            equipmentNumber
+        );
+    }
+    
+    public List<EquipmentLocationHistory> findHistoryForReservation(int reservationId) {
+
+        String sql =
+            "SELECT LocationHistoryID, EquipmentNumber, Street, City, Province, " +
+            "Postal, Country, LocationType, StartDateTime, EndDateTime, " +
+            "ReservationID, Notes " +
+            "FROM equipment_location_history " +
+            "WHERE ReservationID = ? " +
+            "ORDER BY StartDateTime DESC";
+
+        return jdbcTemplate.query(sql,
+            new EquipmentLocationHistoryRowMapper(),
+            reservationId
+        );
+    }    
+    
+
+    // ---------------------------------------------------------------------
+    // RowMapper
+    // ---------------------------------------------------------------------
     private static class EquipmentLocationHistoryRowMapper
             implements RowMapper<EquipmentLocationHistory> {
 
@@ -114,7 +147,10 @@ public class EquipmentLocationHistoryDAO {
             history.setLocationType(rs.getString("LocationType"));
             history.setStartDateTime(rs.getTimestamp("StartDateTime"));
             history.setEndDateTime(rs.getTimestamp("EndDateTime"));
-            history.setReservationId(rs.getInt("ReservationID"));
+
+            int reservationId = rs.getInt("ReservationID");
+            history.setReservationId(rs.wasNull() ? null : reservationId);
+
             history.setNotes(rs.getString("Notes"));
 
             return history;

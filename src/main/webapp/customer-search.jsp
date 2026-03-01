@@ -100,7 +100,7 @@
 function searchCustomer(e) {
 
     if (e) { e.preventDefault(); }
-
+console.warn("SDBANKS - searchCustomer() Entered");
     $.ajax({
         url: '/mcquaids/customer/search',
         type: 'get',
@@ -112,6 +112,11 @@ function searchCustomer(e) {
         },
 
         success: function(response) {
+        	var queryString = window.location.search;   // includes the leading '?'
+        	var queryString = window.location.search.replace('?', '&');
+        			
+
+        	
             var tbody = $('#searchResults');
             tbody.empty();
 
@@ -123,13 +128,15 @@ function searchCustomer(e) {
 
             $('#errorMessage').hide();
 
+            
             response.forEach(function(customer) {
                 var row = $('<tr>');
-
                 row.append($('<td>').html(
-                    '<a href="/mcquaids/customer/edit?userID=' + customer.userID + '">' +
-                    customer.userID + '</a>'
-                ));
+                    '<a href="/mcquaids/customer/edit?userID=' + customer.userID + queryString + '">' +
+                        customer.userID +
+                    '</a>'
+                ));               
+                
 
                 row.append($('<td>').text(customer.lastName + ", " + customer.firstName));
                 row.append($('<td>').text(customer.email));
