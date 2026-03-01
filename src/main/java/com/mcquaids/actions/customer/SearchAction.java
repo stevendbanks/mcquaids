@@ -25,6 +25,7 @@ public class SearchAction extends ActionSupport {
 	private String reservationId;
 
 	public String execute() {
+		System.out.println("SearchAction.java Entered");
 		try {
 			customers = customerService.queryCustomers(customerID, customerName, phoneNumber, email, null, null, null,
 					null, null);

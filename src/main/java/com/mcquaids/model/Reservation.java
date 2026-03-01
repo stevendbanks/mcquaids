@@ -24,9 +24,25 @@ public class Reservation {
     private String deliveryStreet;
     private String deliveryCity;
     private String deliveryProvince;
-    private String deliveryPostal;
+    private String deliveryPostalCode;
     private String deliveryCountry;
     private Boolean deliverySameAsCustomer;
+    
+ // Secondary Delivery Address
+    private String secondaryStreet;
+    private String secondaryCity;
+    private String secondaryProvince;
+    private String secondaryPostalCode;
+    private String secondaryCountry;
+    private Date secondaryDeliveryDate;    
+    
+    // Additional Person (MVP fields)
+    private String additionalPersonName;
+    private String additionalPersonPhone;
+    private String additionalPersonEmail;
+
+    
+    
 
     public Integer getReservationID() {
         return this.reservationID;
@@ -35,6 +51,8 @@ public class Reservation {
     public void setReservationID(Integer reservationID) {
         this.reservationID = reservationID;
     }
+    
+    
     
     public String getReservationIDAsDisplay() {
         return "R" + String.format("%05d", this.reservationID);
@@ -110,17 +128,17 @@ public class Reservation {
 	}
 
 	/**
-	 * @return the deliveryPostal
+	 * @return the deliveryPostalCode
 	 */
-	public String getDeliveryPostal() {
-		return deliveryPostal;
+	public String getDeliveryPostalCode() {
+		return deliveryPostalCode;
 	}
 
 	/**
-	 * @param deliveryPostal the deliveryPostal to set
+	 * @param deliveryPostalCode the deliveryPostalCode to set
 	 */
-	public void setDeliveryPostal(String deliveryPostal) {
-		this.deliveryPostal = deliveryPostal;
+	public void setDeliveryPostalCode(String deliveryPostal) {
+		this.deliveryPostalCode = deliveryPostal;
 	}
 
 	/**
@@ -149,6 +167,132 @@ public class Reservation {
 	 */
 	public void setDeliverySameAsCustomer(Boolean deliverySameAsCustomer) {
 		this.deliverySameAsCustomer = deliverySameAsCustomer;
+	}
+
+	/**
+	 * @return the secondaryStreet
+	 */
+	public String getSecondaryStreet() {
+		return secondaryStreet;
+	}
+
+	/**
+	 * @param secondaryStreet the secondaryStreet to set
+	 */
+	public void setSecondaryStreet(String secondaryStreet) {
+		this.secondaryStreet = secondaryStreet;
+	}
+
+	/**
+	 * @return the secondaryCity
+	 */
+	public String getSecondaryCity() {
+		return secondaryCity;
+	}
+
+	/**
+	 * @param secondaryCity the secondaryCity to set
+	 */
+	public void setSecondaryCity(String secondaryCity) {
+		this.secondaryCity = secondaryCity;
+	}
+
+	/**
+	 * @return the secondaryProvince
+	 */
+	public String getSecondaryProvince() {
+		return secondaryProvince;
+	}
+
+	/**
+	 * @param secondaryProvince the secondaryProvince to set
+	 */
+	public void setSecondaryProvince(String secondaryProvince) {
+		this.secondaryProvince = secondaryProvince;
+	}
+
+	/**
+	 * @return the secondaryPostalCode
+	 */
+	public String getSecondaryPostalCode() {
+		return secondaryPostalCode;
+	}
+
+	/**
+	 * @param secondaryPostalCode the secondaryPostalCode to set
+	 */
+	public void setSecondaryPostalCode(String secondaryPostalCode) {
+		this.secondaryPostalCode = secondaryPostalCode;
+	}
+
+	/**
+	 * @return the secondaryCountry
+	 */
+	public String getSecondaryCountry() {
+		return secondaryCountry;
+	}
+
+	/**
+	 * @param secondaryCountry the secondaryCountry to set
+	 */
+	public void setSecondaryCountry(String secondaryCountry) {
+		this.secondaryCountry = secondaryCountry;
+	}
+
+	/**
+	 * @return the secondaryDeliveryDate
+	 */
+	public Date getSecondaryDeliveryDate() {
+		return secondaryDeliveryDate;
+	}
+
+	/**
+	 * @param secondaryDeliveryDate the secondaryDeliveryDate to set
+	 */
+	public void setSecondaryDeliveryDate(Date secondaryDeliveryDate) {
+		this.secondaryDeliveryDate = secondaryDeliveryDate;
+	}
+
+	/**
+	 * @return the additionalPersonName
+	 */
+	public String getAdditionalPersonName() {
+		return additionalPersonName;
+	}
+
+	/**
+	 * @param additionalPersonName the additionalPersonName to set
+	 */
+	public void setAdditionalPersonName(String additionalPersonName) {
+		this.additionalPersonName = additionalPersonName;
+	}
+
+	/**
+	 * @return the additionalPersonPhone
+	 */
+	public String getAdditionalPersonPhone() {
+		return additionalPersonPhone;
+	}
+
+	/**
+	 * @param additionalPersonPhone the additionalPersonPhone to set
+	 */
+	public void setAdditionalPersonPhone(String additionalPersonPhone) {
+		this.additionalPersonPhone = additionalPersonPhone;
+	}
+
+	/**
+	 * @return the additionalPersonEmail
+	 */
+	public String getAdditionalPersonEmail() {
+		return additionalPersonEmail;
+	}
+
+	/**
+	 * @param additionalPersonEmail the additionalPersonEmail to set
+	 */
+	public void setAdditionalPersonEmail(String additionalPersonEmail) {
+		this.additionalPersonEmail = additionalPersonEmail;
 	}
 
 	public String getReservationStatusCode() {
@@ -207,12 +351,42 @@ public class Reservation {
         this.dateUpdated = dateUpdated;
     }
 
+
+
+	public Address getDeliveryAddress() {
+		Address address = new Address();
+		address.setStreet(deliveryStreet);
+		address.setCity(deliveryCity);
+		address.setProvince(deliveryProvince);
+		address.setCountry(deliveryCountry);
+		address.setPostalCode(deliveryPostalCode);
+		return address;
+	}
+	
+	public Address getSecondaryDeliveryAddress() {
+		Address address = new Address();
+		address.setStreet(secondaryStreet);
+		address.setCity(secondaryCity);
+		address.setProvince(secondaryProvince);
+		address.setCountry(secondaryCountry);
+		address.setPostalCode(secondaryPostalCode);
+		return address;
+	}
+
 	@Override
 	public String toString() {
-		return "Reservation [reservationID=" + reservationID + ", customerID=" + customerID + ", reservationStatusCode="
-				+ reservationStatusCode + ", startDate=" + startDate + ", endDate=" + endDate + ", instructions=" + instructions
-				+ ", leaseID=" + leaseID + ", dateCreated=" + dateCreated + ", dateUpdated=" + dateUpdated + "]";
+		return "Reservation [reservationID=" + reservationID + ", customerID=" + customerID + ", customer=" + customer
+				+ ", reservationStatusCode=" + reservationStatusCode + ", startDate=" + startDate + ", endDate="
+				+ endDate + ", instructions=" + instructions + ", leaseID=" + leaseID + ", dateCreated=" + dateCreated
+				+ ", dateUpdated=" + dateUpdated + ", deliveryStreet=" + deliveryStreet + ", deliveryCity="
+				+ deliveryCity + ", deliveryProvince=" + deliveryProvince + ", deliveryPostalCode=" + deliveryPostalCode
+				+ ", deliveryCountry=" + deliveryCountry + ", deliverySameAsCustomer=" + deliverySameAsCustomer
+				+ ", secondaryStreet=" + secondaryStreet + ", secondaryCity=" + secondaryCity + ", secondaryProvince="
+				+ secondaryProvince + ", secondaryPostalCode=" + secondaryPostalCode + ", secondaryCountry="
+				+ secondaryCountry + ", secondaryDeliveryDate=" + secondaryDeliveryDate + "]";
 	}
+	
+	
     
     
 }

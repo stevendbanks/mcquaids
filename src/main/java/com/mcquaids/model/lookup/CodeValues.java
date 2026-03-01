@@ -102,32 +102,6 @@ public class CodeValues { // extends CodeTypes {
 		return leaseTerminationReasonCodes;
 	}
 
-
-//	/**
-//	 * @param codeValueService
-//	 * @param hashmap
-//	 * @param pCodeTypeDescription - The CodeType English Description.
-//	 */
-//	private static void queryCodeValues(CodeValueService codeValueService, HashMap<String, String> hashmap, String pCodeTypeDescription) {
-//		List<CodeValue> x = codeValueService.findCodeValues(pCodeTypeDescription);
-//		for (CodeValue cv : x) {
-//			hashmap.put(cv.getCodeValue(), cv.getEnglishDescription());
-//		}
-//	}
-//	
-//	
-//	
-//	
-//	
-//	private static void queryCodeTypes(CodeValueService codeValueService,  HashMap<String, String> hashmap, String isTypeOfEquipment) {
-//		
-//		List<CodeValue> x = codeValueService.findCodeTypes(isTypeOfEquipment);
-//		for (CodeValue cv : x) {
-//			hashmap.put(cv.getCodeValue(), cv.getEnglishDescription());
-//		}
-//	}
-
-	
 	
 	private static void queryLookupTable(CodeValueService codeValueService,  HashMap<String, String> hashmap, String pCodeTypeTableName) {
 		
@@ -377,6 +351,13 @@ public class CodeValues { // extends CodeTypes {
 
 	    if (map == null) return value;
 	    return map.getOrDefault(value, value);
+	}
+
+
+	public  String getEquipmentSubTypeText(int equipmentTypeValue, String equipmentSubTypeValue) {
+		HashMap<String, String> x = getEquipmentSubTypes(equipmentTypeValue);
+		
+		return x.get(equipmentSubTypeValue);
 	}
 
  

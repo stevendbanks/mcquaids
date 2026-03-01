@@ -20,6 +20,8 @@ import com.opensymphony.xwork2.Action;
 
 	
 	public String execute() {
+		System.out.println("SDBANKS->SaveReservationAction-  actionType=" + actionType);
+		System.out.println(reservation.toString());
 
 	    if (actionType.equals("CREATE")) {
 	        Reservation created = reservationService.createReservation(reservation);

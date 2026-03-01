@@ -1,4 +1,4 @@
-package com.mcquaids.dao;
+package com.mcquaids.dao.rowmappers;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,6 +14,7 @@ public class CustomerRowMapper implements RowMapper<Customer> {
         customer.setUserID(rs.getString("UserID"));
         customer.setFirstName(rs.getString("FirstName"));
         customer.setLastName(rs.getString("LastName"));
+        customer.setBusinessName(rs.getString("BusinessName"));   // NEW
         customer.setPhone(rs.getString("Phone"));
         customer.setEmail(rs.getString("Email"));
         customer.setStreet(rs.getString("street"));

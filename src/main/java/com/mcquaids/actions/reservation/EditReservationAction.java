@@ -76,10 +76,12 @@ public class EditReservationAction extends BaseReservationAction {
 
             // Page title logic
             if (reservationID == null) {
+        	    actionType = "CREATE";
                 pageTitle = "New Reservation";
             } else if (preserveFormState) {
-                pageTitle = "Reservation #" + reservationID + " (unsaved changes)";
+        	    actionType = "EDIT";
             } else {
+        	    actionType = "EDIT";
                 pageTitle = "Reservation #" + reservationID;
             }
 
@@ -89,7 +91,8 @@ public class EditReservationAction extends BaseReservationAction {
                     customerService.edit(reservation.getCustomerID().toString());
                 reservation.setCustomer(fullCustomer);
             }
-
+            
+System.out.println(reservation.getCustomer().getFullName());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
