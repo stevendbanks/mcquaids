@@ -16,6 +16,8 @@ protected String firstName;
 
 protected String lastName;
 
+protected String businessName;
+
 protected String street;
 
 protected String city;
@@ -121,6 +123,28 @@ public void setLastName(String lastName) {
 
 
 /**
+ * @return the businessName
+ */
+public String getBusinessName() {
+	return businessName;
+}
+
+
+
+
+
+/**
+ * @param businessName the businessName to set
+ */
+public void setBusinessName(String businessName) {
+	this.businessName = businessName;
+}
+
+
+
+
+
+/**
  * @return the city
  */
 public String getCity() {
@@ -214,6 +238,18 @@ public String getPostalCode() {
 public void setPostalCode(String postalCode) {
 	this.postalCode = postalCode;
 }
+
+
+
+
+
+@Override
+public String toString() {
+	return "User [userID=" + userID + ", firstName=" + firstName + ", lastName=" + lastName + ", businessName="
+			+ businessName + ", street=" + street + ", city=" + city + ", province=" + province + ", country=" + country
+			+ ", postalCode=" + postalCode + ", phone=" + phone + ", email=" + email + "]";
+}
+
 
 
 }

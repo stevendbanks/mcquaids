@@ -24,6 +24,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
+
+// ------------------------------------------------------------
+// Toggle Panels (Delivery + Secondary Delivery)
+// ------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.querySelectorAll(".delivery-toggle").forEach(function (btn) {
+
+        btn.addEventListener("click", function () {
+            const targetSelector = btn.getAttribute("data-target");
+            const target = document.querySelector(targetSelector);
+
+            if (!target) return;
+
+            if (target.style.display === "none" || target.classList.contains("collapsed")) {
+                target.style.display = "block";
+                target.classList.remove("collapsed");
+            } else {
+                target.style.display = "none";
+                target.classList.add("collapsed");
+            }
+        });
+
+    });
+
+});
+
+
+
+
 document.addEventListener("DOMContentLoaded", function () {
     const row = document.getElementById("add-equipment-row");
     if (!row) return;
@@ -110,6 +140,8 @@ function formatKey(key) {
         .replace(/([a-z])([A-Z])/g, '$1 $2')
         .replace(/^./, c => c.toUpperCase());
 }
+
+
 
 async function addEquipmentToReservation() {
     console.log("addEquipmentToReservation called");
@@ -363,6 +395,11 @@ function buildReservationParams() {
         return el ? el.value : "";
     }   
 
+function createDispatchPlan() {
+    const reservationId = document.getElementById("reservationID").value;
+    window.location.href = `/mcquaids/reservation/createDispatchPlan.action?reservationID=${reservationId}`;
+}
+
 
 window.removeLineItem = removeLineItem;
 window.substituteLineItem = substituteLineItem;
@@ -372,6 +409,6 @@ window.collapseAllDetails = collapseAllDetails;
 window.DisplayCustomerSearch = DisplayCustomerSearch;
 window.DisplayEquipmentSearch = DisplayEquipmentSearch;
 window.addEquipmentToReservation = addEquipmentToReservation;
-
+window.createDispatchPlan = createDispatchPlan; 
 
 

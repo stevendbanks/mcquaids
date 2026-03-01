@@ -47,6 +47,7 @@ public class ReservationService {
 
     public Reservation getReservation(Integer reservationID) {
         Reservation reservation = reservationDAO.getReservation(reservationID);
+        System.out.println("fullName");
         reservation.setCustomer(customerService.edit(reservation.getCustomerID()));
         return reservation;
     }

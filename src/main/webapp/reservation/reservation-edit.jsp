@@ -1,21 +1,26 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 
 <div class="container">
 
     <!-- Workflow + Page JS -->
     <script src="/mcquaids/javascript/common/workflow.js"></script>
+	<script type="module" src="/mcquaids/javascript/workflows/reservation-delivery-address-workflow.js"></script>
     <script type="module" src="/mcquaids/javascript/pages/reservation-edit.js"></script>
 
     <!-- Error Message -->
     <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
+    <!-- Read caller + reservationId -->
+		<c:set var="caller" value="${param.caller}" />
+		<c:set var="reservationId" value="${param['reservation.reservationID']}" />
 
     <!-- Main Save Reservation form -->
     <s:form action="save" method="post" namespace="/reservation" theme="bootstrap">
 
         <!-- Hidden fields -->
-        <s:hidden name="actionType" value="EDIT"/>
+        <s:hidden name="actionType"/>
         <s:hidden id="reservationID" name="reservation.reservationID"/>
         <s:hidden id="reservationStatusCode" name="reservation.reservationStatusCode"/>
         <s:hidden id="customerID" name="reservation.customerID"/>
@@ -55,6 +60,10 @@
                             <button class="dropdown-item" type="button" onclick="printReservation()">
                                 Print
                             </button>
+						    <button class="dropdown-item" type="button" onclick="createDispatchPlan()">
+						        Create Dispatch Plan
+						    </button>
+                            
                         </div>
                     </div>
                 </div>
@@ -63,7 +72,7 @@
                 <div class="row">
 
                     <!-- Customer -->
-                    <div class="col-sm-4">
+                    <div class="col-sm-8">
                         <div class="form-group">
                             <label for="customerID">Customer</label>
 
@@ -100,7 +109,7 @@
                     </div>
 
                     <!-- Return Date -->
-                    <div class="col-sm-3">
+                    <div class="col-sm-2">
                         <div class="form-group">
                             <label for="reservationEndDate">Return Date</label>
                             <s:textfield id="reservationEndDate"
@@ -125,10 +134,45 @@
                         </div>
                     </div>
                 </div>
+                
+<!-- Additional Contact (Optional) -->
+<div class="row mt-3">
+    <div class="col-sm-4">
+        <div class="form-group">
+            <label for="additionalPersonName">Additional Person Name</label>
+            <s:textfield id="additionalPersonName"
+                         name="reservation.additionalPersonName"
+                         cssClass="form-control"/>
+        </div>
+    </div>
+
+    <div class="col-sm-4">
+        <div class="form-group">
+            <label for="additionalPersonPhone">Additional Person Phone</label>
+            <s:textfield id="additionalPersonPhone"
+                         name="reservation.additionalPersonPhone"
+                         cssClass="form-control"/>
+        </div>
+    </div>
+
+    <div class="col-sm-4">
+        <div class="form-group">
+            <label for="additionalPersonEmail">Additional Person Email</label>
+            <s:textfield id="additionalPersonEmail"
+                         name="reservation.additionalPersonEmail"
+                         cssClass="form-control"/>
+        </div>
+    </div>
+</div>                
 
             </div>
         </div>
 
+		<!-- Delivery Address Panel -->
+		<jsp:include page="/reservation/reservation-delivery-address-panel.jsp" />
+
+		<!-- Delivery Address Panel -->
+		<jsp:include page="/reservation/reservation-secondary-delivery-address-panel.jsp" />
 
 
         <!-- Requested Equipment list -->
