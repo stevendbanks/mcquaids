@@ -66,8 +66,9 @@
 
 
 		<!-- Customer page configuration -begin -->
-		<action name="index">
+		<action name="index" class="com.mcquaids.actions.customer.CustomerIndexAction">
 			<result name="success" type="tiles">customer-search</result>
+			<result name="modal">/customer-search.jsp</result>
 		</action>
 
 		<!-- Customer page configuration -begin -->
@@ -91,6 +92,7 @@
 		<action name="edit" method="execute"
 			class="com.mcquaids.actions.customer.EditCustomerAction">
 			<result name="success" type="tiles">customer-edit</result>
+			<result name="modal">/customer-edit.jsp</result>
 		</action>
 		
 		<action name="customerAddress" 
@@ -121,18 +123,26 @@
 		</action>		
 		
 
-	<action name="save" method="execute"
-	        class="com.mcquaids.actions.customer.SaveCustomerAction">
-	
-	    <!-- Normal customer save flow -->
-	    <result name="success" type="tiles">customer-edit</result>
-	
-	    <!-- Reservation workflow redirect -->
-	    <result name="reservationRedirect" type="redirect">
-	        <param name="location">${redirectUrl}</param>
-	    </result>
-	
-	</action>
+		<action name="save" method="execute"
+		        class="com.mcquaids.actions.customer.SaveCustomerAction">
+		
+		    <result name="success" type="tiles">customer-edit</result>
+		
+		    <result name="modal_success">/modal-save-success.jsp</result>
+		
+		</action>
+		
+		
+				<action name="ajaxSave" 
+		        class="com.mcquaids.actions.customer.SaveCustomerAction">
+		
+		    <result name="modal_success" type="json">
+		             <param name="ignoreHierarchy">false</param>
+		        <param name="includeProperties">
+					customer.*, actionMessages.*
+		        </param>
+		    </result>
+		</action>		
 	
 			<!-- Customers Reserved Equipment page configuration -->
 		<action name="viewCustomerEquipment" method="execute"

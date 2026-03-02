@@ -88,7 +88,7 @@
                                 <div class="input-group-append no-print">
                                     <button type="button"
                                             class="btn btn-outline-secondary"
-                                            onclick="navigateToCustomerSearch()">
+                                            onclick="openCustomerLookup()">
                                         <i class="fa fa-search"></i>
                                     </button>
                                 </div>
@@ -306,7 +306,32 @@
         <!-- Add Equipment Section (original placement) -->
         <jsp:include page="AddEquipmentSection.jsp"/>        
 
+
+
+
     </s:form>
 
+</div>
+
+<div class="modal fade" id="customerModal" tabindex="-1" role="dialog" aria-labelledby="customerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="customerModalLabel">Customer Search</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="customerModalBody">
+                <div class="text-center">
+                    <i class="fa fa-spinner fa-spin fa-3x"></i>
+                    <p>Loading Customer Search...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
 

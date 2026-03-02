@@ -50,10 +50,10 @@ public class CustomerService  {
 	
 	
 
-	public List<Customer> queryCustomers(String userID, String customerName, String phone, String email,
+	public List<Customer> queryCustomers(String businessName, String userID, String customerName, String phone, String email,
 			String street, String city, String province, String country, String postalCode) {
 
-		return userDAO.queryCustomers(userID, customerName, phone, email, street, city, province, country, postalCode);
+		return userDAO.queryCustomers(businessName, userID, customerName, phone, email, street, city, province, country, postalCode); 
 	}
 	
 	 public List<CustomerEquipmentDTO> getEquipmentForCustomer(String customerID) {
