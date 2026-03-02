@@ -1,5 +1,7 @@
 package com.mcquaids.actions.customer;
 
+import org.apache.struts2.ServletActionContext;
+
 import com.mcquaids.service.CustomerService;
 
  public class EditCustomerAction extends BaseCustomerAction {
@@ -14,6 +16,8 @@ import com.mcquaids.service.CustomerService;
 	private String customerID;
 	
 	private String returnParams;
+	
+
 
 
 	public EditCustomerAction() {
@@ -34,7 +38,14 @@ import com.mcquaids.service.CustomerService;
 		
 		System.out.println(customer.toString());
 
-		addActionMessage("Delivery Address Found");
+		System.out.println("SDBANKS-Executing EditCustomerAction");
+        // Check if the JS passed the isModal flag
+        if ("true".equals(isModal)) {
+            return "modal"; // Matches <result name="modal">
+        }
+		
+		
+		
 		return "success";
 	}
 
@@ -79,6 +90,9 @@ import com.mcquaids.service.CustomerService;
 	public void setCustomerID(String customerID) {
 		this.customerID = customerID;
 	}
+
+
+
 
 	
 }

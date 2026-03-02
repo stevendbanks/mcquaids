@@ -89,6 +89,7 @@ public class UserDAO extends DaoDataSource  {
     }
 
     public List<Customer> queryCustomers(
+    		String businessName,
             String userID,
             String customerName,
             String phone,
@@ -104,7 +105,7 @@ public class UserDAO extends DaoDataSource  {
 
         // Updated SELECT to include BusinessName
         StringBuilder sql = new StringBuilder(
-                "SELECT u.UserID, u.FirstName, u.LastName, u.BusinessName, " +   // NEW
+                "SELECT u.businessName, u.UserID, u.FirstName, u.LastName, u.BusinessName, " +   // NEW
                 "u.Phone, u.Email, u.street, u.City, u.Province, u.Country, u.PostalCode, " +
                 "c.Notes, c.CreatedDateTime, c.CreatedUserID " +
                 "FROM user u " +
@@ -113,6 +114,11 @@ public class UserDAO extends DaoDataSource  {
 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
 
+        if (!StringUtils.isEmpty(businessName)) {
+            sql.append(" AND u.businessName = :businessName");
+            parameters.addValue("businessName", businessName);
+        }        
+        
         if (!StringUtils.isEmpty(userID)) {
             sql.append(" AND u.UserID = :userID");
             parameters.addValue("userID", userID);
@@ -159,6 +165,7 @@ public class UserDAO extends DaoDataSource  {
             parameters.addValue("postalCode", postalCode);
         }
 
+        System.out.println(sql);
         return namedParameterJdbcTemplate.query(sql.toString(), parameters, new CustomerRowMapper());
     }
 

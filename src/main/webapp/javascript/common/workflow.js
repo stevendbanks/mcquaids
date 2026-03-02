@@ -72,24 +72,18 @@ function buildReturnParamsFromJson() {
 
 
 
-function navigateToCustomerSearch() {
-    console.log("workflow.js -> navigateToCustomerSearch()");
+window.navigateToCustomerSearch = function() {
+    const isModal = $('#isModalFlag').val() === 'true';
 
-    let params;
-
-    // If returnParams exists → we are on a customer screen
-    if (document.getElementById("returnParams")) {
-      params = buildReturnParamsFromJson();
-        window.location.href = '/mcquaids/customer/index?' + params.toString();
-
+    if (isModal) {
+        console.info("Modal mode: Re-loading search index into modal body.");
+        // We use the same URL used to open the modal originally
+        $('#customerModalBody').load('/mcquaids/customer/?isModal=true&layout=none');
     } else {
-        // Otherwise → we are on a reservation screen
-        params = buildReservationParams();
-       window.location.href = '/mcquaids/customer/index?' + params.toString();
-
+        console.info("Full screen mode: Redirecting to search index.");
+        window.location.href = '/mcquaids/customer/index';
     }
-
-}
+};
 
 
 

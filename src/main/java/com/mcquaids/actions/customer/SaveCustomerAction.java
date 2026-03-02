@@ -1,16 +1,10 @@
 package com.mcquaids.actions.customer;
 
 import java.io.Serializable;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import com.mcquaids.model.Constants;
 import com.mcquaids.model.Customer;
-import com.mcquaids.model.lookup.CodeValues;
 import com.mcquaids.service.CustomerService;
-import com.mcquaids.utils.JsonUtils;
 
 public class SaveCustomerAction extends BaseCustomerAction implements Serializable {
 
@@ -27,71 +21,36 @@ public class SaveCustomerAction extends BaseCustomerAction implements Serializab
 	private String redirectUrl;
 
 	public String execute() {
+		System.out.println("SaveCustomerAction.execute()");
+	    CustomerService customerService = new CustomerService();
 
-		System.out.println("SaveCustomerAction -> returnParams=" + returnParams);
+	    try {
+	        if (Constants.SAVE_ACTION_TYPE_ADD_NEW.equals(saveActionType)) {
+	    		System.out.println("SaveCustomerAction.execute().Savenew-" + customer.getFullName());
 
-		codeValues = new CodeValues();
-		CustomerService customerService = new CustomerService();
+	        	customer = customerService.saveNewCustomer(customer);
+	        } else {
+	    		System.out.println("SaveCustomerAction.execute().save-" + customer.getFullName());
 
-		try {
-			if (saveActionType.equals(Constants.SAVE_ACTION_TYPE_ADD_NEW)) {
-				customer = customerService.saveNewCustomer(customer);
-			} else {
-				customer = customerService.save(customer);
-			}
-		} catch (Throwable t) {
-			t.printStackTrace();
-		}
+	            customer = customerService.save(customer);
+	        }
+	    } catch (Throwable t) {
+	        t.printStackTrace();
+	        return ERROR;
+	    }
 
-		// NEW: If returnParams exists, this came from reservation workflow
-		if (returnParams != null && !returnParams.isEmpty()) {
-			return buildReservationRedirect();
-		}
+	    // This is all you need now!
+	    if ("true".equals(getIsModal())) {
+	    	System.out.println("SaveCustomerAction.execute().save-modal_success");
+	        return "modal_success"; // Returns the tiny JS snippet to update the parent
+	    }
+    	System.out.println("SaveCustomerAction.execute().SUCCESS");
 
-		return "success";
+	    return SUCCESS; // Standard behavior for the standalone management page
 	}
 
-	// NEW: Build redirect URL back to reservation workflow
-	private String buildReservationRedirect() {
 
-		// Parse JSON into a map using your utility class
-		Map<String, String> params = JsonUtils.setPropertiesFromJson(returnParams);
 
-		// Inject the newly created customer
-		params.put("reservation.customerID", String.valueOf(customer.getUserID()));
-		params.put("fromSelector", "true");
-
-		// Determine edit vs create
-		boolean hasReservationId = params.containsKey("reservation.reservationID")
-				&& params.get("reservation.reservationID") != null
-				&& !params.get("reservation.reservationID").isEmpty();
-
-		String base;
-		if (hasReservationId) {
-			base = "/reservation/edit-reservation?";
-		} else {
-			base = "/reservation/create?";
-		}
-
-		// Rebuild query string
-		String query = params.entrySet().stream().map(e -> encode(e.getKey()) + "=" + encode(e.getValue()))
-				.collect(Collectors.joining("&"));
-
-		redirectUrl = base + query;
-
-		
-		System.out.println("SDBANKS->reservationRedirect="+ redirectUrl);
-		return "reservationRedirect";
-	}
-
-	// NEW: URL encoding helper
-	private String encode(String value) {
-		try {
-			return URLEncoder.encode(value == null ? "" : value, StandardCharsets.UTF_8.toString());
-		} catch (Exception e) {
-			return "";
-		}
-	}
 
 	// Getters / setters
 
