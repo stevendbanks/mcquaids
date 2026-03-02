@@ -5,9 +5,8 @@ import java.util.List;
 
 import com.mcquaids.model.Customer;
 import com.mcquaids.service.CustomerService;
-import com.opensymphony.xwork2.ActionSupport;
 
-public class SearchAction extends ActionSupport {
+public class SearchAction extends BaseCustomerAction {
 
 	private static final long serialVersionUID = 1L;
 
@@ -19,15 +18,15 @@ public class SearchAction extends ActionSupport {
 	private String customerID;
 	private String customerName;
 	private String email;
+	private String businessName;
 
 	// Caller parameters
-	private String caller;
-	private String reservationId;
+//	private String reservationId;
 
 	public String execute() {
 		System.out.println("SearchAction.java Entered");
 		try {
-			customers = customerService.queryCustomers(customerID, customerName, phoneNumber, email, null, null, null,
+			customers = customerService.queryCustomers(businessName, customerID, customerName, phoneNumber, email, null, null, null,
 					null, null);
 
 			if (customers == null || customers.isEmpty()) {
@@ -46,7 +45,7 @@ public class SearchAction extends ActionSupport {
 
 	@Override
 	public void validate() {
-		if (isEmpty(customerID) && isEmpty(customerName) && isEmpty(phoneNumber) && isEmpty(email)) {
+		if ( isEmpty(businessName) && isEmpty(customerID) && isEmpty(customerName) && isEmpty(phoneNumber) && isEmpty(email)) {
 
 			addActionError("Returning all customers because no filters were applied.");
 		}
@@ -82,19 +81,19 @@ public class SearchAction extends ActionSupport {
 		this.email = email;
 	}
 
-	public void setCaller(String caller) {
-		this.caller = caller;
+
+	/**
+	 * @return the businessName
+	 */
+	public String getBusinessName() {
+		return businessName;
 	}
 
-	public void setReservationId(String reservationId) {
-		this.reservationId = reservationId;
+	/**
+	 * @param businessName the businessName to set
+	 */
+	public void setBusinessName(String businessName) {
+		this.businessName = businessName;
 	}
 
-	public String getCaller() {
-		return caller;
-	}
-
-	public String getReservationId() {
-		return reservationId;
-	}
 }

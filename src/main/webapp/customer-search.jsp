@@ -2,32 +2,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <div class="container">
-
-    <!-- Read caller + reservation.reservationID -->
-    <c:set var="caller" value="${param.caller}" />
-    <c:set var="reservationId" value="${param['reservation.reservationID']}" />
-
     <!-- Header + Return button -->
     <div class="row mt-4 mb-3 align-items-center">
         <div class="col-sm-9">
             <h1 class="mb-0">Customer Search</h1>
-        </div>
-        <div class="col-sm-1 text-right">
-<c:choose>
-
-    <c:when test="${caller == 'RESERVE'}">
-        <button class="btn btn-secondary ml-3" onclick="navigateBackToReservation()" >Return</button>
-    </c:when>
-
-    <c:when test="${caller == 'SEARCH_RESERVATIONS'}">
-        <button class="btn btn-secondary  ml-3" onclick="navigateBackToReservationSearch()">Return</button>
-    </c:when>
-
-    <c:otherwise>
-        <!-- No return button for standalone mode -->
-    </c:otherwise>
-
-</c:choose>
         </div>
     </div>
 
@@ -57,6 +35,12 @@
         </div>
 
         <div class="form-group col-sm-2">
+            <label for="businessName">Business Name</label>
+            <input type="text" class="form-control" id="businessName"
+                   onchange="resetOtherFields('businessName'); searchCustomer();">
+        </div>
+
+        <div class="form-group col-sm-2">
             <label for="email">Email</label>
             <input type="text" class="form-control" id="email"
                    onchange="resetOtherFields('email'); searchCustomer();">
@@ -64,11 +48,8 @@
 
         <div class="form-group col-sm-3 text-left">
             <label class="empty-label">&nbsp;</label>
-			<button id="createCustomer"
-			        type="button"
-			        class="btn btn-success"
-			        onclick="navigateToCustomerCreate()">
-			    Add New Customer
+			<button type="button" class="btn btn-success" onclick="loadCreateCustomer()">
+			    <i class="fa fa-plus"></i> Add New Customer
 			</button>
         </div>
     </div>
@@ -82,9 +63,10 @@
             <th scope="col">Email</th>
             <th scope="col">Phone</th>
 
-            <c:if test="${caller == 'RESERVE'}">
-                <th scope="col">Action</th>
-            </c:if>
+			<%-- Check if we are in a modal to show the selection column --%>
+			<s:if test="%{#parameters.isModal == 'true' || isModal == 'true'}">
+			    <th scope="col">Action</th>
+			</s:if>
         </tr>
         </thead>
 
@@ -100,7 +82,6 @@
 function searchCustomer(e) {
 
     if (e) { e.preventDefault(); }
-console.warn("SDBANKS - searchCustomer() Entered");
     $.ajax({
         url: '/mcquaids/customer/search',
         type: 'get',
@@ -108,12 +89,14 @@ console.warn("SDBANKS - searchCustomer() Entered");
             phoneNumber: $('#phoneNumber').val(),
             customerID: $('#userID').val(),
             customerName: $('#customerName').val(),
-            email: $('#email').val()
+            email: $('#email').val(),
+            businessName: $('#businessName').val()
         },
 
         success: function(response) {
-        	var queryString = window.location.search;   // includes the leading '?'
-        	var queryString = window.location.search.replace('?', '&');
+        	// Clean version of your queryString logic
+        	var currentQuery = window.location.search; 
+        	var queryString = currentQuery ? currentQuery.replace('?', '&') : '';
         			
 
         	
@@ -131,22 +114,35 @@ console.warn("SDBANKS - searchCustomer() Entered");
             
             response.forEach(function(customer) {
                 var row = $('<tr>');
-                row.append($('<td>').html(
-                    '<a href="/mcquaids/customer/edit?userID=' + customer.userID + queryString + '">' +
-                        customer.userID +
-                    '</a>'
-                ));               
+	             // 1. First, determine if we are in "Modal Mode" 
+	             // We can check if the modal body is visible or if a specific flag exists
+	             var isModal = $('#customerModal').is(':visible');
+	
+	             // 2. Update the row building logic
+				var customerLink;
+				var isModal = $('#customerModal').is(':visible');
+				
+				if (isModal) {
+				    // MODAL MODE: Use our new clean function to "flip" to the Edit view
+				    customerLink = '<a href="javascript:void(0);" onclick="loadEditInModal(\'' + customer.userID + '\')">' 
+				                   + customer.userID + '</a>';
+				} else {
+				    // STANDALONE MODE: Standard full-page navigation
+				    customerLink = '<a href="/mcquaids/customer/edit.action?userID=' + customer.userID + '">' 
+				                   + customer.userID + '</a>';
+				}
+	
+	             row.append($('<td>').html(customerLink));            
                 
 
-                row.append($('<td>').text(customer.lastName + ", " + customer.firstName));
+                row.append($('<td>').text(customer.fullName));
                 row.append($('<td>').text(customer.email));
                 row.append($('<td>').text(customer.phoneNumber));
 
                 var actionCell = buildActionCellForCustomer(
                     customer.userID,
-                    customer.firstName + ' ' + customer.lastName,
-                    '${caller}'
-                );
+                    customer.fullName
+                ); 
 
                 if (actionCell) {
                     row.append(actionCell);
@@ -160,50 +156,26 @@ console.warn("SDBANKS - searchCustomer() Entered");
 </script>
 
 <script>
-function buildActionCellForCustomer(customerId, customerName, caller) {
+function buildActionCellForCustomer(customerId, customerName) {
+    // 1. Detect Context
+    var isModal = $('#customerModal').is(':visible');
 
-    caller = (caller || "").trim();
-
-    // === 1. Reservation workflow ===
-    if (caller === 'RESERVE') {
-
-        const params = new URLSearchParams(window.location.search);
-
-        params.set("reservation.customerID", customerId);
-        params.set("reservation.customer.fullName", customerName);
-        params.set("fromSelector", "true");
-
-        const reservationID = params.get("reservation.reservationID");
-
-        let returnUrl;
-
-        if (reservationID) {
-            returnUrl = '/mcquaids/reservation/edit-reservation?' + params.toString();
-        } else {
-            returnUrl = '/mcquaids/reservation/create?' + params.toString();
-        }
-
+    // 2. Lookup Mode (Modal)
+    // Always provide a Select button to pass data back to the parent form
+    if (isModal) {
         return $('<td>').html(
-            '<a class="btn btn-primary btn-sm" href="' + returnUrl + '">Select</a>'
+            '<button type="button" class="btn btn-primary btn-sm" ' +
+            'onclick="selectCustomerForReservation(\'' + customerId + '\', \'' + customerName + '\')">' +
+            'Select</button>'
         );
     }
 
-    // === 2. Search Reservations workflow ===
-    if (caller === 'SEARCH_RESERVATIONS') {
-
-        // Build URL back to Search Reservations
-        const params = new URLSearchParams();
-        params.set("customerID", customerId);
-        params.set("customerName", customerName);
-
-        const returnUrl = '/mcquaids/reservation/?' + params.toString();
-
-        return $('<td>').html(
-            '<a class="btn btn-primary btn-sm" href="' + returnUrl + '">Select</a>'
-        );
-    }
-
-    return null;
+    // 3. Navigation Mode (Standalone)
+    // Always provide a Link to go to the edit/detail page
+    var editUrl = '/mcquaids/customer/edit?userID=' + customerId;
+    return $('<td>').html(
+        '<a class="btn btn-secondary btn-sm" href="' + editUrl + '">View/Edit</a>'
+    );
 }
 </script>
 
@@ -211,7 +183,7 @@ function buildActionCellForCustomer(customerId, customerName, caller) {
 
 <script>
 function resetOtherFields(changedId) {
-    var ids = ['customerName', 'phoneNumber', 'userID', 'email'];
+    var ids = ['customerName', 'phoneNumber', 'userID', 'email', 'businessName'];
 
     ids.forEach(function(id) {
         if (id !== changedId) {
@@ -225,16 +197,31 @@ function resetOtherFields(changedId) {
 
 
 <script>
-function returnToCaller() {
-    const caller = '${caller}';
-    const reservationId = '${reservationId}';
+function loadCreateCustomer() {
+    var isModal = $('#customerModal').is(':visible');
+    var baseUrl = '/mcquaids/customer/create.action';
 
-    if (caller === 'RESERVE') {
-        window.location.href =
-            '/mcquaids/reservation/edit-reservation?reservation.reservationID=' + reservationId;
-        return;
+    if (isModal) {
+        // Just pass the one flag that matters for the UI context
+        $('#customerModalBody').load(baseUrl + '?isModal=true');
+    } else {
+        // Standard navigation for management pages
+        window.location.href = baseUrl;
     }
-
-    window.history.back();
 }
+window.loadCreateCustomer = loadCreateCustomer;
+
+function loadEditInModal(userID) {
+    console.info("Context: Modal. Loading Edit fragment for: " + userID);
+    
+    // Simple, clean URL with only the ID and the Modal flag
+    var editUrl = '/mcquaids/customer/edit.action?userID=' + userID + '&isModal=true';
+    
+    $('#customerModalBody').load(editUrl, function(response, status, xhr) {
+        if (status === "error") {
+            console.error("Edit load failed: " + xhr.status);
+        }
+    });
+}
+window.loadEditInModal = loadEditInModal;
 </script>
