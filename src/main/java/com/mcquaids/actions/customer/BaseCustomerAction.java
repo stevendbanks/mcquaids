@@ -17,6 +17,8 @@ public class BaseCustomerAction extends ActionSupport {
 	
 	protected String saveActionType;
 	
+	protected String isModal;	
+	
 	/**
 	 * 
 	 */
@@ -70,6 +72,21 @@ public class BaseCustomerAction extends ActionSupport {
 	public void setSaveActionType(String saveActionType) {
 		this.saveActionType = saveActionType;
 	}
+	
+	/**
+	 * @return the isModal
+	 */
+	public String getIsModal() {
+		return isModal;
+	}
+
+
+	/**
+	 * @param isModal the isModal to set
+	 */
+	public void setIsModal(String isModal) {
+		this.isModal = isModal;
+	}	
 
 
 	

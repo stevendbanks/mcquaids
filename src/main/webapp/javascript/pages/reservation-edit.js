@@ -401,6 +401,86 @@ function createDispatchPlan() {
 }
 
 
+
+function openCustomerLookup() {
+    console.info("Opening customer lookup modal");
+    // Load the customer search index into the modal body
+    // We add layout=none to ensure we don't get the header/footer inside the modal
+    $('#customerModalBody').load('/mcquaids/customer/?isModal=true&layout=none', function() {
+        $('#customerModal').modal('show');
+    });
+}
+
+// Attach to window so it's globally visible
+window.selectCustomerForReservation = function(id, name) {
+    console.info("selectCustomerForReservation called with ID:", id, "Name:", name);
+    
+    // Update the fields on your reservation form
+    $('#customerID').val(id); 
+    $('#fullName').val(name); 
+    
+    // Close the modal 
+    $('#customerModal').modal('hide');
+
+    // Visual feedback
+    $('#fullName').css('background-color', '#d4edda')
+                 .delay(1000)
+                 .queue(function(next){
+                     $(this).css('background-color', '');
+                     next();
+                 });
+
+    console.log("Customer selected and modal closed: " + name);
+};
+
+async function ajaxSaveCustomerFromModal() {
+    console.log("ajaxSaveCustomerFromModal called");
+
+    // 1. Grab the form from the modal
+    const form = document.getElementById("customerForm"); 
+    if (!form) return;
+
+    // 2. Serialize form data automatically
+    const formData = new FormData(form);
+    const payload = new URLSearchParams(formData);
+
+    try {
+        const response = await fetch("/mcquaids/customer/ajaxSave", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: payload.toString()
+        });
+
+        if (!response.ok) {
+            throw new Error(`Server responded with ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.status === "success") {
+            // 3. Use the global function to update the main Reservation page
+            if (window.selectCustomerForReservation) {
+                window.selectCustomerForReservation(data.userID, data.fullName);
+                // The select function already handles hiding the modal
+            }
+            
+            showActionMessage("Customer created and assigned to reservation.", "success");
+        } else {
+            // Handle validation errors or logic errors from Java
+            showActionMessage(data.message || "Error saving customer.", "danger");
+        }
+
+    } catch (err) {
+        console.error("Fetch error:", err);
+        showActionMessage("Network error while saving customer.", "danger");
+    }
+}
+
+
+
+
 window.removeLineItem = removeLineItem;
 window.substituteLineItem = substituteLineItem;
 window.markReturned = markReturned;
@@ -410,5 +490,8 @@ window.DisplayCustomerSearch = DisplayCustomerSearch;
 window.DisplayEquipmentSearch = DisplayEquipmentSearch;
 window.addEquipmentToReservation = addEquipmentToReservation;
 window.createDispatchPlan = createDispatchPlan; 
+
+window.openCustomerLookup = openCustomerLookup;
+window.ajaxSaveCustomerFromModal = ajaxSaveCustomerFromModal;
 
 
