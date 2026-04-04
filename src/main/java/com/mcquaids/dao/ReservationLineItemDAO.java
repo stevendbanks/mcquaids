@@ -2,6 +2,7 @@ package com.mcquaids.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.dao.DataAccessException;
@@ -80,6 +81,35 @@ public class ReservationLineItemDAO {
 
         return template.query(sql, params, new ReservationLineItemRowMapper());
     }
+    
+    // ------------------------------------------------------------
+    // VIEW (list)
+    // ------------------------------------------------------------
+    public List<ReservationLineItemDTO> getReservationLineItems(Integer reservationID) {
+        String sql = "SELECT * FROM reservation_line_item_view "
+                   + "WHERE ReservationID = :ReservationID "
+                   + "ORDER BY reservationLineItem";
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("ReservationID", reservationID);
+
+        return template.query(sql, params, new ReservationLineItemDTORowMapper());
+    }
+
+    // ------------------------------------------------------------
+    // VIEW (single)
+    // ------------------------------------------------------------
+    public ReservationLineItemDTO viewReservationLineItem(Integer reservationLineItemID) {
+        String sql = "SELECT * FROM reservation_line_item_view "
+                   + "WHERE reservationLineItem = :reservationLineItem";
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("reservationLineItem", reservationLineItemID);
+
+        return template.queryForObject(sql, params, new ReservationLineItemDTORowMapper());
+    }    
+    
+    
 
     // ------------------------------------------------------------
     // UPDATE
@@ -118,32 +148,6 @@ public class ReservationLineItemDAO {
         template.update(sql, params);
     }
 
-    // ------------------------------------------------------------
-    // VIEW (list)
-    // ------------------------------------------------------------
-    public List<ReservationLineItemDTO> getReservationLineItems(Integer reservationID) {
-        String sql = "SELECT * FROM reservation_line_item_view "
-                   + "WHERE ReservationID = :ReservationID "
-                   + "ORDER BY reservationLineItem";
-
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("ReservationID", reservationID);
-
-        return template.query(sql, params, new ReservationLineItemDTORowMapper());
-    }
-
-    // ------------------------------------------------------------
-    // VIEW (single)
-    // ------------------------------------------------------------
-    public ReservationLineItemDTO viewReservationLineItem(Integer reservationLineItemID) {
-        String sql = "SELECT * FROM reservation_line_item_view "
-                   + "WHERE reservationLineItem = :reservationLineItem";
-
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("reservationLineItem", reservationLineItemID);
-
-        return template.queryForObject(sql, params, new ReservationLineItemDTORowMapper());
-    }
 
     // ------------------------------------------------------------
     // RowMapper for base model
@@ -159,9 +163,9 @@ public class ReservationLineItemDAO {
             item.setEquipmentNumber(rs.getInt("EquipmentNumber"));
             item.setLineItemNotes(rs.getString("LineItemNotes"));
 
-            java.sql.Date sqlDate = rs.getDate("DateAdded");
-            if (sqlDate != null) {
-                item.setDateAdded(sqlDate.toLocalDate());
+            Timestamp ts = rs.getTimestamp("DateAdded");
+            if (ts != null) {
+                item.setDateAdded(ts.toLocalDateTime());
             }
 
             return item;
@@ -182,11 +186,18 @@ public class ReservationLineItemDAO {
             dto.setReservationID(rs.getInt("ReservationID"));
             dto.setEquipmentNumber(rs.getInt("EquipmentNumber"));
             dto.setLineItemNotes(rs.getString("LineItemNotes"));
-
-            java.sql.Date sqlDate = rs.getDate("DateAdded");
-            if (sqlDate != null) {
-                dto.setDateAdded(sqlDate.toLocalDate());
-            }
+//
+//            java.sql.Date sqlDate = rs.getDate("DateAdded");
+//            if (sqlDate != null) {
+//                dto.setDateAdded(sqlDate.toLocalDate());
+//            }
+            
+            Timestamp ts = rs.getTimestamp("DateAdded");
+            if (ts != null) {
+            	dto.setDateAdded(ts.toLocalDateTime());
+            }            
+            
+            
 
             // Equipment metadata
             dto.setEquipmentTypeText(rs.getString("EquipmentTypeText"));

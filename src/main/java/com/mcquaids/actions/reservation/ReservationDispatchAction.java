@@ -1,12 +1,14 @@
 package com.mcquaids.actions.reservation;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.mcquaids.model.DispatchAction;
 import com.mcquaids.model.DispatchGroup;
-import com.mcquaids.model.DispatchSourceType;
-import com.mcquaids.model.Reservation;
-import com.mcquaids.model.ReservationLineItem;
+import com.mcquaids.model.ReservationLineItemDTO;
 import com.mcquaids.service.DispatchActionService;
 import com.mcquaids.service.DispatchGroupingService;
 import com.opensymphony.xwork2.ActionContext;
@@ -20,22 +22,73 @@ public class ReservationDispatchAction extends BaseReservationAction {
 
         DispatchActionService dispatchActionService = new DispatchActionService();
 
+        // 1. Load reservation
         super.reservation = reservationService.getReservation(reservationID);
+
+        // 2. Load reservation line items (equipment)
+        List<ReservationLineItemDTO> lineItems =
+                reservationService.getReservationLineItems(reservationID);
+
+        // 3. Load existing dispatch actions (the existing plan)
+        List<DispatchAction> existingActions =
+                dispatchActionService.getActionsByReservationId(reservationID);
+
+        // 4. Determine which equipment numbers already have actions
+        Set<Integer> equipmentInPlan = existingActions.stream()
+                .map(DispatchAction::getEquipmentNumber)
+                .collect(Collectors.toSet());
+
+         Map<Integer, ReservationLineItemDTO> lineItemsByEquipment =
+        	        lineItems.stream().collect(Collectors.toMap(
+        	                ReservationLineItemDTO::getEquipmentNumber,
+        	                li -> li
+        	        ));
+
+       	Set<Integer> equipmentOnReservation = lineItemsByEquipment.keySet();    
+           
+        Set<Integer> newEquipment = new HashSet<>(equipmentOnReservation);
         
-        System.out.println(reservation.getCustomer().getFullName());
+        newEquipment.removeAll(equipmentInPlan);
+        
+     // 5b. Determine which equipment was removed
+        Set<Integer> removedEquipment = new HashSet<>(equipmentInPlan);
+        removedEquipment.removeAll(equipmentOnReservation); 
+        
+     // Mark removed tasks
+        for (DispatchAction action : existingActions) {
+            if (removedEquipment.contains(action.getEquipmentNumber())) {
+                action.setRemovedFromReservation(true);   // or setStatus(CANCELED)
+                dispatchActionService.update(action);
+            }
+        }
+        
+        
 
-        List<ReservationLineItem> lineItems =
-                reservationService.getReservedEquipmentByReservationID(reservation.getReservationID());
+        // 6. Generate full workflows ONLY for new equipment
 
-        List<DispatchAction> actions =
-                dispatchActionService.generateActionsForReservation(reservation, lineItems);
+        	
+        	for (Integer eq : newEquipment) {
+            ReservationLineItemDTO li = lineItemsByEquipment.get(eq);
 
-        // MVP placeholder
-        actions.forEach(a -> a.setSourceType(DispatchSourceType.RESERVATION));
+            List<DispatchAction> newActions =
+                    dispatchActionService.generateActionsForLineItem(reservation, li);
 
+            existingActions.addAll(newActions);
+        }
+        	
+        // 6.5  Attach DTOs to existing actions (new actions already have DTO)
+        	for (DispatchAction action : existingActions) {
+        	    if (action.getReservationLineItemDTO() == null) {
+        	        ReservationLineItemDTO dto = lineItemsByEquipment.get(action.getEquipmentNumber());
+        	        action.setReservationLineItemDTO(dto);
+        	    }
+        	}  	
+
+        // 7. Group all actions (existing + new)
         DispatchGroupingService groupingService = new DispatchGroupingService();
-        List<DispatchGroup> groups = groupingService.group(actions);
+        List<DispatchGroup> groups = groupingService.group(existingActions);
 
+        // 8. Push to UI
         ActionContext.getContext().put("reservation", reservation);
         ActionContext.getContext().put("dispatchGroups", groups);
 

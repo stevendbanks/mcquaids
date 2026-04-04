@@ -2,6 +2,7 @@ package com.mcquaids.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,9 +24,9 @@ public class EquipmentLocationHistoryDAO {
     public EquipmentLocationHistory findOpenLocation(int equipmentNumber) {
 
         String sql =
-            "SELECT LocationHistoryID, EquipmentNumber, Street, City, Province, " +
+            "SELECT LocationHistoryID, EquipmentNumber, YardID, Street, City, Province, " +
             "Postal, Country, LocationType, StartDateTime, EndDateTime, " +
-            "ReservationID, Notes " +
+            "ReservationID, Notes, ActionID, ActionType " +
             "FROM equipment_location_history " +
             "WHERE EquipmentNumber = ? " +
             "AND EndDateTime IS NULL " +
@@ -44,12 +45,13 @@ public class EquipmentLocationHistoryDAO {
 
         String sql =
             "UPDATE equipment_location_history SET " +
-            "Street = ?, City = ?, Province = ?, Postal = ?, Country = ?, " +
+            "YardID = ?, Street = ?, City = ?, Province = ?, Postal = ?, Country = ?, " +
             "LocationType = ?, StartDateTime = ?, EndDateTime = ?, " +
-            "ReservationID = ?, Notes = ? " +
+            "ReservationID = ?, Notes = ?, ActionID = ?, ActionType = ? " +
             "WHERE LocationHistoryID = ?";
 
         jdbcTemplate.update(sql,
+            history.getYardID(),
             history.getStreet(),
             history.getCity(),
             history.getProvince(),
@@ -60,6 +62,8 @@ public class EquipmentLocationHistoryDAO {
             history.getEndDateTime(),
             history.getReservationId(),
             history.getNotes(),
+            history.getActionId(),
+            history.getActionType(),
             history.getLocationHistoryID()
         );
     }
@@ -71,12 +75,13 @@ public class EquipmentLocationHistoryDAO {
 
         String sql =
             "INSERT INTO equipment_location_history " +
-            "(EquipmentNumber, Street, City, Province, Postal, Country, " +
-            "LocationType, StartDateTime, EndDateTime, ReservationID, Notes) " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            "(EquipmentNumber, YardID, Street, City, Province, Postal, Country, " +
+            "LocationType, StartDateTime, EndDateTime, ReservationID, Notes, ActionID, ActionType) " +
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         jdbcTemplate.update(sql,
             history.getEquipmentNumber(),
+            history.getYardID(),
             history.getStreet(),
             history.getCity(),
             history.getProvince(),
@@ -86,7 +91,9 @@ public class EquipmentLocationHistoryDAO {
             history.getStartDateTime(),
             history.getEndDateTime(),
             history.getReservationId(),
-            history.getNotes()
+            history.getNotes(),
+            history.getActionId(),
+            history.getActionType()
         );
     }
 
@@ -96,9 +103,9 @@ public class EquipmentLocationHistoryDAO {
     public List<EquipmentLocationHistory> findHistoryForEquipment(int equipmentNumber) {
 
         String sql =
-            "SELECT LocationHistoryID, EquipmentNumber, Street, City, Province, " +
+            "SELECT LocationHistoryID, EquipmentNumber, YardID, Street, City, Province, " +
             "Postal, Country, LocationType, StartDateTime, EndDateTime, " +
-            "ReservationID, Notes " +
+            "ReservationID, Notes, ActionID, ActionType " +
             "FROM equipment_location_history " +
             "WHERE EquipmentNumber = ? " +
             "ORDER BY StartDateTime DESC";
@@ -108,13 +115,13 @@ public class EquipmentLocationHistoryDAO {
             equipmentNumber
         );
     }
-    
+
     public List<EquipmentLocationHistory> findHistoryForReservation(int reservationId) {
 
         String sql =
-            "SELECT LocationHistoryID, EquipmentNumber, Street, City, Province, " +
+            "SELECT LocationHistoryID, EquipmentNumber, YardID, Street, City, Province, " +
             "Postal, Country, LocationType, StartDateTime, EndDateTime, " +
-            "ReservationID, Notes " +
+            "ReservationID, Notes, ActionID, ActionType " +
             "FROM equipment_location_history " +
             "WHERE ReservationID = ? " +
             "ORDER BY StartDateTime DESC";
@@ -123,8 +130,7 @@ public class EquipmentLocationHistoryDAO {
             new EquipmentLocationHistoryRowMapper(),
             reservationId
         );
-    }    
-    
+    }
 
     // ---------------------------------------------------------------------
     // RowMapper
@@ -137,21 +143,31 @@ public class EquipmentLocationHistoryDAO {
 
             EquipmentLocationHistory history = new EquipmentLocationHistory();
 
-            history.setLocationHistoryID(rs.getInt("LocationHistoryID"));
+            history.setLocationHistoryID(rs.getLong("LocationHistoryID"));
             history.setEquipmentNumber(rs.getInt("EquipmentNumber"));
+
+            Long yardId = rs.getLong("YardID");
+            history.setYardID(rs.wasNull() ? null : yardId);
+
             history.setStreet(rs.getString("Street"));
             history.setCity(rs.getString("City"));
             history.setProvince(rs.getString("Province"));
             history.setPostal(rs.getString("Postal"));
             history.setCountry(rs.getString("Country"));
             history.setLocationType(rs.getString("LocationType"));
-            history.setStartDateTime(rs.getTimestamp("StartDateTime"));
-            history.setEndDateTime(rs.getTimestamp("EndDateTime"));
+
+            history.setStartDateTime(rs.getObject("StartDateTime", LocalDateTime.class));
+            history.setEndDateTime(rs.getObject("EndDateTime", LocalDateTime.class));
 
             int reservationId = rs.getInt("ReservationID");
             history.setReservationId(rs.wasNull() ? null : reservationId);
 
             history.setNotes(rs.getString("Notes"));
+
+            Long actionId = rs.getLong("ActionID");
+            history.setActionId(rs.wasNull() ? null : actionId);
+
+            history.setActionType(rs.getString("ActionType"));
 
             return history;
         }

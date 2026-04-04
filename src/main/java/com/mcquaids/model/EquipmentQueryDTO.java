@@ -137,11 +137,14 @@ public class EquipmentQueryDTO  extends Equipment {
 	    dto.setSerialNumber(rs.getString("SerialNumber"));
 	    dto.setManufacturer(rs.getString("Manufacturer"));
 
-	    dto.setAvailabilityStatusText(rs.getString("AvailabilityStatusText"));
-	    dto.setConditionStatusText(rs.getString("ConditionStatusText"));
-	    dto.setMaintenanceStatusText(rs.getString("MaintenanceStatusText"));
-	    dto.setEquipmentTypeText(rs.getString("EquipmentTypeText"));
-	    dto.setEquipmentSubTypeText(rs.getString("EquipmentSubTypeText"));
+	    dto.setAvailabilityStatusText(rs.getString("availabilityStatusText"));
+	    dto.setConditionStatusText(rs.getString("conditionStatusText"));
+	    dto.setMaintenanceStatusText(rs.getString("maintenanceStatusText"));
+	    dto.setCleaningStatusText(rs.getString("cleaningStatusText"));
+	    dto.setBookingStatusCodeText(rs.getString("bookingStatusCodeText"));
+
+	    dto.setEquipmentTypeText(rs.getString("equipmentTypeText"));
+	    dto.setEquipmentSubTypeText(rs.getString("equipmentSubTypeText"));
 
 	    java.sql.Date manufacturedDate = rs.getDate("ManufacturedDate");
 	    if (manufacturedDate != null) {
@@ -169,6 +172,7 @@ public class EquipmentQueryDTO  extends Equipment {
 
 	    dto.setLeasedEquipmentNotes(rs.getString("leasedEquipmentNotes"));
 
+	    // JSON properties
 	    String propertiesJson = rs.getString("Properties");
 	    if (propertiesJson != null) {
 	        dto.setProperties(JsonUtils.setPropertiesFromJson(propertiesJson));
@@ -176,8 +180,16 @@ public class EquipmentQueryDTO  extends Equipment {
 	        dto.setProperties(new HashMap<>());
 	    }
 
+	    // NEW FIELDS — MUST BE POPULATED
+	    dto.setAvailable(rs.getBoolean("Available"));
+	    dto.setSafetyStatusCode(rs.getString("SafetyStatusCode"));
+
+	    long yardId = rs.getLong("PreferredYardID");
+	    dto.setPreferredYardId(rs.wasNull() ? null : yardId);
+
 	    return dto;
-	}	
+	}
+
 	
 	
 }

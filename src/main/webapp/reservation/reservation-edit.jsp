@@ -61,7 +61,7 @@
                                 Print
                             </button>
 						    <button class="dropdown-item" type="button" onclick="createDispatchPlan()">
-						        Create Dispatch Plan
+						        Dispatch Plan
 						    </button>
                             
                         </div>
@@ -72,7 +72,7 @@
                 <div class="row">
 
                     <!-- Customer -->
-                    <div class="col-sm-8">
+                    <div class="col-sm-6">
                         <div class="form-group">
                             <label for="customerID">Customer</label>
 
@@ -97,11 +97,11 @@
                     </div>
 
                     <!-- Required Date -->
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         <div class="form-group">
                             <label for="reservationStartDate">Required Date</label>
                             <s:textfield id="reservationStartDate"
-                                         type="date"
+                                         type="datetime-local"
                                          name="reservation.startDate"
                                          cssClass="form-control"
                                          format="yyyy-MM-dd"/>
@@ -109,11 +109,11 @@
                     </div>
 
                     <!-- Return Date -->
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         <div class="form-group">
                             <label for="reservationEndDate">Return Date</label>
                             <s:textfield id="reservationEndDate"
-                                         type="date"
+                                         type="datetime-local"
                                          name="reservation.endDate"
                                          cssClass="form-control"
                                          format="yyyy-MM-dd"/>

@@ -1,7 +1,5 @@
 package com.mcquaids.actions.customer;
 
-import org.apache.struts2.ServletActionContext;
-
 import com.mcquaids.service.CustomerService;
 
  public class EditCustomerAction extends BaseCustomerAction {
@@ -15,10 +13,6 @@ import com.mcquaids.service.CustomerService;
 	
 	private String customerID;
 	
-	private String returnParams;
-	
-
-
 
 	public EditCustomerAction() {
 		super();
@@ -26,6 +20,7 @@ import com.mcquaids.service.CustomerService;
 
 	
 	public String execute() {
+		System.out.println("EditCustomerAction.execute()  customerID=" + customerID);
 //		codeValues = new CodeValues();
 		CustomerService customerService = new CustomerService();
 		

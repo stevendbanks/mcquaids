@@ -1,10 +1,12 @@
 package com.mcquaids.dao;
 
-import com.mcquaids.model.Address;
-import com.mcquaids.model.Yard;
+import java.util.List;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.util.List;
+import com.mcquaids.dao.rowmappers.YardRowMapper;
+import com.mcquaids.model.Address;
+import com.mcquaids.model.Yard;
 
 public class YardDAO {
 
@@ -59,5 +61,21 @@ public class YardDAO {
             }
             return null;
         });
+    }
+
+    public Yard getYardById(Long yardId) {
+
+        if (yardId == null) {
+            return null;
+        }
+
+        String sql =
+            "SELECT yard_id, name, street, city, province, postal, country, is_default " +
+            "FROM yard " +
+            "WHERE yard_id = ?";
+
+        List<Yard> results = jdbcTemplate.query(sql, new YardRowMapper(), yardId);
+
+        return results.isEmpty() ? null : results.get(0);
     }
 }

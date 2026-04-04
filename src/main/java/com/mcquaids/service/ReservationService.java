@@ -85,6 +85,18 @@ public class ReservationService {
     public ReservationLineItem editReservationLineItem(int reservationLineItemID) {
         return reservationLineItemDAO.getReservationLineItem(reservationLineItemID);
     }
+    
+    // ------------------------------------------------------------
+    // Reservation Line Item View (DTO)
+    // ------------------------------------------------------------
+    public List<ReservationLineItemDTO> getReservationLineItems(Integer reservationID) {
+        return reservationLineItemDAO.getReservationLineItems(reservationID);
+    }
+
+    public ReservationLineItemDTO viewReservationLineItem(Integer reservationLineItemID) { 
+        return reservationLineItemDAO.viewReservationLineItem(reservationLineItemID);
+    }    
+    
 
     // ------------------------------------------------------------
     // Add Equipment to Reservation (NEW simplified version)
@@ -151,9 +163,7 @@ public class ReservationService {
       /// *************** SDBANKS - should we be validating that the reservationID and the   oldReservationLineItemID belong to the same reservation????
       //  reservationID = oldItem.getReservationID();
 
-        System.out.println("SDBANKS - 9000");        
     	reservationLineItemDAO.deleteReservationLineItem(oldReservationLineItemID);
-System.out.println("SDBANKS - 10000");
 
             // Add the new equipment
             ReservationLineItem newItem =
@@ -171,16 +181,7 @@ System.out.println("SDBANKS - 10000");
     }
     
 
-    // ------------------------------------------------------------
-    // Reservation Line Item View (DTO)
-    // ------------------------------------------------------------
-    public List<ReservationLineItemDTO> getReservationLineItems(Integer reservationID) {
-        return reservationLineItemDAO.getReservationLineItems(reservationID);
-    }
 
-    public ReservationLineItemDTO viewReservationLineItem(Integer reservationLineItemID) { 
-        return reservationLineItemDAO.viewReservationLineItem(reservationLineItemID);
-    }
 
     // ------------------------------------------------------------
     // Error Handling

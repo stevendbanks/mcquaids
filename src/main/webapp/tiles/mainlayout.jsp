@@ -10,7 +10,7 @@
     <meta name="author" content="">
 
     <!-- Base URL (ensure this matches your deployment path) -->
-    <base href="http://newschasers.ca/">
+    <base href="https://newschasers.ca/">
 
     <title><tiles:insertAttribute name="title" ignore="true" /></title>
 

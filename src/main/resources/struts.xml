@@ -352,6 +352,27 @@
         class="com.mcquaids.actions.reservation.ReservationDispatchAction">
     		<result name="dispatchPlan" type="tiles">dispatch-plan</result>
 	</action>
+	
+<action name="pushToCalendar" class="com.mcquaids.actions.reservation.PushToCalendarAction">
+    <result type="json">
+        <param name="includeProperties">
+            reservationLineItemDTO\..*,
+            actionMessages\[\],
+            actionErrors\[\],
+            calendarEventLink
+        </param>
+    </result>
+</action>	
+
+<action name="removeFromCalendar"
+        class="com.mcquaids.actions.reservation.RemoveFromCalendarAction">
+    <result type="json">
+        <param name="includeProperties">
+            actionErrors, actionMessages
+        </param>
+    </result>
+</action>
+
 
     <action name="convertToLease" method="execute"
         class="com.mcquaids.actions.reservation.ConvertToLeaseAction">
@@ -447,6 +468,19 @@
 		</action>		
 	</package>
 
+<package name="dispatch" namespace="/dispatch" extends="default">
+
+    <action name="action" class="com.mcquaids.actions.dispatch.DriverAction" method="execute">
+        <result name="show">/WEB-INF/jsp/driver/action.jsp</result>
+        <result name="error">/WEB-INF/jsp/driver/action.jsp</result>
+    </action>
+
+    <action name="action-complete" class="com.mcquaids.actions.dispatch.DriverAction" method="complete">
+        <result name="error">/WEB-INF/jsp/driver/action.jsp</result>
+        <result name="completed">/WEB-INF/jsp/driver/complete.jsp</result>
+    </action>
+
+</package>
 
 
 	<package name="reports" extends="default" namespace="/reports">

@@ -35,10 +35,17 @@ public class Equipment implements Serializable, IEquipment {
 	protected String specialNotes;
 	protected Date inspectionDate;
 	protected String availabilityStatusCode;
+	protected boolean available;
 	protected String conditionStatusCode;
 	protected String maintenanceStatusCode;
+	
+	
 	protected String cleaningStatusCode;
 	protected String bookingStatusCode;
+
+	protected String safetyStatusCode;  // e.g., "OK", "DAMAGED", "INSPECTION_REQUIRED"
+	
+	protected Long preferredYardId;
 
 
 	protected Map<String, String> properties;
@@ -273,6 +280,20 @@ public class Equipment implements Serializable, IEquipment {
 
 
 	/**
+	 * @return the available
+	 */
+	public boolean isAvailable() {
+		return available;
+	}
+
+	/**
+	 * @param available the available to set
+	 */
+	public void setAvailable(boolean available) {
+		this.available = available;
+	}
+
+	/**
 	 * @return the availabilityStatusCode
 	 */
 	public String getAvailabilityStatusCode() {
@@ -343,6 +364,20 @@ public class Equipment implements Serializable, IEquipment {
 	}
 
 	/**
+	 * @return the safetyStatusCode
+	 */
+	public String getSafetyStatusCode() {
+		return safetyStatusCode;
+	}
+
+	/**
+	 * @param safetyStatusCode the safetyStatusCode to set
+	 */
+	public void setSafetyStatusCode(String safetyStatusCode) {
+		this.safetyStatusCode = safetyStatusCode;
+	}
+
+	/**
 	 * @return the dateStringUtil
 	 */
 	public DateStringUtil getDateStringUtil() {
@@ -382,6 +417,20 @@ public class Equipment implements Serializable, IEquipment {
 	 */
 	public void setPurchaseDate(Date purchaseDate) {
 		this.purchaseDate = purchaseDate;
+	}
+
+	/**
+	 * @return the preferredYardId
+	 */
+	public Long getPreferredYardId() {
+		return preferredYardId;
+	}
+
+	/**
+	 * @param preferredYardId the preferredYardId to set
+	 */
+	public void setPreferredYardId(Long preferredYardId) {
+		this.preferredYardId = preferredYardId;
 	}
 
 	/**

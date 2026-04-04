@@ -129,6 +129,10 @@ public class EquipmentService {
         x.setProperties(PropertyHydrator.hydrateFromJson(x.getPropertiesAsJson()));
 		return x;
 	}
+
+	public Long getPreferredYardId(Integer equipmentNumber) {
+		return equipmentDAO.getPreferredYardId(equipmentNumber);
+	}
 	
 	
 	

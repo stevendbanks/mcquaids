@@ -32,6 +32,35 @@ public class Address {
 
     public String getCountry() { return country; }
     public void setCountry(String country) { this.country = country; }
+ 
+    
+    public String toSingleLine() {
+        StringBuilder sb = new StringBuilder();
+
+        if (street != null && !street.isBlank()) sb.append(street);
+
+        if (city != null && !city.isBlank()) {
+            if (sb.length() > 0) sb.append(", ");
+            sb.append(city);
+        }
+
+        if (province != null && !province.isBlank()) {
+            if (sb.length() > 0) sb.append(", ");
+            sb.append(province);
+        }
+
+//        if (postalCode != null && !postalCode.isBlank()) {
+//            sb.append(" ").append(postalCode);
+//        }
+//
+//        if (country != null && !country.isBlank()) {
+//            if (sb.length() > 0) sb.append(", ");
+//            sb.append(country);
+//        }
+
+        return sb.toString();
+    }    
+    
     
     
     @Override

@@ -45,4 +45,9 @@ public class YardService {
         // fallback: first yard in list
         return cachedYards.isEmpty() ? null : cachedYards.get(0).getAddress();
     }
+
+	public Yard getYardById(Long preferredYardId) {
+		// TODO Auto-generated method stub
+		return yardDAO.getYardById(preferredYardId);
+	}
 }

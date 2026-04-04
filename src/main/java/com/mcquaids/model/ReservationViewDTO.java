@@ -1,12 +1,12 @@
 package com.mcquaids.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class ReservationViewDTO extends Reservation {
 
     // Customer table extras
     private String customerNotes;
-    private Date customerCreatedDateTime;
+    private LocalDateTime customerCreatedDateTime;
     private String customerCreatedUserID;
 
     // CodeValue description
@@ -22,11 +22,11 @@ public class ReservationViewDTO extends Reservation {
         this.customerNotes = customerNotes;
     }
 
-    public Date getCustomerCreatedDateTime() {
+    public LocalDateTime getCustomerCreatedDateTime() {
         return customerCreatedDateTime;
     }
 
-    public void setCustomerCreatedDateTime(Date customerCreatedDateTime) {
+    public void setCustomerCreatedDateTime(LocalDateTime customerCreatedDateTime) {
         this.customerCreatedDateTime = customerCreatedDateTime;
     }
 

@@ -1,14 +1,14 @@
 package com.mcquaids.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class ReservationLineItem {
 
     private Integer reservationLineItemID;
     private Integer reservationID;
-    private int equipmentNumber;
+    private Integer equipmentNumber;
     private String lineItemNotes;
-    private LocalDate dateAdded;
+    private LocalDateTime dateAdded;
 
     // --- Getters and Setters ---
 
@@ -32,11 +32,11 @@ public class ReservationLineItem {
         return "R" + String.format("%05d", this.reservationID);
     }
 
-    public int getEquipmentNumber() {
+    public Integer getEquipmentNumber() {
         return equipmentNumber;
     }
 
-    public void setEquipmentNumber(int equipmentNumber) {
+    public void setEquipmentNumber(Integer equipmentNumber) {
         this.equipmentNumber = equipmentNumber;
     }
 
@@ -48,11 +48,11 @@ public class ReservationLineItem {
         this.lineItemNotes = lineItemNotes;
     }
 
-    public LocalDate getDateAdded() {
+    public LocalDateTime getDateAdded() {
         return dateAdded;
     }
 
-    public void setDateAdded(LocalDate dateAdded) {
+    public void setDateAdded(LocalDateTime dateAdded) {
         this.dateAdded = dateAdded;
     }
 
