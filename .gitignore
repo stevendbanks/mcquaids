@@ -59,3 +59,5 @@ bin/
 # Ignore Gradle wrapper jars and caches
 gradle/wrapper/gradle-wrapper.jar
 .gradle/
+
+src/main/resources/google/service-account.json
