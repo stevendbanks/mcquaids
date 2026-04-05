@@ -1,9 +1,9 @@
 package com.mcquaids.model;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.mcquaids.model.lookup.CodeValues;
-import com.mcquaids.utils.PropertyHydrator;
 
 public class Reservation {
 
@@ -13,8 +13,8 @@ public class Reservation {
     private Customer customer;
     
     private String reservationStatusCode;
-    private Date startDate;
-    private Date endDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private String instructions;
     private String leaseID;
     private Date dateCreated;
@@ -34,7 +34,11 @@ public class Reservation {
     private String secondaryProvince;
     private String secondaryPostalCode;
     private String secondaryCountry;
+<<<<<<< HEAD
+    private LocalDateTime secondaryDeliveryDate;    
+=======
     private Date secondaryDeliveryDate;    
+>>>>>>> origin/main
     
     // Additional Person (MVP fields)
     private String additionalPersonName;
@@ -85,6 +89,40 @@ public class Reservation {
 		this.customer = customer;
 	}
 
+<<<<<<< HEAD
+	
+	
+	
+	/**
+	 * @return the startDate
+	 */
+	public LocalDateTime getStartDate() {
+		return startDate;
+	}
+
+	/**
+	 * @param startDate the startDate to set
+	 */
+	public void setStartDate(LocalDateTime startDate) {
+		this.startDate = startDate;
+	}
+
+	/**
+	 * @return the endDate
+	 */
+	public LocalDateTime getEndDate() {
+		return endDate;
+	}
+
+	/**
+	 * @param endDate the endDate to set
+	 */
+	public void setEndDate(LocalDateTime endDate) {
+		this.endDate = endDate;
+	}
+
+=======
+>>>>>>> origin/main
 	/**
 	 * @return the deliveryStreet
 	 */
@@ -239,17 +277,30 @@ public class Reservation {
 		this.secondaryCountry = secondaryCountry;
 	}
 
+<<<<<<< HEAD
+
+
+	/**
+	 * @return the secondaryDeliveryDate
+	 */
+	public LocalDateTime getSecondaryDeliveryDate() {
+=======
 	/**
 	 * @return the secondaryDeliveryDate
 	 */
 	public Date getSecondaryDeliveryDate() {
+>>>>>>> origin/main
 		return secondaryDeliveryDate;
 	}
 
 	/**
 	 * @param secondaryDeliveryDate the secondaryDeliveryDate to set
 	 */
+<<<<<<< HEAD
+	public void setSecondaryDeliveryDate(LocalDateTime secondaryDeliveryDate) {
+=======
 	public void setSecondaryDeliveryDate(Date secondaryDeliveryDate) {
+>>>>>>> origin/main
 		this.secondaryDeliveryDate = secondaryDeliveryDate;
 	}
 
@@ -303,22 +354,7 @@ public class Reservation {
         this.reservationStatusCode = reservationStatusCode;
     }
 
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-
+ 
     public String getInstructions() {
         return instructions;
     }
@@ -353,6 +389,42 @@ public class Reservation {
 
 
 
+<<<<<<< HEAD
+    public Address getDeliveryAddress() {
+        if (deliveryStreet == null &&
+            deliveryCity == null &&
+            deliveryProvince == null &&
+            deliveryCountry == null &&
+            deliveryPostalCode == null) {
+            return null;
+        }
+
+        Address address = new Address();
+        address.setStreet(deliveryStreet);
+        address.setCity(deliveryCity);
+        address.setProvince(deliveryProvince);
+        address.setCountry(deliveryCountry);
+        address.setPostalCode(deliveryPostalCode);
+        return address;
+    }
+	
+	public Address getSecondaryDeliveryAddress() {
+	    if (secondaryStreet == null &&
+	        secondaryCity == null &&
+	        secondaryProvince == null &&
+	        secondaryCountry == null &&
+	        secondaryPostalCode == null) {
+	        return null;
+	    }
+
+	    Address address = new Address();
+	    address.setStreet(secondaryStreet);
+	    address.setCity(secondaryCity);
+	    address.setProvince(secondaryProvince);
+	    address.setCountry(secondaryCountry);
+	    address.setPostalCode(secondaryPostalCode);
+	    return address;
+=======
 	public Address getDeliveryAddress() {
 		Address address = new Address();
 		address.setStreet(deliveryStreet);
@@ -371,6 +443,7 @@ public class Reservation {
 		address.setCountry(secondaryCountry);
 		address.setPostalCode(secondaryPostalCode);
 		return address;
+>>>>>>> origin/main
 	}
 
 	@Override

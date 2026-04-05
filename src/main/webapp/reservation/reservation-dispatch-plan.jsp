@@ -45,6 +45,16 @@
                 </div>
 
                 <!-- START DATE -->
+<<<<<<< HEAD
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>Required Date</label>
+<s:textfield type="datetime-local"
+             name="reservation.startDate"
+             cssClass="form-control"
+             disabled="true"
+             theme="simple"/>
+=======
                 <div class="col-sm-2">
                     <div class="form-group">
                         <label>Required Date</label>
@@ -53,6 +63,7 @@
                                      cssClass="form-control"
                                      disabled="true"
                                      theme="simple"/>
+>>>>>>> origin/main
                     </div>
                 </div>
 
@@ -60,7 +71,11 @@
                 <div class="col-sm-3">
                     <div class="form-group">
                         <label>Return Date</label>
+<<<<<<< HEAD
+                        <s:textfield type="datetime-local"
+=======
                         <s:textfield type="date"
+>>>>>>> origin/main
                                      name="reservation.endDate"
                                      cssClass="form-control"
                                      disabled="true"
@@ -110,17 +125,103 @@
                         <table class="table table-striped mb-0">
                             <thead>
                             <tr>
+<<<<<<< HEAD
+                                <th></th>
+=======
+>>>>>>> origin/main
                                 <th>Equipment</th>
                                 <th>Action</th>
                                 <th>From</th>
                                 <th>To</th>
                                 <th>Source</th>
+<<<<<<< HEAD
+                                <th>Date</th>
+                                <th>Push</th>
+=======
+>>>>>>> origin/main
                             </tr>
                             </thead>
 
                             <tbody>
                             <s:iterator value="#group.actions" var="a">
                                 <tr>
+<<<<<<< HEAD
+
+									<td>
+<s:if test="#a.removedFromReservation">
+    <span class="badge bg-danger ms-2">
+        Removed
+    </span>
+
+    <span class="ms-1 text-muted"
+          data-bs-toggle="popover"
+          data-bs-trigger="hover focus"
+          title="Removed From Reservation"
+          data-bs-content="This equipment was removed from the reservation, but it is still part of the Dispatch Plan and may still be on Google Calendar. Review and remove it if it is no longer needed.">
+        <i class="bi bi-question-circle"></i>
+    </span>
+</s:if>
+									</td>
+					<td>
+					    <s:property value="#a.equipmentNumber"/><br/>
+					    <s:property value="#a.reservationLineItemDTO.equipmentTypeText"/>
+					    &nbsp;
+					    <s:property value="#a.reservationLineItemDTO.equipmentSubTypeText"/>
+					</td>                           
+
+                                    <td><s:property value="#a.actionType"/></td>
+<td>
+    <s:if test="#a.fromYardId != null">
+        <s:property value="#a.fromLocationName"/>
+    </s:if>
+    <s:else>
+        <s:property value="#a.fromAddress.street"/>,
+        <s:property value="#a.fromAddress.city"/>
+    </s:else>
+</td>
+
+<td>
+    <s:if test="#a.toYardId != null">
+        <s:property value="#a.toLocationName"/>
+    </s:if>
+    <s:else>
+        <s:property value="#a.toAddress.street"/>,
+        <s:property value="#a.toAddress.city"/>
+    </s:else>
+</td>
+                                    <td><s:property value="#a.sourceType"/></td>
+                                    <td><s:date name="#a.scheduledDateTime" format="MMM dd, yyyy"/></td>
+<td>
+<td>
+    <!-- Case 1: Not removed, no event yet -->
+    <s:if test="!#a.removedFromReservation && #a.googleEventId == null">
+        <a href="javascript:void(0);"
+           class="btn btn-sm btn-outline-primary push-to-calendar"
+           data-dispatch-action-id="<s:property value='#a.dispatchActionId'/>">
+            Push to Calendar
+        </a>
+    </s:if>
+
+    <!-- Case 2: Not removed, event exists -->
+    <s:if test="!#a.removedFromReservation && #a.googleEventId != null">
+        <a href="https://calendar.google.com/calendar/u/0/r/eventedit/<s:property value='#a.universalEidUrl'/>"
+           target="_blank"
+           class="btn btn-sm btn-outline-success">
+            View Calendar
+        </a>
+    </s:if>
+
+    <!-- Case 3: Removed from reservation, event exists -->
+    <s:if test="#a.removedFromReservation && #a.googleEventId != null">
+        <a href="javascript:void(0);"
+           class="btn btn-sm btn-outline-danger remove-from-calendar"
+           data-dispatch-action-id="<s:property value='#a.dispatchActionId'/>">
+            Remove from Calendar
+        </a>
+    </s:if>
+</td>
+</td>
+=======
                                     <td><s:property value="#a.equipmentNumber"/></td>
                                     <td><s:property value="#a.actionType"/></td>
                                     <td>
@@ -132,6 +233,7 @@
                                         <s:property value="#a.toAddress.city"/>
                                     </td>
                                     <td><s:property value="#a.sourceType"/></td>
+>>>>>>> origin/main
                                 </tr>
                             </s:iterator>
                             </tbody>
@@ -144,4 +246,28 @@
         </div>
     </div>
 
+<<<<<<< HEAD
 </div>
+
+
+<script type="module"> 
+import { initDispatchCalendarButtons } from '/mcquaids/javascript/common/dispatch-calendar.js';
+
+document.addEventListener('DOMContentLoaded', () => {
+    initDispatchCalendarButtons();
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('[data-bs-toggle="popover"]').forEach(function (el) {
+        new bootstrap.Popover(el, { 
+            container: 'body',
+            trigger: 'hover focus'
+        });
+    });
+});
+</script>
+=======
+</div>
+>>>>>>> origin/main

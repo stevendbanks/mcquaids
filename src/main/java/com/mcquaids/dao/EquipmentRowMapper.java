@@ -12,76 +12,71 @@ import com.mcquaids.utils.JsonUtils;
 
 public class EquipmentRowMapper implements RowMapper<Equipment> {
 
-    protected Equipment equipment = new Equipment();
-
-	
-	@Override
+    @Override
     public Equipment mapRow(ResultSet rs, int rowNum) throws SQLException {
+
+        Equipment equipment = new Equipment();
+
+        equipment.setEquipmentNumber(rs.getString("EquipmentNumber"));
+        equipment.setEquipmentType(rs.getInt("EquipmentType"));
+        equipment.setEquipmentSubType(rs.getString("EquipmentSubType"));
+
+        // Read-only lookup field
         try {
-            equipment.setEquipmentNumber(rs.getString("EquipmentNumber"));
-            equipment.setEquipmentType(rs.getInt("EquipmentType"));
-            equipment.setEquipmentSubType(rs.getString("EquipmentSubType"));
             equipment.setEquipmentSubTypeText(rs.getString("equipmentSubTypeText"));
-            equipment.setSerialNumber(rs.getString("SerialNumber"));
-            equipment.setManufacturer(rs.getString("Manufacturer"));
+        } catch (SQLException ignore) {}
 
-            // Handle null values and convert java.sql.Date to java.util.Date
-            java.sql.Date manufacturedDate = rs.getDate("ManufacturedDate");
-            if (manufacturedDate != null) {
-                equipment.setManufacturedDate(new Date(manufacturedDate.getTime()));
-            }
+        equipment.setSerialNumber(rs.getString("SerialNumber"));
+        equipment.setManufacturer(rs.getString("Manufacturer"));
 
-            java.sql.Date purchaseDate = rs.getDate("PurchaseDate");
-            if (purchaseDate != null) {
-                equipment.setPurchaseDate(new Date(purchaseDate.getTime()));
-            }
-
-            equipment.setPurchasePrice(rs.getDouble("PurchasePrice"));
-            equipment.setSpecialNotes(rs.getString("SpecialNotes"));
-
-         // Handle null values and convert java.sql.Date to java.util.Date
-             java.sql.Date inspectionDate = rs.getDate("InspectionDate");
-             if (inspectionDate != null) {
-                 equipment.setInspectionDate(new Date(inspectionDate.getTime()));
-             }
-
-            equipment.setAvailabilityStatusCode(rs.getString("AvailabilityStatusCode"));
-            equipment.setConditionStatusCode(rs.getString("ConditionStatusCode"));
-            equipment.setMaintenanceStatusCode(rs.getString("MaintenanceStatusCode"));
-            equipment.setCleaningStatusCode(rs.getString("CleaningStatusCode"));
-            equipment.setBookingStatusCode(rs.getString("BookingStatusCode"));
-
-//             Convert JSON string to Map if needed
-             String propertiesJson = rs.getString("Properties");
-             if (propertiesJson != null) {
-                 equipment.setProperties(JsonUtils.setPropertiesFromJson(propertiesJson)); 
-             } else {
-                 equipment.setProperties(new HashMap<>());
-             }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        // Dates
+        java.sql.Date manufacturedDate = rs.getDate("ManufacturedDate");
+        if (manufacturedDate != null) {
+            equipment.setManufacturedDate(new Date(manufacturedDate.getTime()));
         }
+
+        java.sql.Date purchaseDate = rs.getDate("PurchaseDate");
+        if (purchaseDate != null) {
+            equipment.setPurchaseDate(new Date(purchaseDate.getTime()));
+        }
+
+        java.sql.Date inspectionDate = rs.getDate("InspectionDate");
+        if (inspectionDate != null) {
+            equipment.setInspectionDate(new Date(inspectionDate.getTime()));
+        }
+
+        equipment.setPurchasePrice(rs.getDouble("PurchasePrice"));
+        equipment.setSpecialNotes(rs.getString("SpecialNotes"));
+
+        equipment.setAvailabilityStatusCode(rs.getString("AvailabilityStatusCode"));
+        equipment.setConditionStatusCode(rs.getString("ConditionStatusCode"));
+        equipment.setMaintenanceStatusCode(rs.getString("MaintenanceStatusCode"));
+        equipment.setCleaningStatusCode(rs.getString("CleaningStatusCode"));
+        equipment.setBookingStatusCode(rs.getString("BookingStatusCode"));
+
+        // JSON properties
+        String propertiesJson = rs.getString("Properties");
+        if (propertiesJson != null) {
+            equipment.setProperties(JsonUtils.setPropertiesFromJson(propertiesJson));
+        } else {
+            equipment.setProperties(new HashMap<>());
+        }
+
+        // NEW FIELDS
+        try {
+            equipment.setAvailable(rs.getBoolean("Available"));
+        } catch (SQLException ignore) {}
+
+        try {
+            equipment.setSafetyStatusCode(rs.getString("SafetyStatusCode"));
+        } catch (SQLException ignore) {}
+
+        try {
+            long yardId = rs.getLong("PreferredYardID");
+            equipment.setPreferredYardId(rs.wasNull() ? null : yardId);
+        } catch (SQLException ignore) {}
 
         return equipment;
     }
-    
-
-	/**
-	 * @return the equipment
-	 */
-	public Equipment getEquipment() {
-		return equipment;
-	}
-
-
-	/**
-	 * @param equipment the equipment to set
-	 */
-	public void setEquipment(Equipment equipment) {
-		this.equipment = equipment;
-	}    
-    
-    
-    
 }
+

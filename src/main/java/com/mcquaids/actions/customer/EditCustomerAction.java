@@ -15,10 +15,13 @@ import com.mcquaids.service.CustomerService;
 	
 	private String customerID;
 	
+<<<<<<< HEAD
+=======
 	private String returnParams;
 	
 
 
+>>>>>>> origin/main
 
 	public EditCustomerAction() {
 		super();
@@ -26,6 +29,7 @@ import com.mcquaids.service.CustomerService;
 
 	
 	public String execute() {
+		System.out.println("EditCustomerAction.execute()  customerID=" + customerID);
 //		codeValues = new CodeValues();
 		CustomerService customerService = new CustomerService();
 		

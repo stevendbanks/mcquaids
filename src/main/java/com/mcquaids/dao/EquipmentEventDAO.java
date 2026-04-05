@@ -1,5 +1,8 @@
 package com.mcquaids.dao;
 
+<<<<<<< HEAD
+import org.springframework.jdbc.core.JdbcTemplate;
+=======
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
@@ -10,6 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+>>>>>>> origin/main
 
 import com.mcquaids.model.EquipmentEvent;
 
@@ -21,6 +25,25 @@ public class EquipmentEventDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+<<<<<<< HEAD
+    public void insert(EquipmentEvent event) {
+
+        String sql =
+            "INSERT INTO equipment_events " +
+            "(equipment_number, event_type, action_id, action_type, notes, created_at, created_by) " +
+            "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        jdbcTemplate.update(sql,
+            event.getEquipmentNumber(),
+            event.getEventType(),
+            event.getActionId(),     // may be null
+            event.getActionType(),   // may be null
+            event.getNotes(),
+            event.getCreatedAt(),    // LocalDateTime
+            event.getCreatedBy()     // may be null
+        );
+    }
+=======
     // ------------------------------------------------------------
     // INSERT
     // ------------------------------------------------------------
@@ -139,4 +162,5 @@ public class EquipmentEventDAO {
 
         return event;
     };
+>>>>>>> origin/main
 }

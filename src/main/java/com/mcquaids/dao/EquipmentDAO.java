@@ -43,14 +43,30 @@ public class EquipmentDAO {
 	public void addEquipment(Equipment equipment) {
 		System.out.println(equipment.toString());
 		try {
-		String sql = "INSERT INTO equipment (EquipmentNumber, EquipmentType, equipmentSubType, SerialNumber, Manufacturer, ManufacturedDate, PurchaseDate, PurchasePrice, SpecialNotes, InspectionDate, Properties, AvailabilityStatusCode, ConditionStatusCode, MaintenanceStatusCode, CleaningStatusCode, BookingStatusCode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		jdbcTemplate.update(sql, equipment.getEquipmentNumber(), equipment.getEquipmentType(),
-				equipment.getEquipmentSubType(), equipment.getSerialNumber(), equipment.getManufacturer(),
-				equipment.getManufacturedDate(), equipment.getPurchaseDate(), equipment.getPurchasePrice(),
-				equipment.getSpecialNotes(), equipment.getInspectionDate(), equipment.getPropertiesAsJson(),
-				equipment.getAvailabilityStatusCode(), equipment.getConditionStatusCode(),
-				equipment.getMaintenanceStatusCode(), equipment.getCleaningStatusCode(),
-				equipment.getBookingStatusCode());
+			String sql = "INSERT INTO equipment (EquipmentNumber, EquipmentType, EquipmentSubType, SerialNumber, Manufacturer, ManufacturedDate, PurchaseDate, PurchasePrice, SpecialNotes, InspectionDate, Properties, AvailabilityStatusCode, ConditionStatusCode, MaintenanceStatusCode, CleaningStatusCode, BookingStatusCode, Available, SafetyStatusCode, PreferredYardID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+			jdbcTemplate.update(sql,
+			    equipment.getEquipmentNumber(),
+			    equipment.getEquipmentType(),
+			    equipment.getEquipmentSubType(),
+			    equipment.getSerialNumber(),
+			    equipment.getManufacturer(),
+			    equipment.getManufacturedDate(),
+			    equipment.getPurchaseDate(),
+			    equipment.getPurchasePrice(),
+			    equipment.getSpecialNotes(),
+			    equipment.getInspectionDate(),
+			    equipment.getPropertiesAsJson(),
+			    equipment.getAvailabilityStatusCode(),
+			    equipment.getConditionStatusCode(),
+			    equipment.getMaintenanceStatusCode(),
+			    equipment.getCleaningStatusCode(),
+			    equipment.getBookingStatusCode(),
+			    equipment.isAvailable(),
+			    equipment.getSafetyStatusCode(),
+			    equipment.getPreferredYardId()
+			);
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -64,13 +80,30 @@ public class EquipmentDAO {
 
 	// Update
 	public void updateEquipment(Equipment equipment) {
-		String sql = "UPDATE equipment SET EquipmentType = ?, equipmentSubType = ?, SerialNumber = ?, Manufacturer = ?, ManufacturedDate = ?, PurchaseDate = ?, PurchasePrice = ?, SpecialNotes = ?, InspectionDate = ?, Properties = ?, AvailabilityStatusCode = ?, ConditionStatusCode = ?, MaintenanceStatusCode = ?, CleaningStatusCode = ?, BookingStatusCode = ? WHERE EquipmentNumber = ?";
-		jdbcTemplate.update(sql, equipment.getEquipmentType(), equipment.getEquipmentSubType(),
-				equipment.getSerialNumber(), equipment.getManufacturer(), equipment.getManufacturedDate(),
-				equipment.getPurchaseDate(), equipment.getPurchasePrice(), equipment.getSpecialNotes(),
-				equipment.getInspectionDate(), equipment.getPropertiesAsJson(), equipment.getAvailabilityStatusCode(),
-				equipment.getConditionStatusCode(), equipment.getMaintenanceStatusCode(),
-				equipment.getCleaningStatusCode(), equipment.getBookingStatusCode(), equipment.getEquipmentNumber());
+		String sql = "UPDATE equipment SET EquipmentType=?, EquipmentSubType=?, SerialNumber=?, Manufacturer=?, ManufacturedDate=?, PurchaseDate=?, PurchasePrice=?, SpecialNotes=?, InspectionDate=?, Properties=?, AvailabilityStatusCode=?, ConditionStatusCode=?, MaintenanceStatusCode=?, CleaningStatusCode=?, BookingStatusCode=?, Available=?, SafetyStatusCode=?, PreferredYardID=? WHERE EquipmentNumber=?";
+
+		jdbcTemplate.update(sql,
+		    equipment.getEquipmentType(),
+		    equipment.getEquipmentSubType(),
+		    equipment.getSerialNumber(),
+		    equipment.getManufacturer(),
+		    equipment.getManufacturedDate(),
+		    equipment.getPurchaseDate(),
+		    equipment.getPurchasePrice(),
+		    equipment.getSpecialNotes(),
+		    equipment.getInspectionDate(),
+		    equipment.getPropertiesAsJson(),
+		    equipment.getAvailabilityStatusCode(),
+		    equipment.getConditionStatusCode(),
+		    equipment.getMaintenanceStatusCode(),
+		    equipment.getCleaningStatusCode(),
+		    equipment.getBookingStatusCode(),
+		    equipment.isAvailable(),
+		    equipment.getSafetyStatusCode(),
+		    equipment.getPreferredYardId(),
+		    equipment.getEquipmentNumber()
+		);
+
 	}
 
 	// Delete
@@ -306,7 +339,23 @@ public class EquipmentDAO {
 	        ex.printStackTrace();
 	        return null;
 	    }
-	}	
+	}
+
+	public Long getPreferredYardId(Integer equipmentNumber) {
+
+	    String sql = "SELECT PreferredYardID FROM equipment WHERE EquipmentNumber = ?";
+
+	    List<Long> results = jdbcTemplate.query(
+	            sql,
+	            ps -> ps.setInt(1, equipmentNumber),
+	            (rs, rowNum) -> {
+	                Long yardId = rs.getLong("PreferredYardID");
+	                return rs.wasNull() ? null : yardId;
+	            }
+	    );
+
+	    return results.isEmpty() ? null : results.get(0);
+	}
 	
 	
 

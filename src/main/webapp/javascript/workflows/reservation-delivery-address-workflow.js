@@ -18,14 +18,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Hidden fields
     const reservationID = document.querySelector('#reservationID')?.value;
+<<<<<<< HEAD
+//    const customerId = document.querySelector('#customerID')?.value;
+
+function getCustomerId() {
+    return document.querySelector('#customerID')?.value;
+}
+
+=======
     const customerId = document.querySelector('#customerID')?.value;
+>>>>>>> origin/main
 
     // -----------------------------
     // Load customer address (AJAX)
     // -----------------------------
     async function loadCustomerAddress() {
         try {
+<<<<<<< HEAD
+            console.warn("Loading customer address for customerID:", getCustomerId());
+
+            const response = await fetch(`/mcquaids/customer/customerAddress?customerID=${getCustomerId()}`);
+=======
             const response = await fetch(`/mcquaids/customer/customerAddress?customerID=${customerId}`);
+>>>>>>> origin/main
             const data = await response.json();
 
             if (data.actionErrors?.length) {

@@ -1,10 +1,29 @@
 package com.mcquaids.model;
 
+<<<<<<< HEAD
+import java.time.LocalDateTime;
+
+public class EquipmentLocationHistory {
+
+    private Long locationHistoryID;
+    
+    private Integer reservationId; // nullable
+    private Long actionId;     // nullable
+    private String actionType; // nullable
+    
+    
+    private Integer equipmentNumber;
+
+    private Long yardID;
+
+    
+=======
 public class EquipmentLocationHistory {
 
     private int locationHistoryID;
     private int equipmentNumber;
 
+>>>>>>> origin/main
     private String street;
     private String city;
     private String province;
@@ -13,14 +32,71 @@ public class EquipmentLocationHistory {
 
     private String locationType;
 
+<<<<<<< HEAD
+    private LocalDateTime startDateTime;
+    private LocalDateTime endDateTime;
+
+
+=======
     private java.util.Date startDateTime;
     private java.util.Date endDateTime;
 
     private Integer reservationId; // nullable
+>>>>>>> origin/main
     private String notes;
 
     // Getters and setters
 
+<<<<<<< HEAD
+    public Long getLocationHistoryID() {
+        return locationHistoryID;
+    }
+
+    public void setLocationHistoryID(Long locationHistoryID) {
+        this.locationHistoryID = locationHistoryID;
+    }
+
+    public Integer getEquipmentNumber() {
+        return equipmentNumber;
+    }
+
+    public void setEquipmentNumber(Integer equipmentNumber) {
+        this.equipmentNumber = equipmentNumber;
+    }
+
+    public Long getActionId() {
+        return actionId;
+    }
+
+    public void setActionId(Long actionId) {
+        this.actionId = actionId;
+    }
+
+    public String getActionType() {
+        return actionType;
+    }
+
+    public void setActionType(String actionType) {
+        this.actionType = actionType;
+    }
+    
+    
+    /**
+	 * @return the yardID
+	 */
+	public Long getYardID() {
+		return yardID;
+	}
+
+	/**
+	 * @param yardID the yardID to set
+	 */
+	public void setYardID(Long yardID) {
+		this.yardID = yardID;
+	}
+
+	public String getStreet() {
+=======
     public int getLocationHistoryID() {
         return locationHistoryID;
     }
@@ -38,6 +114,7 @@ public class EquipmentLocationHistory {
     }
 
     public String getStreet() {
+>>>>>>> origin/main
         return street;
     }
 
@@ -85,6 +162,21 @@ public class EquipmentLocationHistory {
         this.locationType = locationType;
     }
 
+<<<<<<< HEAD
+    public LocalDateTime getStartDateTime() {
+        return startDateTime;
+    }
+
+    public void setStartDateTime(LocalDateTime startDateTime) {
+        this.startDateTime = startDateTime;
+    }
+
+    public LocalDateTime getEndDateTime() {
+        return endDateTime;
+    }
+
+    public void setEndDateTime(LocalDateTime endDateTime) {
+=======
     public java.util.Date getStartDateTime() {
         return startDateTime;
     }
@@ -98,6 +190,7 @@ public class EquipmentLocationHistory {
     }
 
     public void setEndDateTime(java.util.Date endDateTime) {
+>>>>>>> origin/main
         this.endDateTime = endDateTime;
     }
 

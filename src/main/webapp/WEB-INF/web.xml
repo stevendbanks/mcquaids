@@ -10,6 +10,23 @@
          <listener-class>org.apache.struts2.tiles.StrutsTilesListener</listener-class>
     </listener>
 
+<listener>
+    <listener-class>com.mcquaids.service.webhooks.google.CalendarWatchStartupListener</listener-class>
+</listener>
+
+<servlet>
+    <servlet-name>googleCalendarWebhook</servlet-name>
+    <servlet-class>com.mcquaids.service.webhooks.google.GoogleCalendarWebhookServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+</servlet>
+
+<servlet-mapping>
+    <servlet-name>googleCalendarWebhook</servlet-name>
+    <url-pattern>/google/calendar/webhook</url-pattern>
+</servlet-mapping>
+
+
+
 	<filter>
 		<filter-name>struts2</filter-name>
 		<filter-class>
@@ -19,6 +36,11 @@
                <param-name>config</param-name>
                <param-value>struts-default.xml,struts-plugin.xml,struts.xml</param-value>
         </init-param>
+            <init-param>
+        <param-name>struts.action.excludePattern</param-name>
+        <param-value>^/google/calendar/webhook.*</param-value>
+    </init-param>
+        
 	</filter>
 	<filter-mapping>
 		<filter-name>struts2</filter-name>
