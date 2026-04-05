@@ -61,7 +61,11 @@
                                 Print
                             </button>
 						    <button class="dropdown-item" type="button" onclick="createDispatchPlan()">
+<<<<<<< HEAD
 						        Dispatch Plan
+=======
+						        Create Dispatch Plan
+>>>>>>> origin/main
 						    </button>
                             
                         </div>
@@ -72,7 +76,11 @@
                 <div class="row">
 
                     <!-- Customer -->
+<<<<<<< HEAD
                     <div class="col-sm-6">
+=======
+                    <div class="col-sm-8">
+>>>>>>> origin/main
                         <div class="form-group">
                             <label for="customerID">Customer</label>
 
@@ -97,11 +105,19 @@
                     </div>
 
                     <!-- Required Date -->
+<<<<<<< HEAD
                     <div class="col-sm-3">
                         <div class="form-group">
                             <label for="reservationStartDate">Required Date</label>
                             <s:textfield id="reservationStartDate"
                                          type="datetime-local"
+=======
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label for="reservationStartDate">Required Date</label>
+                            <s:textfield id="reservationStartDate"
+                                         type="date"
+>>>>>>> origin/main
                                          name="reservation.startDate"
                                          cssClass="form-control"
                                          format="yyyy-MM-dd"/>
@@ -109,11 +125,19 @@
                     </div>
 
                     <!-- Return Date -->
+<<<<<<< HEAD
                     <div class="col-sm-3">
                         <div class="form-group">
                             <label for="reservationEndDate">Return Date</label>
                             <s:textfield id="reservationEndDate"
                                          type="datetime-local"
+=======
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label for="reservationEndDate">Return Date</label>
+                            <s:textfield id="reservationEndDate"
+                                         type="date"
+>>>>>>> origin/main
                                          name="reservation.endDate"
                                          cssClass="form-control"
                                          format="yyyy-MM-dd"/>

@@ -352,6 +352,7 @@
         class="com.mcquaids.actions.reservation.ReservationDispatchAction">
     		<result name="dispatchPlan" type="tiles">dispatch-plan</result>
 	</action>
+<<<<<<< HEAD
 	
 <action name="pushToCalendar" class="com.mcquaids.actions.reservation.PushToCalendarAction">
     <result type="json">
@@ -373,6 +374,8 @@
     </result>
 </action>
 
+=======
+>>>>>>> origin/main
 
     <action name="convertToLease" method="execute"
         class="com.mcquaids.actions.reservation.ConvertToLeaseAction">
@@ -468,6 +471,7 @@
 		</action>		
 	</package>
 
+<<<<<<< HEAD
 <package name="dispatch" namespace="/dispatch" extends="default">
 
     <action name="action" class="com.mcquaids.actions.dispatch.DriverAction" method="execute">
@@ -481,6 +485,8 @@
     </action>
 
 </package>
+=======
+>>>>>>> origin/main
 
 
 	<package name="reports" extends="default" namespace="/reports">

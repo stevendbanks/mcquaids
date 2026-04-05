@@ -1,5 +1,6 @@
 package com.mcquaids.actions.reservation;
 
+<<<<<<< HEAD
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,15 @@ import java.util.stream.Collectors;
 import com.mcquaids.model.DispatchAction;
 import com.mcquaids.model.DispatchGroup;
 import com.mcquaids.model.ReservationLineItemDTO;
+=======
+import java.util.List;
+
+import com.mcquaids.model.DispatchAction;
+import com.mcquaids.model.DispatchGroup;
+import com.mcquaids.model.DispatchSourceType;
+import com.mcquaids.model.Reservation;
+import com.mcquaids.model.ReservationLineItem;
+>>>>>>> origin/main
 import com.mcquaids.service.DispatchActionService;
 import com.mcquaids.service.DispatchGroupingService;
 import com.opensymphony.xwork2.ActionContext;
@@ -22,6 +32,7 @@ public class ReservationDispatchAction extends BaseReservationAction {
 
         DispatchActionService dispatchActionService = new DispatchActionService();
 
+<<<<<<< HEAD
         // 1. Load reservation
         super.reservation = reservationService.getReservation(reservationID);
 
@@ -89,6 +100,24 @@ public class ReservationDispatchAction extends BaseReservationAction {
         List<DispatchGroup> groups = groupingService.group(existingActions);
 
         // 8. Push to UI
+=======
+        super.reservation = reservationService.getReservation(reservationID);
+        
+        System.out.println(reservation.getCustomer().getFullName());
+
+        List<ReservationLineItem> lineItems =
+                reservationService.getReservedEquipmentByReservationID(reservation.getReservationID());
+
+        List<DispatchAction> actions =
+                dispatchActionService.generateActionsForReservation(reservation, lineItems);
+
+        // MVP placeholder
+        actions.forEach(a -> a.setSourceType(DispatchSourceType.RESERVATION));
+
+        DispatchGroupingService groupingService = new DispatchGroupingService();
+        List<DispatchGroup> groups = groupingService.group(actions);
+
+>>>>>>> origin/main
         ActionContext.getContext().put("reservation", reservation);
         ActionContext.getContext().put("dispatchGroups", groups);
 

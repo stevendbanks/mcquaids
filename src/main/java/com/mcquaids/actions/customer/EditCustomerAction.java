@@ -1,5 +1,7 @@
 package com.mcquaids.actions.customer;
 
+import org.apache.struts2.ServletActionContext;
+
 import com.mcquaids.service.CustomerService;
 
  public class EditCustomerAction extends BaseCustomerAction {
@@ -13,6 +15,13 @@ import com.mcquaids.service.CustomerService;
 	
 	private String customerID;
 	
+<<<<<<< HEAD
+=======
+	private String returnParams;
+	
+
+
+>>>>>>> origin/main
 
 	public EditCustomerAction() {
 		super();

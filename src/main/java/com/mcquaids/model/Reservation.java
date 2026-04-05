@@ -34,7 +34,11 @@ public class Reservation {
     private String secondaryProvince;
     private String secondaryPostalCode;
     private String secondaryCountry;
+<<<<<<< HEAD
     private LocalDateTime secondaryDeliveryDate;    
+=======
+    private Date secondaryDeliveryDate;    
+>>>>>>> origin/main
     
     // Additional Person (MVP fields)
     private String additionalPersonName;
@@ -85,6 +89,7 @@ public class Reservation {
 		this.customer = customer;
 	}
 
+<<<<<<< HEAD
 	
 	
 	
@@ -116,6 +121,8 @@ public class Reservation {
 		this.endDate = endDate;
 	}
 
+=======
+>>>>>>> origin/main
 	/**
 	 * @return the deliveryStreet
 	 */
@@ -270,19 +277,30 @@ public class Reservation {
 		this.secondaryCountry = secondaryCountry;
 	}
 
+<<<<<<< HEAD
 
 
 	/**
 	 * @return the secondaryDeliveryDate
 	 */
 	public LocalDateTime getSecondaryDeliveryDate() {
+=======
+	/**
+	 * @return the secondaryDeliveryDate
+	 */
+	public Date getSecondaryDeliveryDate() {
+>>>>>>> origin/main
 		return secondaryDeliveryDate;
 	}
 
 	/**
 	 * @param secondaryDeliveryDate the secondaryDeliveryDate to set
 	 */
+<<<<<<< HEAD
 	public void setSecondaryDeliveryDate(LocalDateTime secondaryDeliveryDate) {
+=======
+	public void setSecondaryDeliveryDate(Date secondaryDeliveryDate) {
+>>>>>>> origin/main
 		this.secondaryDeliveryDate = secondaryDeliveryDate;
 	}
 
@@ -371,6 +389,7 @@ public class Reservation {
 
 
 
+<<<<<<< HEAD
     public Address getDeliveryAddress() {
         if (deliveryStreet == null &&
             deliveryCity == null &&
@@ -405,6 +424,26 @@ public class Reservation {
 	    address.setCountry(secondaryCountry);
 	    address.setPostalCode(secondaryPostalCode);
 	    return address;
+=======
+	public Address getDeliveryAddress() {
+		Address address = new Address();
+		address.setStreet(deliveryStreet);
+		address.setCity(deliveryCity);
+		address.setProvince(deliveryProvince);
+		address.setCountry(deliveryCountry);
+		address.setPostalCode(deliveryPostalCode);
+		return address;
+	}
+	
+	public Address getSecondaryDeliveryAddress() {
+		Address address = new Address();
+		address.setStreet(secondaryStreet);
+		address.setCity(secondaryCity);
+		address.setProvince(secondaryProvince);
+		address.setCountry(secondaryCountry);
+		address.setPostalCode(secondaryPostalCode);
+		return address;
+>>>>>>> origin/main
 	}
 
 	@Override

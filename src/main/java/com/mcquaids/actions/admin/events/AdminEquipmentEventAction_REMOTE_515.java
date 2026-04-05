@@ -1,13 +1,8 @@
 package com.mcquaids.actions.admin.events;
 
-<<<<<<< HEAD
-import com.mcquaids.model.Address;
-import com.mcquaids.model.EquipmentLocationHistory;
-=======
 
 
 import com.mcquaids.model.Address;
->>>>>>> origin/main
 import com.mcquaids.service.EquipmentEventService;
 import com.opensymphony.xwork2.ActionSupport;
 
@@ -15,13 +10,9 @@ public class AdminEquipmentEventAction extends ActionSupport {
 
     private static final long serialVersionUID = 1L;
 
-<<<<<<< HEAD
-    // Incoming fields
-=======
     // -----------------------------
     // Incoming JSON fields
     // -----------------------------
->>>>>>> origin/main
     private int equipmentNumber;
     private String eventType;
     private Integer reservationId;
@@ -40,25 +31,18 @@ public class AdminEquipmentEventAction extends ActionSupport {
 
     private String notes;
 
-<<<<<<< HEAD
-    // Injected service
-=======
     // -----------------------------
     // Service (setter injection recommended)
     // -----------------------------
->>>>>>> origin/main
     private EquipmentEventService equipmentEventService;
 
     public void setEquipmentEventService(EquipmentEventService equipmentEventService) {
         this.equipmentEventService = equipmentEventService;
     }
 
-<<<<<<< HEAD
-=======
     // -----------------------------
     // Execute
     // -----------------------------
->>>>>>> origin/main
     @Override
     public String execute() {
 
@@ -73,34 +57,6 @@ public class AdminEquipmentEventAction extends ActionSupport {
                 return ERROR;
             }
 
-<<<<<<< HEAD
-            switch (eventType) {
-
-                // -----------------------------------------
-                // NON-MOVEMENT EVENTS
-                // -----------------------------------------
-                case "INSPECTED":
-                    equipmentEventService.recordInspection(reservationId, "Mechanic Name Here", notes);
-                    break;
-
-                case "DAMAGE_DISCOVERED":
-                    equipmentEventService.recordDamage(equipmentNumber,"Driver Name Here", notes);
-                    break;
-
-                case "MAINTENANCE":
-                    equipmentEventService.recordMaintenance(equipmentNumber, notes);
-                    break;
-
-                // -----------------------------------------
-                // MOVEMENT EVENTS (use unified pipeline)
-                // -----------------------------------------
-                case "PICKUP":
-                case "DROPOFF":
-                case "TRANSFER":
-                case "RETURN":
-                    handleMovementEvent();
-                    break;
-=======
             // Classic Java 13 switch
             switch (eventType) {
 
@@ -169,7 +125,6 @@ public class AdminEquipmentEventAction extends ActionSupport {
 //                            reservationId
 //                    );
 //                    break;
->>>>>>> origin/main
 
                 default:
                     addActionError("Unknown event type: " + eventType);
@@ -185,53 +140,6 @@ public class AdminEquipmentEventAction extends ActionSupport {
         }
     }
 
-<<<<<<< HEAD
-    private void handleMovementEvent() {
-
-        EquipmentLocationHistory loc = new EquipmentLocationHistory();
-        loc.setNotes(notes);
-
-        // FROM address (optional)
-        Address from = buildFromAddress();
-        Address to = buildToAddress();
-
-        // Determine location type
-        if (to != null && to.getStreet() != null) {
-            loc.setLocationType("CUSTOMER_SITE");
-            loc.setStreet(to.getStreet());
-            loc.setCity(to.getCity());
-            loc.setProvince(to.getProvince());
-            loc.setPostal(to.getPostalCode());
-            loc.setCountry(to.getCountry());
-        } else {
-            // Default to warehouse
-            loc.setLocationType("ON_PREMISE");
-        }
-
-        equipmentEventService.recordUnifiedMove(
-                equipmentNumber,
-                loc,
-                eventType,
-                notes,
-                reservationId,
-                null  // admin userId (optional)
-        );
-    }
-
-    private Address buildFromAddress() {
-        return new Address(fromStreet, fromCity, fromProvince, fromPostal, fromCountry);
-    }
-
-    private Address buildToAddress() {
-        return new Address(toStreet, toCity, toProvince, toPostal, toCountry);
-    }
-
-    private Long getCurrentUserId() {
-        return null;
-    }
-
-    // Getters & setters omitted for brevity...
-=======
     // -----------------------------
     // Helpers
     // -----------------------------
@@ -304,5 +212,4 @@ public class AdminEquipmentEventAction extends ActionSupport {
 
     public String getNotes() { return notes; }
     public void setNotes(String notes) { this.notes = notes; }
->>>>>>> origin/main
 }

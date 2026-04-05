@@ -1,5 +1,6 @@
 package com.mcquaids.dao;
 
+<<<<<<< HEAD
 import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -7,6 +8,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import com.mcquaids.dao.rowmappers.YardRowMapper;
 import com.mcquaids.model.Address;
 import com.mcquaids.model.Yard;
+=======
+import com.mcquaids.model.Address;
+import com.mcquaids.model.Yard;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import java.util.List;
+>>>>>>> origin/main
 
 public class YardDAO {
 
@@ -62,6 +70,7 @@ public class YardDAO {
             return null;
         });
     }
+<<<<<<< HEAD
 
     public Yard getYardById(Long yardId) {
 
@@ -78,4 +87,6 @@ public class YardDAO {
 
         return results.isEmpty() ? null : results.get(0);
     }
+=======
+>>>>>>> origin/main
 }
