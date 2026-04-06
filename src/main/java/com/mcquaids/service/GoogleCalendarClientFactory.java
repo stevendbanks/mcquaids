@@ -1,10 +1,13 @@
 package com.mcquaids.service;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collections;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -23,18 +26,32 @@ public class GoogleCalendarClientFactory {
 
     private static Calendar createConnection() {
         try {
-            JacksonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+            GsonFactory jsonFactory = GsonFactory.getDefaultInstance();
 
-            InputStream in = GoogleCalendarClientFactory.class
-                    .getResourceAsStream("/google/service-account.json");
+            // Read environment variable
+            String keyPath = System.getenv("GOOGLE_APPLICATION_CREDENTIALS");
 
-            if (in == null) {
-                throw new RuntimeException("Could not load /google/service-account.json from classpath");
+            if (keyPath == null || keyPath.isEmpty()) {
+                throw new RuntimeException(
+                    "Environment variable GOOGLE_APPLICATION_CREDENTIALS is not set."
+                );
             }
+
+            // Validate file exists
+            if (!Files.exists(Paths.get(keyPath))) {
+                throw new RuntimeException(
+                    "Google service account file not found at: " + keyPath
+                );
+            }
+
+            // Load credentials from external file
+            InputStream in = new FileInputStream(keyPath);
 
             GoogleCredentials googleCreds = GoogleCredentials
                     .fromStream(in)
-                    .createScoped(Collections.singletonList("https://www.googleapis.com/auth/calendar"));
+                    .createScoped(Collections.singletonList(
+                            "https://www.googleapis.com/auth/calendar"
+                    ));
 
             ServiceAccountCredentials credentials = (ServiceAccountCredentials) googleCreds;
 

@@ -1,6 +1,5 @@
 package com.mcquaids.model;
 
-<<<<<<< HEAD
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -8,14 +7,10 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
-=======
-import java.time.LocalDateTime;
->>>>>>> origin/main
 
 public class DispatchAction {
 
 	private Long dispatchActionId;
-<<<<<<< HEAD
 	private boolean removedFromReservation;
 	private Integer reservationID;
 	private Integer equipmentNumber;
@@ -56,13 +51,6 @@ public class DispatchAction {
 	private ReservationLineItemDTO reservationLineItemDTO;
 
 	
-=======
-	private Long reservationId;
-	private String equipmentNumber;
-
-	private DispatchActionType actionType;
-
->>>>>>> origin/main
 	/**
 	 * Indicates where this dispatch action originated from.
 	 *
@@ -76,33 +64,13 @@ public class DispatchAction {
 	
 	
 	
-<<<<<<< HEAD
-=======
-	private DispatchActionStatus status;
-	
-	
-	
-
-	private Address fromAddress;
-	private Address toAddress;
-
-	private LocalDateTime scheduledDateTime;
-	private Long driverId;
-
-	private String notes;
-
->>>>>>> origin/main
 	public DispatchAction() {
 	}
 
 	private DispatchAction(Builder builder) {
 		this.dispatchActionId = builder.dispatchActionId;
-<<<<<<< HEAD
 		this.reservationID = builder.reservationID;
 		this.reservationLineItemID = builder.reservationLineItemID;
-=======
-		this.reservationId = builder.reservationId;
->>>>>>> origin/main
 		this.equipmentNumber = builder.equipmentNumber;
 		this.actionType = builder.actionType;
 		this.status = builder.status;
@@ -111,7 +79,6 @@ public class DispatchAction {
 		this.scheduledDateTime = builder.scheduledDateTime;
 		this.driverId = builder.driverId;
 		this.notes = builder.notes;
-<<<<<<< HEAD
 		
 	    this.reservationLineItemDTO = builder.reservationLineItemDTO;
 
@@ -169,28 +136,10 @@ public class DispatchAction {
 	}	
 	
 	
-=======
-	}
-
-	/**
-	 * @return the dispatchActionId
-	 */
-	public Long getDispatchActionId() {
-		return dispatchActionId;
-	}
-
-	/**
-	 * @param dispatchActionId the dispatchActionId to set
-	 */
-	public void setDispatchActionId(Long dispatchActionId) {
-		this.dispatchActionId = dispatchActionId;
-	}
->>>>>>> origin/main
 
 	/**
 	 * @return the reservationId
 	 */
-<<<<<<< HEAD
 	public Integer getReservationID() {
 		return reservationID;
 	}
@@ -221,34 +170,6 @@ public class DispatchAction {
 
 
 	/**
-=======
-	public Long getReservationId() {
-		return reservationId;
-	}
-
-	/**
-	 * @param reservationId the reservationId to set
-	 */
-	public void setReservationId(Long reservationId) {
-		this.reservationId = reservationId;
-	}
-
-	/**
-	 * @return the equipmentNumber
-	 */
-	public String getEquipmentNumber() {
-		return equipmentNumber;
-	}
-
-	/**
-	 * @param equipmentNumber the equipmentNumber to set
-	 */
-	public void setEquipmentNumber(String equipmentNumber) {
-		this.equipmentNumber = equipmentNumber;
-	}
-
-	/**
->>>>>>> origin/main
 	 * @return the actionType
 	 */
 	public DispatchActionType getActionType() {
@@ -276,7 +197,6 @@ public class DispatchAction {
 		this.status = status;
 	}
 
-<<<<<<< HEAD
 	public LocalDateTime getCompletedAt() {
 		return completedAt;
 	}
@@ -285,8 +205,6 @@ public class DispatchAction {
 		this.completedAt = completedAt;
 	}
 
-=======
->>>>>>> origin/main
 	/**
 	 * @return the fromAddress
 	 */
@@ -316,7 +234,6 @@ public class DispatchAction {
 	}
 
 	/**
-<<<<<<< HEAD
 	 * @return the fromYardId
 	 */
 	public Long getFromYardId() {
@@ -373,14 +290,11 @@ public class DispatchAction {
 	}
 
 	/**
-=======
->>>>>>> origin/main
 	 * @return the scheduledDateTime
 	 */
 	public LocalDateTime getScheduledDateTime() {
 		return scheduledDateTime;
 	}
-<<<<<<< HEAD
 	
 	public ZonedDateTime getScheduledDateTimeAtZone() {
 	    if (scheduledDateTime == null) {
@@ -394,8 +308,6 @@ public class DispatchAction {
 	    return scheduledDateTime.atZone(zone);
 	}
 	
-=======
->>>>>>> origin/main
 
 	/**
 	 * @param scheduledDateTime the scheduledDateTime to set
@@ -418,7 +330,6 @@ public class DispatchAction {
 		this.driverId = driverId;
 	}
 
-<<<<<<< HEAD
 	public String getDriverToken() {
 		return driverToken;
 	}
@@ -427,8 +338,6 @@ public class DispatchAction {
 		this.driverToken = driverToken;
 	}
 
-=======
->>>>>>> origin/main
 	/**
 	 * @return the notes
 	 */
@@ -443,7 +352,6 @@ public class DispatchAction {
 		this.notes = notes;
 	}
 
-<<<<<<< HEAD
 	/**
 	 * @return the googleEventId
 	 */
@@ -475,8 +383,6 @@ public class DispatchAction {
 		this.lastCalendarSyncAt = lastCalendarSyncAt;
 	}
 
-=======
->>>>>>> origin/main
 	public DispatchSourceType getSourceType() {
 		return sourceType;
 	}
@@ -488,7 +394,6 @@ public class DispatchAction {
 	public static Builder builder() {
 		return new Builder();
 	}
-<<<<<<< HEAD
 	
 
 	public Integer getReservationLineItemID() {
@@ -910,215 +815,4 @@ public class DispatchAction {
 	
 
 	
-=======
-
-	public static class Builder {
-		private Long dispatchActionId;
-		private Long reservationId;
-		private String equipmentNumber;
-		private DispatchActionType actionType;
-		private DispatchActionStatus status = DispatchActionStatus.PENDING;
-		private Address fromAddress;
-		private Address toAddress;
-		private LocalDateTime scheduledDateTime;
-		private Long driverId;
-		private String notes;
-
-		public Builder dispatchActionId(Long id) {
-			this.dispatchActionId = id;
-			return this;
-		}
-
-		public Builder reservationId(Long id) {
-			this.reservationId = id;
-			return this;
-		}
-
-		public Builder equipmentNumber(String num) {
-			this.equipmentNumber = num;
-			return this;
-		}
-
-		public Builder actionType(DispatchActionType type) {
-			this.actionType = type;
-			return this;
-		}
-
-		public Builder status(DispatchActionStatus status) {
-			this.status = status;
-			return this;
-		}
-
-		public Builder fromAddress(Address addr) {
-			this.fromAddress = addr;
-			return this;
-		}
-
-		public Builder toAddress(Address addr) {
-			this.toAddress = addr;
-			return this;
-		}
-
-		public Builder scheduledDateTime(LocalDateTime dt) {
-			this.scheduledDateTime = dt;
-			return this;
-		}
-
-		public Builder driverId(Long id) {
-			this.driverId = id;
-			return this;
-		}
-
-		public Builder notes(String notes) {
-			this.notes = notes;
-			return this;
-		}
-
-		/**
-		 * @return the dispatchActionId
-		 */
-		public Long getDispatchActionId() {
-			return dispatchActionId;
-		}
-
-		/**
-		 * @param dispatchActionId the dispatchActionId to set
-		 */
-		public void setDispatchActionId(Long dispatchActionId) {
-			this.dispatchActionId = dispatchActionId;
-		}
-
-		/**
-		 * @return the reservationId
-		 */
-		public Long getReservationId() {
-			return reservationId;
-		}
-
-		/**
-		 * @param reservationId the reservationId to set
-		 */
-		public void setReservationId(Long reservationId) {
-			this.reservationId = reservationId;
-		}
-
-		/**
-		 * @return the equipmentNumber
-		 */
-		public String getEquipmentNumber() {
-			return equipmentNumber;
-		}
-
-		/**
-		 * @param equipmentNumber the equipmentNumber to set
-		 */
-		public void setEquipmentNumber(String equipmentNumber) {
-			this.equipmentNumber = equipmentNumber;
-		}
-
-		/**
-		 * @return the actionType
-		 */
-		public DispatchActionType getActionType() {
-			return actionType;
-		}
-
-		/**
-		 * @param actionType the actionType to set
-		 */
-		public void setActionType(DispatchActionType actionType) {
-			this.actionType = actionType;
-		}
-
-		/**
-		 * @return the status
-		 */
-		public DispatchActionStatus getStatus() {
-			return status;
-		}
-
-		/**
-		 * @param status the status to set
-		 */
-		public void setStatus(DispatchActionStatus status) {
-			this.status = status;
-		}
-
-		/**
-		 * @return the fromAddress
-		 */
-		public Address getFromAddress() {
-			return fromAddress;
-		}
-
-		/**
-		 * @param fromAddress the fromAddress to set
-		 */
-		public void setFromAddress(Address fromAddress) {
-			this.fromAddress = fromAddress;
-		}
-
-		/**
-		 * @return the toAddress
-		 */
-		public Address getToAddress() {
-			return toAddress;
-		}
-
-		/**
-		 * @param toAddress the toAddress to set
-		 */
-		public void setToAddress(Address toAddress) {
-			this.toAddress = toAddress;
-		}
-
-		/**
-		 * @return the scheduledDateTime
-		 */
-		public LocalDateTime getScheduledDateTime() {
-			return scheduledDateTime;
-		}
-
-		/**
-		 * @param scheduledDateTime the scheduledDateTime to set
-		 */
-		public void setScheduledDateTime(LocalDateTime scheduledDateTime) {
-			this.scheduledDateTime = scheduledDateTime;
-		}
-
-		/**
-		 * @return the driverId
-		 */
-		public Long getDriverId() {
-			return driverId;
-		}
-
-		/**
-		 * @param driverId the driverId to set
-		 */
-		public void setDriverId(Long driverId) {
-			this.driverId = driverId;
-		}
-
-		/**
-		 * @return the notes
-		 */
-		public String getNotes() {
-			return notes;
-		}
-
-		/**
-		 * @param notes the notes to set
-		 */
-		public void setNotes(String notes) {
-			this.notes = notes;
-		}
-
-		public DispatchAction build() {
-			return new DispatchAction(this);
-		}
-	}
-
-	// Getters and setters omitted for brevity but should be included
->>>>>>> origin/main
 }

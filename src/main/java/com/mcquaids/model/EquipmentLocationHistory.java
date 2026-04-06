@@ -1,6 +1,5 @@
 package com.mcquaids.model;
 
-<<<<<<< HEAD
 import java.time.LocalDateTime;
 
 public class EquipmentLocationHistory {
@@ -17,13 +16,6 @@ public class EquipmentLocationHistory {
     private Long yardID;
 
     
-=======
-public class EquipmentLocationHistory {
-
-    private int locationHistoryID;
-    private int equipmentNumber;
-
->>>>>>> origin/main
     private String street;
     private String city;
     private String province;
@@ -32,22 +24,14 @@ public class EquipmentLocationHistory {
 
     private String locationType;
 
-<<<<<<< HEAD
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
 
 
-=======
-    private java.util.Date startDateTime;
-    private java.util.Date endDateTime;
-
-    private Integer reservationId; // nullable
->>>>>>> origin/main
     private String notes;
 
     // Getters and setters
 
-<<<<<<< HEAD
     public Long getLocationHistoryID() {
         return locationHistoryID;
     }
@@ -96,25 +80,6 @@ public class EquipmentLocationHistory {
 	}
 
 	public String getStreet() {
-=======
-    public int getLocationHistoryID() {
-        return locationHistoryID;
-    }
-
-    public void setLocationHistoryID(int locationHistoryID) {
-        this.locationHistoryID = locationHistoryID;
-    }
-
-    public int getEquipmentNumber() {
-        return equipmentNumber;
-    }
-
-    public void setEquipmentNumber(int equipmentNumber) {
-        this.equipmentNumber = equipmentNumber;
-    }
-
-    public String getStreet() {
->>>>>>> origin/main
         return street;
     }
 
@@ -162,7 +127,6 @@ public class EquipmentLocationHistory {
         this.locationType = locationType;
     }
 
-<<<<<<< HEAD
     public LocalDateTime getStartDateTime() {
         return startDateTime;
     }
@@ -176,21 +140,6 @@ public class EquipmentLocationHistory {
     }
 
     public void setEndDateTime(LocalDateTime endDateTime) {
-=======
-    public java.util.Date getStartDateTime() {
-        return startDateTime;
-    }
-
-    public void setStartDateTime(java.util.Date startDateTime) {
-        this.startDateTime = startDateTime;
-    }
-
-    public java.util.Date getEndDateTime() {
-        return endDateTime;
-    }
-
-    public void setEndDateTime(java.util.Date endDateTime) {
->>>>>>> origin/main
         this.endDateTime = endDateTime;
     }
 

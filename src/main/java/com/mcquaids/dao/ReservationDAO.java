@@ -53,7 +53,6 @@ public class ReservationDAO {
         params.addValue("LeaseID", reservation.getLeaseID());
 
         // Primary delivery
-<<<<<<< HEAD
         params.addValue("DeliveryStreet", normalize(reservation.getDeliveryStreet()));
         params.addValue("DeliveryCity", normalize(reservation.getDeliveryCity()));
         params.addValue("DeliveryProvince", normalize(reservation.getDeliveryProvince()));
@@ -67,21 +66,6 @@ public class ReservationDAO {
         params.addValue("SecondaryProvince", normalize(reservation.getSecondaryProvince()));
         params.addValue("SecondaryPostalCode", normalize(reservation.getSecondaryPostalCode()));
         params.addValue("SecondaryCountry", normalize(reservation.getSecondaryCountry()));
-=======
-        params.addValue("DeliveryStreet", reservation.getDeliveryStreet());
-        params.addValue("DeliveryCity", reservation.getDeliveryCity());
-        params.addValue("DeliveryProvince", reservation.getDeliveryProvince());
-        params.addValue("DeliveryPostalCode", reservation.getDeliveryPostalCode());
-        params.addValue("DeliveryCountry", reservation.getDeliveryCountry());
-        params.addValue("DeliverySameAsCustomer", reservation.getDeliverySameAsCustomer());
-
-        // Secondary delivery
-        params.addValue("SecondaryStreet", reservation.getSecondaryStreet());
-        params.addValue("SecondaryCity", reservation.getSecondaryCity());
-        params.addValue("SecondaryProvince", reservation.getSecondaryProvince());
-        params.addValue("SecondaryPostalCode", reservation.getSecondaryPostalCode());
-        params.addValue("SecondaryCountry", reservation.getSecondaryCountry());
->>>>>>> origin/main
         params.addValue("SecondaryDeliveryDate", reservation.getSecondaryDeliveryDate());
 
         // Additional Person (MVP fields)
@@ -113,17 +97,6 @@ public class ReservationDAO {
         return template.queryForObject(sql, params, new ReservationRowMapper());
     }
 
-<<<<<<< HEAD
-=======
-
- // ------------------------------------------------------------
- // UPDATE
- // ------------------------------------------------------------
-    public void updateReservation(Reservation reservation) {
-   	 
-   	 System.out.println("SDBANKs- Entered updateReservation()");
-   	 System.out.println(reservation.toString());
->>>>>>> origin/main
 
  // ------------------------------------------------------------
  // UPDATE
@@ -170,7 +143,6 @@ public class ReservationDAO {
         params.addValue("LeaseID", reservation.getLeaseID());
 
         // Delivery address
-<<<<<<< HEAD
         params.addValue("DeliveryStreet", normalize(reservation.getDeliveryStreet()));
         params.addValue("DeliveryCity", normalize(reservation.getDeliveryCity()));
         params.addValue("DeliveryProvince", normalize(reservation.getDeliveryProvince()));
@@ -184,21 +156,6 @@ public class ReservationDAO {
         params.addValue("SecondaryProvince", normalize(reservation.getSecondaryProvince()));
         params.addValue("SecondaryPostalCode", normalize(reservation.getSecondaryPostalCode()));
         params.addValue("SecondaryCountry", normalize(reservation.getSecondaryCountry()));
-=======
-        params.addValue("DeliveryStreet", reservation.getDeliveryStreet());
-        params.addValue("DeliveryCity", reservation.getDeliveryCity());
-        params.addValue("DeliveryProvince", reservation.getDeliveryProvince());
-        params.addValue("DeliveryPostalCode", reservation.getDeliveryPostalCode());
-        params.addValue("DeliveryCountry", reservation.getDeliveryCountry());
-        params.addValue("DeliverySameAsCustomer", reservation.getDeliverySameAsCustomer());
-        
-        // Secondary delivery
-        params.addValue("SecondaryStreet", reservation.getSecondaryStreet());
-        params.addValue("SecondaryCity", reservation.getSecondaryCity());
-        params.addValue("SecondaryProvince", reservation.getSecondaryProvince());
-        params.addValue("SecondaryPostalCode", reservation.getSecondaryPostalCode());
-        params.addValue("SecondaryCountry", reservation.getSecondaryCountry());
->>>>>>> origin/main
         params.addValue("SecondaryDeliveryDate", reservation.getSecondaryDeliveryDate());
 
         // Additional Person (MVP fields)
@@ -307,7 +264,6 @@ public class ReservationDAO {
      return template.query(sql, params, new ReservationQueryDTORowMapper());
  }
 
-<<<<<<< HEAD
  public boolean isEquipmentOnActiveReservation(Integer equipmentNumber) {
 
 	    String sql =
@@ -329,9 +285,6 @@ public class ReservationDAO {
 
 
 
-=======
-
->>>>>>> origin/main
     
     
 }

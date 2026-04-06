@@ -2,11 +2,8 @@ package com.mcquaids.dao.rowmappers;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-<<<<<<< HEAD
 import java.sql.Timestamp;
 import java.time.LocalDate;
-=======
->>>>>>> origin/main
 
 import org.springframework.jdbc.core.RowMapper;
 
@@ -24,7 +21,6 @@ public class ReservationQueryDTORowMapper implements RowMapper<ReservationQueryD
         dto.setReservationID(rs.getInt("ReservationID"));
         dto.setCustomerID(rs.getString("CustomerID"));
         dto.setReservationStatusCode(rs.getString("ReservationStatusCode"));
-<<<<<<< HEAD
 //        dto.setStartDate(rs.getObject("StartDate", LocalDate.class));       
 //
 ////        dto.setEndDate(rs.getDate("EndDate"));
@@ -36,10 +32,6 @@ public class ReservationQueryDTORowMapper implements RowMapper<ReservationQueryD
         dto.setEndDate(endTs == null ? null : endTs.toLocalDateTime());
         
         
-=======
-        dto.setStartDate(rs.getDate("StartDate"));
-        dto.setEndDate(rs.getDate("EndDate"));
->>>>>>> origin/main
         dto.setInstructions(rs.getString("Instructions"));
         dto.setLeaseID(rs.getString("LeaseID"));
         dto.setDateCreated(rs.getTimestamp("DateCreated"));
@@ -59,13 +51,9 @@ public class ReservationQueryDTORowMapper implements RowMapper<ReservationQueryD
         dto.setSecondaryProvince(rs.getString("SecondaryProvince"));
         dto.setSecondaryPostalCode(rs.getString("SecondaryPostalCode"));
         dto.setSecondaryCountry(rs.getString("SecondaryCountry"));
-<<<<<<< HEAD
 //       dto.setSecondaryDeliveryDate(rs.getObject("SecondaryDeliveryDate", LocalDate.class));       
         Timestamp ts = rs.getTimestamp("SecondaryDeliveryDate");
         dto.setSecondaryDeliveryDate(ts == null ? null : ts.toLocalDateTime());
-=======
-        dto.setSecondaryDeliveryDate(rs.getDate("SecondaryDeliveryDate"));
->>>>>>> origin/main
 
         // Additional Person (MVP fields)
         dto.setAdditionalPersonName(rs.getString("AdditionalPersonName"));

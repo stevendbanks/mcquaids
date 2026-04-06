@@ -45,7 +45,6 @@
                 </div>
 
                 <!-- START DATE -->
-<<<<<<< HEAD
                 <div class="col-sm-3">
                     <div class="form-group">
                         <label>Required Date</label>
@@ -54,16 +53,6 @@
              cssClass="form-control"
              disabled="true"
              theme="simple"/>
-=======
-                <div class="col-sm-2">
-                    <div class="form-group">
-                        <label>Required Date</label>
-                        <s:textfield type="date"
-                                     name="reservation.startDate"
-                                     cssClass="form-control"
-                                     disabled="true"
-                                     theme="simple"/>
->>>>>>> origin/main
                     </div>
                 </div>
 
@@ -71,11 +60,7 @@
                 <div class="col-sm-3">
                     <div class="form-group">
                         <label>Return Date</label>
-<<<<<<< HEAD
                         <s:textfield type="datetime-local"
-=======
-                        <s:textfield type="date"
->>>>>>> origin/main
                                      name="reservation.endDate"
                                      cssClass="form-control"
                                      disabled="true"
@@ -125,27 +110,20 @@
                         <table class="table table-striped mb-0">
                             <thead>
                             <tr>
-<<<<<<< HEAD
                                 <th></th>
-=======
->>>>>>> origin/main
                                 <th>Equipment</th>
                                 <th>Action</th>
                                 <th>From</th>
                                 <th>To</th>
                                 <th>Source</th>
-<<<<<<< HEAD
                                 <th>Date</th>
                                 <th>Push</th>
-=======
->>>>>>> origin/main
                             </tr>
                             </thead>
 
                             <tbody>
                             <s:iterator value="#group.actions" var="a">
                                 <tr>
-<<<<<<< HEAD
 
 									<td>
 <s:if test="#a.removedFromReservation">
@@ -221,19 +199,6 @@
     </s:if>
 </td>
 </td>
-=======
-                                    <td><s:property value="#a.equipmentNumber"/></td>
-                                    <td><s:property value="#a.actionType"/></td>
-                                    <td>
-                                        <s:property value="#a.fromAddress.street"/> ,
-                                        <s:property value="#a.fromAddress.city"/>
-                                    </td>
-                                    <td>
-                                        <s:property value="#a.toAddress.street"/> ,
-                                        <s:property value="#a.toAddress.city"/>
-                                    </td>
-                                    <td><s:property value="#a.sourceType"/></td>
->>>>>>> origin/main
                                 </tr>
                             </s:iterator>
                             </tbody>
@@ -246,7 +211,6 @@
         </div>
     </div>
 
-<<<<<<< HEAD
 </div>
 
 
@@ -268,6 +232,3 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
-=======
-</div>
->>>>>>> origin/main

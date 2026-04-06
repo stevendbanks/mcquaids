@@ -1,6 +1,5 @@
 package com.mcquaids.dao.rowmappers;
 
-<<<<<<< HEAD
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -9,13 +8,6 @@ import java.time.LocalDate;
 import org.springframework.jdbc.core.RowMapper;
 
 import com.mcquaids.model.Reservation;
-=======
-import com.mcquaids.model.Reservation;
-import org.springframework.jdbc.core.RowMapper;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
->>>>>>> origin/main
 
 public class ReservationRowMapper implements RowMapper<Reservation> {
 
@@ -27,7 +19,6 @@ public class ReservationRowMapper implements RowMapper<Reservation> {
         r.setReservationID(rs.getInt("ReservationID"));
         r.setCustomerID(rs.getString("CustomerID"));
         r.setReservationStatusCode(rs.getString("ReservationStatusCode"));
-<<<<<<< HEAD
 //        r.setStartDate(rs.getDate("StartDate"));
 //        r.setStartDate(rs.getObject("StartDate", LocalDate.class));       
 //        
@@ -41,10 +32,6 @@ public class ReservationRowMapper implements RowMapper<Reservation> {
         r.setEndDate(endTs == null ? null : endTs.toLocalDateTime()); 
         
         
-=======
-        r.setStartDate(rs.getDate("StartDate"));
-        r.setEndDate(rs.getDate("EndDate"));
->>>>>>> origin/main
         r.setInstructions(rs.getString("Instructions"));
         r.setLeaseID(rs.getString("LeaseID"));
         r.setDateCreated(rs.getTimestamp("DateCreated"));
@@ -64,15 +51,11 @@ public class ReservationRowMapper implements RowMapper<Reservation> {
         r.setSecondaryProvince(rs.getString("SecondaryProvince"));
         r.setSecondaryPostalCode(rs.getString("SecondaryPostalCode"));
         r.setSecondaryCountry(rs.getString("SecondaryCountry"));
-<<<<<<< HEAD
         
 //        r.setSecondaryDeliveryDate(rs.getObject("SecondaryDeliveryDate", LocalDate.class));
         Timestamp ts = rs.getTimestamp("SecondaryDeliveryDate");
         r.setSecondaryDeliveryDate(ts == null ? null : ts.toLocalDateTime());
 
-=======
-        r.setSecondaryDeliveryDate(rs.getDate("SecondaryDeliveryDate"));
->>>>>>> origin/main
 
         // Additional Person (MVP fields)
         r.setAdditionalPersonName(rs.getString("AdditionalPersonName"));

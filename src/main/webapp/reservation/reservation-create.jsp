@@ -38,11 +38,7 @@
     <s:hidden id="reservationStatusCode" name="reservation.reservationStatusCode"/>
 
     <!-- CUSTOMER -->
-<<<<<<< HEAD
     <div class="col-sm-3">
-=======
-    <div class="col-sm-4">
->>>>>>> origin/main
         <div class="form-group">
             <label for="customerID">Customer</label>
             <div class="input-group">
@@ -71,17 +67,10 @@
     </div>
 
     <!-- START DATE -->
-<<<<<<< HEAD
     <div class="col-sm-3">
         <div class="form-group">
             <label for="reservationStartDate">Required Date</label>
             <s:textfield id="reservationStartDate" type="datetime-local"
-=======
-    <div class="col-sm-2">
-        <div class="form-group">
-            <label for="reservationStartDate">Required Date</label>
-            <s:textfield id="reservationStartDate" type="date"
->>>>>>> origin/main
                          name="reservation.startDate"
                          cssErrorClass="fieldError" cssClass="form-control"
                          format="yyyy-MM-dd"/>
@@ -92,11 +81,7 @@
     <div class="col-sm-3">
         <div class="form-group">
             <label for="reservationEndDate">Return Date</label>
-<<<<<<< HEAD
             <s:textfield id="reservationEndDate" type="datetime-local"
-=======
-            <s:textfield id="reservationEndDate" type="date"
->>>>>>> origin/main
                          name="reservation.endDate"
                          cssErrorClass="fieldError" cssClass="form-control"
                          format="yyyy-MM-dd"/>

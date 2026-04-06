@@ -32,7 +32,6 @@ public class Address {
 
     public String getCountry() { return country; }
     public void setCountry(String country) { this.country = country; }
-<<<<<<< HEAD
  
     
     public String toSingleLine() {
@@ -62,8 +61,6 @@ public class Address {
         return sb.toString();
     }    
     
-=======
->>>>>>> origin/main
     
     
     @Override

@@ -2,10 +2,7 @@ package com.mcquaids.dao.rowmappers;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-<<<<<<< HEAD
 import java.time.LocalDateTime;
-=======
->>>>>>> origin/main
 
 import org.springframework.jdbc.core.RowMapper;
 
@@ -18,11 +15,7 @@ public class EquipmentLocationHistoryRowMapper implements RowMapper<EquipmentLoc
 
         EquipmentLocationHistory history = new EquipmentLocationHistory();
 
-<<<<<<< HEAD
         history.setLocationHistoryID(rs.getLong("LocationHistoryID"));
-=======
-        history.setLocationHistoryID(rs.getInt("LocationHistoryID"));
->>>>>>> origin/main
         history.setEquipmentNumber(rs.getInt("EquipmentNumber"));
         history.setStreet(rs.getString("Street"));
         history.setCity(rs.getString("City"));
@@ -30,13 +23,8 @@ public class EquipmentLocationHistoryRowMapper implements RowMapper<EquipmentLoc
         history.setPostal(rs.getString("Postal"));
         history.setCountry(rs.getString("Country"));
         history.setLocationType(rs.getString("LocationType"));
-<<<<<<< HEAD
         history.setStartDateTime(rs.getObject("StartDateTime", LocalDateTime.class));
         history.setEndDateTime(rs.getObject("EndDateTime", LocalDateTime.class));
-=======
-        history.setStartDateTime(rs.getTimestamp("StartDateTime"));
-        history.setEndDateTime(rs.getTimestamp("EndDateTime"));
->>>>>>> origin/main
         history.setReservationId(rs.getInt("ReservationID"));
         history.setNotes(rs.getString("Notes"));
 

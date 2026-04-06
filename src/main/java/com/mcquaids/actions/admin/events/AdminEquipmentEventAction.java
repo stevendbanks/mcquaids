@@ -1,13 +1,7 @@
 package com.mcquaids.actions.admin.events;
 
-<<<<<<< HEAD
 import com.mcquaids.model.Address;
 import com.mcquaids.model.EquipmentLocationHistory;
-=======
-
-
-import com.mcquaids.model.Address;
->>>>>>> origin/main
 import com.mcquaids.service.EquipmentEventService;
 import com.opensymphony.xwork2.ActionSupport;
 
@@ -15,13 +9,7 @@ public class AdminEquipmentEventAction extends ActionSupport {
 
     private static final long serialVersionUID = 1L;
 
-<<<<<<< HEAD
     // Incoming fields
-=======
-    // -----------------------------
-    // Incoming JSON fields
-    // -----------------------------
->>>>>>> origin/main
     private int equipmentNumber;
     private String eventType;
     private Integer reservationId;
@@ -40,25 +28,13 @@ public class AdminEquipmentEventAction extends ActionSupport {
 
     private String notes;
 
-<<<<<<< HEAD
     // Injected service
-=======
-    // -----------------------------
-    // Service (setter injection recommended)
-    // -----------------------------
->>>>>>> origin/main
     private EquipmentEventService equipmentEventService;
 
     public void setEquipmentEventService(EquipmentEventService equipmentEventService) {
         this.equipmentEventService = equipmentEventService;
     }
 
-<<<<<<< HEAD
-=======
-    // -----------------------------
-    // Execute
-    // -----------------------------
->>>>>>> origin/main
     @Override
     public String execute() {
 
@@ -73,7 +49,6 @@ public class AdminEquipmentEventAction extends ActionSupport {
                 return ERROR;
             }
 
-<<<<<<< HEAD
             switch (eventType) {
 
                 // -----------------------------------------
@@ -100,76 +75,6 @@ public class AdminEquipmentEventAction extends ActionSupport {
                 case "RETURN":
                     handleMovementEvent();
                     break;
-=======
-            // Classic Java 13 switch
-            switch (eventType) {
-
-                case "INSPECTED":
-                    equipmentEventService.recordInspection(
-                            equipmentNumber,
-                            notes,
-                            reservationId
-                    );
-                    break;
-
-                case "DAMAGE_DISCOVERED":
-                    equipmentEventService.recordDamage(
-                            equipmentNumber,
-                            notes,
-                            reservationId
-                    );
-                    break;
-
-                case "MAINTENANCE":
-                    equipmentEventService.recordMaintenance(
-                            equipmentNumber,
-                            notes,
-                            reservationId
-                    );
-                    break;
-
-//                case "PICKUP":
-//                    equipmentEventService.recordPickupEvent(
-//                            reservationId,
-//                            String.valueOf(equipmentNumber),
-//                            buildFromAddress(),
-//                            getCurrentUserId(),
-//                            null
-//                    );
-//                    break;
-//
-//                case "DROPOFF":
-//                    equipmentEventService.recordDeliveryEvent(
-//                            reservationId,
-//                            String.valueOf(equipmentNumber),
-//                            buildToAddress(),
-//                            getCurrentUserId(),
-//                            null
-//                    );
-//                    break;
-//
-//                case "TRANSFER":
-//                    equipmentEventService.recordMoveEvent(
-//                            String.valueOf(equipmentNumber),
-//                            buildFromAddress(),
-//                            buildToAddress(),
-//                            getCurrentUserId(),
-//                            null,
-//                            reservationId
-//                    );
-//                    break;
-//
-//                case "RETURN":
-//                    equipmentEventService.recordMoveEvent(
-//                            String.valueOf(equipmentNumber),
-//                            buildFromAddress(),
-//                            buildToAddress(),
-//                            getCurrentUserId(),
-//                            null,
-//                            reservationId
-//                    );
-//                    break;
->>>>>>> origin/main
 
                 default:
                     addActionError("Unknown event type: " + eventType);
@@ -185,7 +90,6 @@ public class AdminEquipmentEventAction extends ActionSupport {
         }
     }
 
-<<<<<<< HEAD
     private void handleMovementEvent() {
 
         EquipmentLocationHistory loc = new EquipmentLocationHistory();
@@ -231,78 +135,4 @@ public class AdminEquipmentEventAction extends ActionSupport {
     }
 
     // Getters & setters omitted for brevity...
-=======
-    // -----------------------------
-    // Helpers
-    // -----------------------------
-    private Address buildFromAddress() {
-        return new Address(
-                fromStreet,
-                fromCity,
-                fromProvince,
-                fromPostal,
-                fromCountry
-        );
-    }
-
-    private Address buildToAddress() {
-        return new Address(
-                toStreet,
-                toCity,
-                toProvince,
-                toPostal,
-                toCountry
-        );
-    }
-
-    private Long getCurrentUserId() {
-        // Replace with your actual session/auth logic
-        return null;
-    }
-
-    // -----------------------------
-    // Getters & Setters
-    // -----------------------------
-    public int getEquipmentNumber() { return equipmentNumber; }
-    public void setEquipmentNumber(int equipmentNumber) { this.equipmentNumber = equipmentNumber; }
-
-    public String getEventType() { return eventType; }
-    public void setEventType(String eventType) { this.eventType = eventType; }
-
-    public Integer getReservationId() { return reservationId; }
-    public void setReservationId(Integer reservationId) { this.reservationId = reservationId; }
-
-    public String getFromStreet() { return fromStreet; }
-    public void setFromStreet(String fromStreet) { this.fromStreet = fromStreet; }
-
-    public String getFromCity() { return fromCity; }
-    public void setFromCity(String fromCity) { this.fromCity = fromCity; }
-
-    public String getFromProvince() { return fromProvince; }
-    public void setFromProvince(String fromProvince) { this.fromProvince = fromProvince; }
-
-    public String getFromPostal() { return fromPostal; }
-    public void setFromPostal(String fromPostal) { this.fromPostal = fromPostal; }
-
-    public String getFromCountry() { return fromCountry; }
-    public void setFromCountry(String fromCountry) { this.fromCountry = fromCountry; }
-
-    public String getToStreet() { return toStreet; }
-    public void setToStreet(String toStreet) { this.toStreet = toStreet; }
-
-    public String getToCity() { return toCity; }
-    public void setToCity(String toCity) { this.toCity = toCity; }
-
-    public String getToProvince() { return toProvince; }
-    public void setToProvince(String toProvince) { this.toProvince = toProvince; }
-
-    public String getToPostal() { return toPostal; }
-    public void setToPostal(String toPostal) { this.toPostal = toPostal; }
-
-    public String getToCountry() { return toCountry; }
-    public void setToCountry(String toCountry) { this.toCountry = toCountry; }
-
-    public String getNotes() { return notes; }
-    public void setNotes(String notes) { this.notes = notes; }
->>>>>>> origin/main
 }
