@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.mcquaids.dao;
 
 import java.util.List;
@@ -11,7 +8,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
-import com.mcquaids.model.Constants;
 import com.mcquaids.model.Equipment;
 import com.mcquaids.model.EquipmentQueryDTO;
 import com.mcquaids.model.Flatbed;
@@ -19,344 +15,311 @@ import com.mcquaids.model.Forklift;
 import com.mcquaids.model.ShippingContainer;
 import com.mcquaids.model.Trailer;
 
-/**
- * 
- */
 public class EquipmentDAO {
 
-	private JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
-	public EquipmentDAO(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-	}
+    public EquipmentDAO(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
-	public Integer getAge() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public Integer getAge() {
+        return null;
+    }
 
-	public List<Equipment> findByEquipmentLeessedBy(String pCustomer) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public List<Equipment> findByEquipmentLeessedBy(String pCustomer) {
+        return null;
+    }
 
-	public void addEquipment(Equipment equipment) {
-		System.out.println(equipment.toString());
-		try {
-			String sql = "INSERT INTO equipment (EquipmentNumber, EquipmentType, EquipmentSubType, SerialNumber, Manufacturer, ManufacturedDate, PurchaseDate, PurchasePrice, SpecialNotes, InspectionDate, Properties, AvailabilityStatusCode, ConditionStatusCode, MaintenanceStatusCode, CleaningStatusCode, BookingStatusCode, Available, SafetyStatusCode, PreferredYardID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    // ------------------------------------------------------------
+    // INSERT (cleaned: removed AvailabilityStatusCode + BookingStatusCode)
+    // ------------------------------------------------------------
+    public void addEquipment(Equipment equipment) {
+        try {
+            String sql = "INSERT INTO equipment (" +
+                    "EquipmentNumber, EquipmentType, EquipmentSubType, SerialNumber, Manufacturer, " +
+                    "ManufacturedDate, PurchaseDate, PurchasePrice, SpecialNotes, InspectionDate, Properties, " +
+                    "ConditionStatusCode, MaintenanceStatusCode, CleaningStatusCode, Available, SafetyStatusCode, PreferredYardID" +
+                    ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-			jdbcTemplate.update(sql,
-			    equipment.getEquipmentNumber(),
-			    equipment.getEquipmentType(),
-			    equipment.getEquipmentSubType(),
-			    equipment.getSerialNumber(),
-			    equipment.getManufacturer(),
-			    equipment.getManufacturedDate(),
-			    equipment.getPurchaseDate(),
-			    equipment.getPurchasePrice(),
-			    equipment.getSpecialNotes(),
-			    equipment.getInspectionDate(),
-			    equipment.getPropertiesAsJson(),
-			    equipment.getAvailabilityStatusCode(),
-			    equipment.getConditionStatusCode(),
-			    equipment.getMaintenanceStatusCode(),
-			    equipment.getCleaningStatusCode(),
-			    equipment.getBookingStatusCode(),
-			    equipment.isAvailable(),
-			    equipment.getSafetyStatusCode(),
-			    equipment.getPreferredYardId()
-			);
+            jdbcTemplate.update(sql,
+                equipment.getEquipmentNumber(),
+                equipment.getEquipmentType(),
+                equipment.getEquipmentSubType(),
+                equipment.getSerialNumber(),
+                equipment.getManufacturer(),
+                equipment.getManufacturedDate(),
+                equipment.getPurchaseDate(),
+                equipment.getPurchasePrice(),
+                equipment.getSpecialNotes(),
+                equipment.getInspectionDate(),
+                equipment.getPropertiesAsJson(),
+                equipment.getConditionStatusCode(),
+                equipment.getMaintenanceStatusCode(),
+                equipment.getCleaningStatusCode(),
+                equipment.isAvailable(),
+                equipment.getSafetyStatusCode(),
+                equipment.getPreferredYardId()
+            );
 
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
-	public Equipment findByEquipmentNumber(Integer pEquipmentNumber) {
-	    String sql = "SELECT equip.*, cv.EnglishDescription AS equipmentSubTypeText FROM equipment equip INNER JOIN codevalue cv ON equip.EquipmentSubType = cv.CodeValue WHERE equip.EquipmentNumber = ?";
-	    return jdbcTemplate.queryForObject(sql, new EquipmentRowMapper(), pEquipmentNumber);
-	}
+    public Equipment findByEquipmentNumber(Integer pEquipmentNumber) {
+        String sql = "SELECT equip.*, cv.EnglishDescription AS equipmentSubTypeText " +
+                     "FROM equipment equip " +
+                     "INNER JOIN codevalue cv ON equip.EquipmentSubType = cv.CodeValue " +
+                     "WHERE equip.EquipmentNumber = ?";
+        return jdbcTemplate.queryForObject(sql, new EquipmentRowMapper(), pEquipmentNumber);
+    }
 
+    // ------------------------------------------------------------
+    // UPDATE (cleaned: removed AvailabilityStatusCode + BookingStatusCode)
+    // ------------------------------------------------------------
+    public void updateEquipment(Equipment equipment) {
+        String sql = "UPDATE equipment SET " +
+                "EquipmentType=?, EquipmentSubType=?, SerialNumber=?, Manufacturer=?, " +
+                "ManufacturedDate=?, PurchaseDate=?, PurchasePrice=?, SpecialNotes=?, " +
+                "InspectionDate=?, Properties=?, ConditionStatusCode=?, MaintenanceStatusCode=?, " +
+                "CleaningStatusCode=?, Available=?, SafetyStatusCode=?, PreferredYardID=? " +
+                "WHERE EquipmentNumber=?";
 
-	// Update
-	public void updateEquipment(Equipment equipment) {
-		String sql = "UPDATE equipment SET EquipmentType=?, EquipmentSubType=?, SerialNumber=?, Manufacturer=?, ManufacturedDate=?, PurchaseDate=?, PurchasePrice=?, SpecialNotes=?, InspectionDate=?, Properties=?, AvailabilityStatusCode=?, ConditionStatusCode=?, MaintenanceStatusCode=?, CleaningStatusCode=?, BookingStatusCode=?, Available=?, SafetyStatusCode=?, PreferredYardID=? WHERE EquipmentNumber=?";
+        jdbcTemplate.update(sql,
+            equipment.getEquipmentType(),
+            equipment.getEquipmentSubType(),
+            equipment.getSerialNumber(),
+            equipment.getManufacturer(),
+            equipment.getManufacturedDate(),
+            equipment.getPurchaseDate(),
+            equipment.getPurchasePrice(),
+            equipment.getSpecialNotes(),
+            equipment.getInspectionDate(),
+            equipment.getPropertiesAsJson(),
+            equipment.getConditionStatusCode(),
+            equipment.getMaintenanceStatusCode(),
+            equipment.getCleaningStatusCode(),
+            equipment.isAvailable(),
+            equipment.getSafetyStatusCode(),
+            equipment.getPreferredYardId(),
+            equipment.getEquipmentNumber()
+        );
+    }
 
-		jdbcTemplate.update(sql,
-		    equipment.getEquipmentType(),
-		    equipment.getEquipmentSubType(),
-		    equipment.getSerialNumber(),
-		    equipment.getManufacturer(),
-		    equipment.getManufacturedDate(),
-		    equipment.getPurchaseDate(),
-		    equipment.getPurchasePrice(),
-		    equipment.getSpecialNotes(),
-		    equipment.getInspectionDate(),
-		    equipment.getPropertiesAsJson(),
-		    equipment.getAvailabilityStatusCode(),
-		    equipment.getConditionStatusCode(),
-		    equipment.getMaintenanceStatusCode(),
-		    equipment.getCleaningStatusCode(),
-		    equipment.getBookingStatusCode(),
-		    equipment.isAvailable(),
-		    equipment.getSafetyStatusCode(),
-		    equipment.getPreferredYardId(),
-		    equipment.getEquipmentNumber()
-		);
+    public void deleteEquipment(String equipmentNumber) {
+        String sql = "DELETE FROM equipment WHERE EquipmentNumber = ?";
+        jdbcTemplate.update(sql, equipmentNumber);
+    }
 
-	}
+    // ------------------------------------------------------------
+    // QUERY (cleaned: removed AvailabilityStatusCode + BookingStatusCode)
+    // ------------------------------------------------------------
+    public List<EquipmentQueryDTO> queryEquipment(
+            Integer pEquipmentType,
+            String pEquipmentSubType,
+            String pDerivedAvailability,
+            String pConditionStatusCode,
+            String pMaintenanceStatusCode,
+            String pCleaningStatusCode) {
 
-	// Delete
-	public void deleteEquipment(String equipmentNumber) {
-		String sql = "DELETE FROM equipment WHERE EquipmentNumber = ?";
-		jdbcTemplate.update(sql, equipmentNumber);
-	}
+        StringBuilder sql = new StringBuilder(
+            "SELECT * FROM qryequipmentdetails WHERE 1 = 1");
 
-	public List<EquipmentQueryDTO> queryEquipment(Integer pEquipmentType, String pEquipmentSubType,
-			String pAvailabilityStatusCode, String pCconditionStatusCode, String pMaintenanceStatusCode,
-			String pCleaningStatusCode, String pBookingStatusCode) {
-		
-		
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
 
-		
-		StringBuilder sql = new StringBuilder(
-			"SELECT * FROM qryequipmentdetails WHERE 1 =1 ");
+        if (pEquipmentType != null) {
+            sql.append(" AND EquipmentType = :equipmentType");
+            parameters.addValue("equipmentType", pEquipmentType);
+        }
 
-		MapSqlParameterSource parameters = new MapSqlParameterSource();
+        if (StringUtils.isNotBlank(pEquipmentSubType) && !pEquipmentSubType.startsWith("All")) {
+            sql.append(" AND EquipmentSubType = :equipmentSubType");
+            parameters.addValue("equipmentSubType", pEquipmentSubType);
+        }
+        
+        if (StringUtils.isNotBlank(pDerivedAvailability) && !"All".equals(pDerivedAvailability)) {
+            sql.append(" AND DerivedAvailabilityStatus = :derivedAvailability");
+            parameters.addValue("derivedAvailability", pDerivedAvailability);
+        }
+        
 
-		if (null != pEquipmentType) {
-			sql.append(" AND EquipmentType = :equipmentType");
-			parameters.addValue("equipmentType", pEquipmentType);
-		}
-		
-		if ((!StringUtils.isAllEmpty(pEquipmentSubType)) && (!pEquipmentSubType.startsWith("All"))) {
-			sql.append(" AND  EquipmentSubType = :equipmentSubType");
-			parameters.addValue("equipmentSubType", pEquipmentSubType);
-		}
-		
-		if ((!StringUtils.isAllEmpty(pAvailabilityStatusCode)) && (!pAvailabilityStatusCode.startsWith("All"))) {
-			sql.append(" AND  AvailabilityStatusCode = :AvailabilityStatusCode");
-			parameters.addValue("AvailabilityStatusCode", pAvailabilityStatusCode);
-		}
-		
-		if ((!StringUtils.isAllEmpty(pCconditionStatusCode)) && (!pCconditionStatusCode.startsWith("All"))) {
-			sql.append(" AND  ConditionStatusCode = :ConditionStatusCode");
-			parameters.addValue("ConditionStatusCode", pCconditionStatusCode);
-		}
+        if (StringUtils.isNotBlank(pConditionStatusCode) && !pConditionStatusCode.startsWith("All")) {
+            sql.append(" AND ConditionStatusCode = :ConditionStatusCode");
+            parameters.addValue("ConditionStatusCode", pConditionStatusCode);
+        }
 
-		if ((!StringUtils.isAllEmpty(pMaintenanceStatusCode)) && (!pMaintenanceStatusCode.startsWith("All"))) {
-			sql.append(" AND  MaintenanceStatusCode = :MaintenanceStatusCode");
-			parameters.addValue("MaintenanceStatusCode", pMaintenanceStatusCode);
-		}
+        if (StringUtils.isNotBlank(pMaintenanceStatusCode) && !pMaintenanceStatusCode.startsWith("All")) {
+            sql.append(" AND MaintenanceStatusCode = :MaintenanceStatusCode");
+            parameters.addValue("MaintenanceStatusCode", pMaintenanceStatusCode);
+        }
 
-		if ((!StringUtils.isAllEmpty(pCleaningStatusCode)) && (!pCleaningStatusCode.startsWith("All"))) {
-			sql.append(" AND  MaintenanceStatusCode = :CleaningStatusCode");
-			parameters.addValue("CleaningStatusCode", pCleaningStatusCode);
-		}
+        if (StringUtils.isNotBlank(pCleaningStatusCode) && !pCleaningStatusCode.startsWith("All")) {
+            sql.append(" AND CleaningStatusCode = :CleaningStatusCode");
+            parameters.addValue("CleaningStatusCode", pCleaningStatusCode);
+        }
 
-		if ((!StringUtils.isAllEmpty(pBookingStatusCode)) && (!pBookingStatusCode.startsWith("All"))) {
-			sql.append(" AND  MaintenanceStatusCode = :BookingStatusCode");
-			parameters.addValue("BookingStatusCode", pBookingStatusCode);
-		}
+        NamedParameterJdbcTemplate named = new NamedParameterJdbcTemplate(jdbcTemplate.getDataSource());
 
-		NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(
-				jdbcTemplate.getDataSource());
+        try {
+            return named.query(sql.toString(), parameters, new EquipmentQueryDTORowMapper());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
 
-	  List<EquipmentQueryDTO> x = null;
-	
-		try {
-	      x = namedParameterJdbcTemplate.query(sql.toString(), parameters, new EquipmentQueryDTORowMapper());
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return x;
-		
-	}
-	
-	
-	public List<EquipmentQueryDTO> queryEquipmentByEquipmentNUmber(Integer equipmentNumber) {
-		
-		
-		StringBuilder sql = new StringBuilder(
-		" SELECT * from qryEquipmentDetails " +
-		" WHERE 1 = 1 ");
+    public List<EquipmentQueryDTO> queryEquipmentByEquipmentNUmber(Integer equipmentNumber) {
 
-		MapSqlParameterSource parameters = new MapSqlParameterSource();
+        StringBuilder sql = new StringBuilder(
+            "SELECT * FROM qryEquipmentDetails WHERE 1 = 1");
 
-		if (null != equipmentNumber) {
-			sql.append(" AND EquipmentNumber = :EquipmentNumber");
-			parameters.addValue("EquipmentNumber", equipmentNumber);
-		}
-		
-		NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(
-				jdbcTemplate.getDataSource());
-		
-		
-		List<EquipmentQueryDTO> x = null;
-		try {
-		      x = namedParameterJdbcTemplate.query(sql.toString(), parameters, new EquipmentQueryDTORowMapper());
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-			return x;		 
-	}	
-	
-	
-	public List<Map<String, Object>> queryEquipmentisAvailable(Integer pEquipmentType, String pEquipmentSubType,
-			String pCconditionStatusCode, String pMaintenanceStatusCode) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
 
-		NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(
-				jdbcTemplate.getDataSource());
+        if (equipmentNumber != null) {
+            sql.append(" AND EquipmentNumber = :EquipmentNumber");
+            parameters.addValue("EquipmentNumber", equipmentNumber);
+        }
 
+        NamedParameterJdbcTemplate named =
+                new NamedParameterJdbcTemplate(jdbcTemplate.getDataSource());
 
-		MapSqlParameterSource parameters = new MapSqlParameterSource();		
-		
-		
-		StringBuilder sql = new StringBuilder(
-				"SELECT equipmentTypeText, equipmentSubTypeText, count(*) as numberAvailable FROM qryequipmentdetails WHERE AvailabilityStatusCode = '"
-						+ Constants.EQUIPMENT_AVAILABLE_TO_LEASE + "'");
+        try {
+            return named.query(sql.toString(), parameters, new EquipmentQueryDTORowMapper());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
 
+    // ------------------------------------------------------------
+    // Availability summary (cleaned: removed AvailabilityStatusCode)
+    // ------------------------------------------------------------
+    public List<Map<String, Object>> queryEquipmentisAvailable(
+            Integer pEquipmentType,
+            String pEquipmentSubType,
+            String pConditionStatusCode,
+            String pMaintenanceStatusCode) {
 
-		if (null != pEquipmentType) {
-			sql.append(" AND EquipmentType = :equipmentType");
-			parameters.addValue("equipmentType", pEquipmentType);
-		}
+        NamedParameterJdbcTemplate named =
+                new NamedParameterJdbcTemplate(jdbcTemplate.getDataSource());
 
-		if ((!StringUtils.isAllEmpty(pEquipmentSubType)) && (!pEquipmentSubType.startsWith("All"))) {
-			sql.append(" AND  EquipmentSubType = :equipmentSubType");
-			parameters.addValue("equipmentSubType", pEquipmentSubType);
-		}
-		
-		sql.append(" GROUP BY equipmentTypeText, equipmentSubTypeText");
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
 
-		return namedParameterJdbcTemplate.queryForList(sql.toString(), parameters);
+        StringBuilder sql = new StringBuilder(
+            "SELECT equipmentTypeText, equipmentSubTypeText, count(*) AS numberAvailable " +
+            "FROM qryequipmentdetails WHERE Available = 1");
 
-	}
-	
-	
-	
+        if (pEquipmentType != null) {
+            sql.append(" AND EquipmentType = :equipmentType");
+            parameters.addValue("equipmentType", pEquipmentType);
+        }
+
+        if (StringUtils.isNotBlank(pEquipmentSubType) && !pEquipmentSubType.startsWith("All")) {
+            sql.append(" AND EquipmentSubType = :equipmentSubType");
+            parameters.addValue("equipmentSubType", pEquipmentSubType);
+        }
+
+        sql.append(" GROUP BY equipmentTypeText, equipmentSubTypeText");
+
+        return named.queryForList(sql.toString(), parameters);
+    }
+
     public List<Map<String, Object>> getEquipmentReport() {
         String sql = "CALL GetEquipmentReport()";
         return jdbcTemplate.queryForList(sql);
     }
-	
 
     public List<Map<String, Object>> getEquipmentInspectionReport(int daysToExpiry) {
         String sql = "CALL ListEquipmentPastOrUpcomingAnniversary(:days)";
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("days", daysToExpiry);
-        
-		NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(
-				jdbcTemplate.getDataSource());  
 
-        return namedParameterJdbcTemplate.queryForList(sql, params);
+        NamedParameterJdbcTemplate named =
+                new NamedParameterJdbcTemplate(jdbcTemplate.getDataSource());
+
+        return named.queryForList(sql, params);
     }
-	
 
-// ***************************************************
-// *  Helper methods to Save specific types of equipment.
-// ********************************************************
-	public int saveTrailer(Trailer pTrailer) {
-		Equipment equipment = pTrailer;
-//		equipment.setProperties(pTrailer.setFieldsToJson(pTrailer));
-		updateEquipment(equipment);
-		return 0;
-	}
+    // ------------------------------------------------------------
+    // Save helpers
+    // ------------------------------------------------------------
+    public int saveTrailer(Trailer pTrailer) {
+        updateEquipment(pTrailer);
+        return 0;
+    }
 
-	public int saveNewTrailer(Equipment pEquipment) {
+    public int saveNewTrailer(Equipment pEquipment) {
+        addEquipment(pEquipment);
+        return 0;
+    }
 
-		addEquipment(pEquipment);
-		return 0;
-	}
+    public int saveForklift(Forklift pForklift) {
+        updateEquipment(pForklift);
+        return 0;
+    }
 
-	public int saveForklift(Forklift pForklift) {
-		Equipment equipment = pForklift;
-//		equipment.setProperties(pForklift.setFieldsToJson(pForklift));
-		updateEquipment(equipment);
-		return 0;
-	}
+    public int saveNewForklift(Forklift pForklift) {
+        addEquipment(pForklift);
+        return 0;
+    }
 
-	public int saveNewForklift(Forklift pForklift) {
-		Equipment equipment = pForklift;
-//		equipment.setProperties(pForklift.setFieldsToJson(pForklift));
-		addEquipment(equipment);
-		return 0;
-	}
+    public int saveFlatbed(Flatbed pFlatbed) {
+        updateEquipment(pFlatbed);
+        return 0;
+    }
 
-	public int saveFlatbed(Flatbed pFlatbed) {
-		Equipment equipment = pFlatbed;
-//		equipment.setProperties(pFlatbed.setFieldsToJson(pFlatbed));
-		updateEquipment(equipment);
-		return 0;
-	}
+    public int saveNewFlatbed(Flatbed pFlatbed) {
+        addEquipment(pFlatbed);
+        return 0;
+    }
 
-	public int saveNewFlatbed(Flatbed pFlatbed) {
-		Equipment equipment = pFlatbed;
-//		equipment.setProperties(pFlatbed.setFieldsToJson(pFlatbed));
-		addEquipment(equipment);
-		return 0;
-	}
+    public int saveContainer(ShippingContainer pContainer) {
+        updateEquipment(pContainer);
+        return 0;
+    }
 
-	public int saveContainer(ShippingContainer pContainer) {
-		Equipment equipment = pContainer;
-//		equipment.setProperties(pContainer.setFieldsToJson(pContainer));
-		updateEquipment(equipment);
-		return 0;
-	}
+    public int saveNewContainer(ShippingContainer pContainer) {
+        addEquipment(pContainer);
+        return 0;
+    }
 
-	public int saveNewContainer(ShippingContainer pContainer) {
-		Equipment equipment = pContainer;
-//		equipment.setProperties(pContainer.setFieldsToJson(pContainer));
-		System.out.println("saveNewContainer() equipment =" + equipment.toString());
-		addEquipment(equipment);
-		return 0;
-	}
+    public EquipmentQueryDTO findEquipment(Integer reservedEquipmentID) {
 
-	public EquipmentQueryDTO findEquipment(Integer reservedEquipmentID) {
+        StringBuilder sql = new StringBuilder(
+            "SELECT * FROM qryEquipmentDetails WHERE 1 = 1");
 
-	    StringBuilder sql = new StringBuilder(
-	        "SELECT * FROM qryEquipmentDetails " +
-	        "WHERE 1 = 1 "
-	    );
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
 
-	    MapSqlParameterSource parameters = new MapSqlParameterSource();
+        if (reservedEquipmentID != null) {
+            sql.append(" AND EquipmentNumber = :reservedEquipmentID");
+            parameters.addValue("reservedEquipmentID", reservedEquipmentID);
+        }
 
-	    if (reservedEquipmentID != null) {
-	        sql.append(" AND EquipmentNumber = :reservedEquipmentID");
-	        parameters.addValue("reservedEquipmentID", reservedEquipmentID);
-	    }
+        NamedParameterJdbcTemplate named =
+                new NamedParameterJdbcTemplate(jdbcTemplate.getDataSource());
 
-	    NamedParameterJdbcTemplate namedParameterJdbcTemplate =
-	        new NamedParameterJdbcTemplate(jdbcTemplate.getDataSource());
+        try {
+            return named.queryForObject(sql.toString(), parameters, new EquipmentQueryDTORowMapper());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
 
-	    try {
-	        return namedParameterJdbcTemplate.queryForObject(
-	            sql.toString(),
-	            parameters,
-	            new EquipmentQueryDTORowMapper()
-	        );
-	    } catch (Exception ex) {
-	        ex.printStackTrace();
-	        return null;
-	    }
-	}
+    public Long getPreferredYardId(Integer equipmentNumber) {
 
-	public Long getPreferredYardId(Integer equipmentNumber) {
+        String sql = "SELECT PreferredYardID FROM equipment WHERE EquipmentNumber = ?";
 
-	    String sql = "SELECT PreferredYardID FROM equipment WHERE EquipmentNumber = ?";
+        List<Long> results = jdbcTemplate.query(
+            sql,
+            ps -> ps.setInt(1, equipmentNumber),
+            (rs, rowNum) -> {
+                Long yardId = rs.getLong("PreferredYardID");
+                return rs.wasNull() ? null : yardId;
+            }
+        );
 
-	    List<Long> results = jdbcTemplate.query(
-	            sql,
-	            ps -> ps.setInt(1, equipmentNumber),
-	            (rs, rowNum) -> {
-	                Long yardId = rs.getLong("PreferredYardID");
-	                return rs.wasNull() ? null : yardId;
-	            }
-	    );
-
-	    return results.isEmpty() ? null : results.get(0);
-	}
-	
-	
-
+        return results.isEmpty() ? null : results.get(0);
+    }
 }

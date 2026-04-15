@@ -15,7 +15,7 @@
         rel="stylesheet"
     >
 
-    <title>Equipment Reservation – Excel Style Mock</title>
+    <title>Equipment Reservation â Excel Style Mock</title>
 
     <style>
         /* Optional: Make the table feel more Excel-like */
@@ -33,80 +33,138 @@
     </style>
 </head>
 
-<body class="p-4">
+<body>
 
-    <div class="container">
+<div class="container mt-4">
 
-        <h3 class="mb-4">Requested Equipment (Excel Style Layout)</h3>
-
-<table class="table table-bordered table-sm">
-    <thead>
-        <tr>
-            <th>Equipment Type</th>
-            <th>SubType</th>
-            <th>Quantity</th>
-            <th>Notes</th>
-            <th></th>
-        </tr>
-    </thead>
-
-    <tbody>
-
-        <!-- Main row -->
-        <tr class="line-item">
-            <td>Trailer</td>
-            <td>Flatbed</td>
-            <td>2</td>
-            <td>Urgent</td>
-            <td>
-                <button class="btn btn-sm btn-secondary">Details</button>
-            </td>
-        </tr>
-
-        <!-- Expandable details row -->
-        <tr class="properties-panel" style="display:none;">
-            <td colspan="5">
-                <div class="row g-2">
-                    <div class="col-3"><strong>Length:</strong> 20</div>
-                    <div class="col-3"><strong>Width:</strong> 8</div>
-                    <div class="col-3"><strong>Height:</strong> 8</div>
-                    <div class="col-3"><strong>Axles:</strong> 2</div>
-                    <div class="col-3"><strong>Deck Type:</strong> Steel</div>
-                </div>
-            </td>
-        </tr>
-
-        <!-- Another main row -->
-        <tr class="line-item">
-            <td>Forklift</td>
-            <td>Electric</td>
-            <td>1</td>
-            <td>Indoor</td>
-            <td>
-                <button class="btn btn-sm btn-secondary">Details</button>
-            </td>
-        </tr>
-
-        <!-- Forklift details -->
-        <tr class="properties-panel" style="display:none;">
-            <td colspan="5">
-                <div class="row g-2">
-                    <div class="col-3"><strong>Fuel Type:</strong> Electric</div>
-                    <div class="col-3"><strong>Mast Height:</strong> 15 ft</div>
-                    <div class="col-3"><strong>Capacity:</strong> 5000 lb</div>
-                    <div class="col-3"><strong>Fork Length:</strong> 48 in</div>
-                </div>
-            </td>
-        </tr>
-
-    </tbody>
-</table>
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Movement Orders</h3>
+        <button class="btn btn-primary">Create Movement Order</button>
     </div>
 
-    <!-- Bootstrap 5 JS (optional, only needed for components like modals) -->
-    <script 
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
-    </script>
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form class="row g-3">
+
+                <div class="col-md-3">
+                    <label class="form-label">Status</label>
+                    <select class="form-select">
+                        <option value="">All</option>
+                        <option>NEW</option>
+                        <option>ASSIGNED</option>
+                        <option>IN_TRANSIT</option>
+                        <option>COMPLETED</option>
+                        <option>CANCELLED</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Movement Type</label>
+                    <select class="form-select">
+                        <option value="">All</option>
+                        <option>Reposition</option>
+                        <option>Inspection</option>
+                        <option>Cleaning</option>
+                        <option>Maintenance</option>
+                        <option>Customer Request</option>
+                        <option>Swap</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Equipment #</label>
+                    <input type="text" class="form-control" placeholder="12345">
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Driver</label>
+                    <input type="text" class="form-control" placeholder="Driver name">
+                </div>
+
+                <div class="col-md-12 text-end">
+                    <button class="btn btn-secondary">Clear</button>
+                    <button class="btn btn-primary">Search</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- Movement Orders Table -->
+    <div class="card">
+        <div class="card-body p-0">
+
+            <table class="table table-striped mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Order #</th>
+                        <th>Equipment</th>
+                        <th>Type</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Driver</th>
+                        <th>Status</th>
+                        <th>Requested</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <!-- Example Row 1 -->
+                    <tr>
+                        <td>MO-1023</td>
+                        <td>12345 (Dry Van)</td>
+                        <td>Inspection</td>
+                        <td>Walmart Store #18</td>
+                        <td>Charlottetown Yard</td>
+                        <td>John Smith</td>
+                        <td><span class="badge bg-warning text-dark">IN_TRANSIT</span></td>
+                        <td>Apr 15, 2026 09:12</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary">View</button>
+                        </td>
+                    </tr>
+
+                    <!-- Example Row 2 -->
+                    <tr>
+                        <td>MO-1024</td>
+                        <td>99812 (Reefer)</td>
+                        <td>Customer Request</td>
+                        <td>Summerside Yard</td>
+                        <td>Customer Site – ABC Foods</td>
+                        <td>Unassigned</td>
+                        <td><span class="badge bg-secondary">NEW</span></td>
+                        <td>Apr 15, 2026 10:01</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary">View</button>
+                        </td>
+                    </tr>
+
+                    <!-- Example Row 3 -->
+                    <tr>
+                        <td>MO-1025</td>
+                        <td>55110 (Flatbed)</td>
+                        <td>Reposition</td>
+                        <td>Moncton Yard</td>
+                        <td>Charlottetown Yard</td>
+                        <td>Sarah Lee</td>
+                        <td><span class="badge bg-success">COMPLETED</span></td>
+                        <td>Apr 14, 2026 14:22</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary">View</button>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
 
 </body>
 </html>

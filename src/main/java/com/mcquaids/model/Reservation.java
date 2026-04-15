@@ -41,6 +41,12 @@ public class Reservation {
     private String additionalPersonPhone;
     private String additionalPersonEmail;
 
+	private String leaseDocumentPath;
+
+	private Date leaseSignedDate;
+
+	private String leaseSignedBy;
+
     
     
 
@@ -407,17 +413,40 @@ public class Reservation {
 	    return address;
 	}
 
-	@Override
-	public String toString() {
-		return "Reservation [reservationID=" + reservationID + ", customerID=" + customerID + ", customer=" + customer
-				+ ", reservationStatusCode=" + reservationStatusCode + ", startDate=" + startDate + ", endDate="
-				+ endDate + ", instructions=" + instructions + ", leaseID=" + leaseID + ", dateCreated=" + dateCreated
-				+ ", dateUpdated=" + dateUpdated + ", deliveryStreet=" + deliveryStreet + ", deliveryCity="
-				+ deliveryCity + ", deliveryProvince=" + deliveryProvince + ", deliveryPostalCode=" + deliveryPostalCode
-				+ ", deliveryCountry=" + deliveryCountry + ", deliverySameAsCustomer=" + deliverySameAsCustomer
-				+ ", secondaryStreet=" + secondaryStreet + ", secondaryCity=" + secondaryCity + ", secondaryProvince="
-				+ secondaryProvince + ", secondaryPostalCode=" + secondaryPostalCode + ", secondaryCountry="
-				+ secondaryCountry + ", secondaryDeliveryDate=" + secondaryDeliveryDate + "]";
+
+	public void setLeaseDocumentPath(String path) {
+		this.leaseDocumentPath = path;
+	}
+
+	public void setLeaseSignedDate(Date now) {
+		leaseSignedDate = now;
+		
+	}
+
+	public void setLeaseSignedBy(String userid) {
+		leaseSignedBy = userid;
+		
+	}
+
+	/**
+	 * @return the leaseDocumentPath
+	 */
+	public String getLeaseDocumentPath() {
+		return leaseDocumentPath;
+	}
+
+	/**
+	 * @return the leaseSignedDate
+	 */
+	public Date getLeaseSignedDate() {
+		return leaseSignedDate;
+	}
+
+	/**
+	 * @return the leaseSignedBy
+	 */
+	public String getLeaseSignedBy() {
+		return leaseSignedBy;
 	}
 	
 	

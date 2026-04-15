@@ -20,6 +20,7 @@ public class ReservationDispatchAction extends BaseReservationAction {
     @Override
     public String execute() {
 
+    	try {
         DispatchActionService dispatchActionService = new DispatchActionService();
 
         // 1. Load reservation
@@ -91,6 +92,10 @@ public class ReservationDispatchAction extends BaseReservationAction {
         // 8. Push to UI
         ActionContext.getContext().put("reservation", reservation);
         ActionContext.getContext().put("dispatchGroups", groups);
+        
+    	} catch (Exception ex) {
+    		ex.printStackTrace();
+    	}
 
         return "dispatchPlan";
     }

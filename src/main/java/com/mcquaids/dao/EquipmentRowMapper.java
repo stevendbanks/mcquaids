@@ -48,11 +48,10 @@ public class EquipmentRowMapper implements RowMapper<Equipment> {
         equipment.setPurchasePrice(rs.getDouble("PurchasePrice"));
         equipment.setSpecialNotes(rs.getString("SpecialNotes"));
 
-        equipment.setAvailabilityStatusCode(rs.getString("AvailabilityStatusCode"));
+        equipment.setAvailable(rs.getBoolean("Available"));
         equipment.setConditionStatusCode(rs.getString("ConditionStatusCode"));
         equipment.setMaintenanceStatusCode(rs.getString("MaintenanceStatusCode"));
         equipment.setCleaningStatusCode(rs.getString("CleaningStatusCode"));
-        equipment.setBookingStatusCode(rs.getString("BookingStatusCode"));
 
         // JSON properties
         String propertiesJson = rs.getString("Properties");

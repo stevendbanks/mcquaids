@@ -25,20 +25,24 @@ public class AvailabilityService {
     
     public void recalculate(Integer equipmentNumber) {
 
+    	System.out.println("recalculating-> equipmentNumber=" + equipmentNumber);
         Equipment equipment = equipmentDAO.findByEquipmentNumber(equipmentNumber);
         if (equipment == null) {
             return;
         }
 
         // 1. Safety status
-        boolean safe = SafetyStatus.OK.equals(equipment.getSafetyStatusCode());
+        boolean safe = equipment.getSafetyStatusCode() == null 
+                || SafetyStatus.OK.equals(equipment.getSafetyStatusCode());
+
 
         // 2. Location
         EquipmentLocationHistory currentLocation =
                 locationHistoryDAO.findOpenLocation(equipmentNumber);
 
-        boolean atYard = currentLocation != null
-                && "YARD".equals(currentLocation.getLocationType());
+        boolean atYard = currentLocation == null 
+                || "YARD".equals(currentLocation.getLocationType());
+
 
         // 3. Reservation state
         boolean onReservation = reservationDAO.isEquipmentOnActiveReservation(equipmentNumber);

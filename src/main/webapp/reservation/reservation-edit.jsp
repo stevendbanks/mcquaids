@@ -1,6 +1,8 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 
 
 <div class="container">
@@ -48,8 +50,8 @@
                         </button>
 
                         <div class="dropdown-menu dropdown-menu-right">
-                            <button class="dropdown-item" type="button" onclick="changeReservationStatus()">
-                                Change Status
+                            <button class="dropdown-item" type="button" onclick="uploadSignedLeasePDF()">
+                                Upload signed lease
                             </button>
                             <button class="dropdown-item" type="button" onclick="cancelReservation()">
                                 Cancel Reservation
@@ -167,6 +169,47 @@
 
             </div>
         </div>
+        
+<c:if test="${not empty reservation.leaseDocumentPath}">
+    <div class="card mt-3 mb-4">
+        <div class="card-header">
+            Signed Lease
+        </div>
+
+        <div class="card-body">
+
+            <div class="row align-items-center">
+
+                <!-- Download Button -->
+                <div class="col-md-4 mb-2">
+					<a href="/uploads/leases/${reservation.leaseDocumentPath}"
+					   class="btn btn-outline-primary">
+					    Download Signed Lease (PDF)
+					</a>
+                </div>
+
+                <!-- Signed On -->
+                <div class="col-md-4 mb-2">
+                    <strong>Signed On:</strong>
+                    <fmt:formatDate value="${reservation.leaseSignedDate}" pattern="yyyy-MM-dd HH:mm" />
+                </div>
+
+                <!-- Signed By -->
+                <div class="col-md-4 mb-2">
+                    <strong>Signed By:</strong>
+                    ${reservation.leaseSignedBy}
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</c:if>
+
+        
+        
+        
+        
 
 		<!-- Delivery Address Panel -->
 		<jsp:include page="/reservation/reservation-delivery-address-panel.jsp" />
@@ -310,7 +353,6 @@
 
 
     </s:form>
-
 </div>
 
 <div class="modal fade" id="customerModal" tabindex="-1" role="dialog" aria-labelledby="customerModalLabel" aria-hidden="true">
@@ -334,4 +376,38 @@
         </div>
     </div>
 </div>
+
+
+<!-- Upload Signed Lease Modal -->
+<div class="modal fade" id="uploadSignedLeaseModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Upload Signed Lease PDF</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+
+        <input type="file" id="signedLeaseFile" accept="application/pdf" class="form-control">
+
+        <!-- Required for PHP upload progress -->
+        <input type="hidden" name="PHP_SESSION_UPLOAD_PROGRESS" id="PHP_SESSION_UPLOAD_PROGRESS">
+
+        <div class="mt-3" style="width: 100%; background: #ddd; height: 20px;">
+          <div id="leaseUploadProgressBar" style="width: 0%; height: 20px; background: #4caf50;"></div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="submitSignedLeasePDF()">Upload</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 

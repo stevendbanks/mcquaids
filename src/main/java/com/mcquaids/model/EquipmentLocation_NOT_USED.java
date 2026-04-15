@@ -5,7 +5,7 @@ package com.mcquaids.model;
 
 import java.util.Date;
 
-public class EquipmentLocation {
+public class EquipmentLocation_NOT_USED {
 
 	private String locationID;
     private String equipmentNumber;

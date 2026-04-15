@@ -3,7 +3,6 @@ package com.mcquaids.dao.rowmappers;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 
 import org.springframework.jdbc.core.RowMapper;
 
@@ -21,22 +20,25 @@ public class ReservationViewRowMapper implements RowMapper<ReservationViewDTO> {
         dto.setReservationID(rs.getInt("ReservationID"));
         dto.setCustomerID(rs.getString("CustomerID"));
         dto.setReservationStatusCode(rs.getString("ReservationStatusCode"));
- //       dto.setStartDate(rs.getTimestamp("StartDate"));
-//        dto.setStartDate(rs.getObject("StartDate", LocalDate.class));
-////        dto.setEndDate(rs.getTimestamp("EndDate"));
-//        dto.setEndDate(rs.getObject("EndDate", LocalDate.class));
-        
+
         Timestamp startTs = rs.getTimestamp("StartDate");
         dto.setStartDate(startTs == null ? null : startTs.toLocalDateTime());
 
         Timestamp endTs = rs.getTimestamp("EndDate");
-        dto.setEndDate(endTs == null ? null : endTs.toLocalDateTime());        
-        
-        
+        dto.setEndDate(endTs == null ? null : endTs.toLocalDateTime());
+
         dto.setInstructions(rs.getString("Instructions"));
         dto.setLeaseID(rs.getString("LeaseID"));
         dto.setDateCreated(rs.getTimestamp("DateCreated"));
         dto.setDateUpdated(rs.getTimestamp("DateUpdated"));
+
+        // ⭐ NEW LEASE FIELDS
+        dto.setLeaseDocumentPath(rs.getString("LeaseDocumentPath"));
+
+        Timestamp signedTs = rs.getTimestamp("LeaseSignedDate");
+        dto.setLeaseSignedDate(signedTs == null ? null : signedTs);
+
+        dto.setLeaseSignedBy(rs.getString("LeaseSignedBy"));
 
         // Delivery address fields
         dto.setDeliveryStreet(rs.getString("DeliveryStreet"));
@@ -52,8 +54,7 @@ public class ReservationViewRowMapper implements RowMapper<ReservationViewDTO> {
         dto.setSecondaryProvince(rs.getString("SecondaryProvince"));
         dto.setSecondaryPostalCode(rs.getString("SecondaryPostalCode"));
         dto.setSecondaryCountry(rs.getString("SecondaryCountry"));
-//        dto.setSecondaryDeliveryDate(rs.getObject("SecondaryDeliveryDate", LocalDate.class));
-        
+
         Timestamp ts = rs.getTimestamp("SecondaryDeliveryDate");
         dto.setSecondaryDeliveryDate(ts == null ? null : ts.toLocalDateTime());
 

@@ -277,8 +277,8 @@ function removeLineItem(lineItemId) {
 
     console.warn(`Attempting to remove line item ${lineItemId} with reservation status ${status}`);
     // Only allow removal in Draft status
-    if (status !== "1001-01") {
-        showActionMessage("You can only remove equipment when the reservation is in Draft status.", "danger");
+    if (status == "1001-03") {
+        showActionMessage("You can only remove equipment when the reservation status is Draft or Pending.", "danger");
         return;
     }
 
@@ -478,8 +478,94 @@ async function ajaxSaveCustomerFromModal() {
     }
 }
 
+function uploadSignedLeasePDF() {
+    console.log("uploadSignedLeasePDF clicked");
+    $('#uploadSignedLeaseModal').modal('show');
+}
+
+async function submitSignedLeasePDF() {
+    const reservationID = document.getElementById("reservationID").value;
+    const fileInput = document.getElementById("signedLeaseFile");
+    const uploadIdField = document.getElementById("PHP_SESSION_UPLOAD_PROGRESS");
+
+    if (!fileInput || fileInput.files.length === 0) {
+        showActionMessage("Please select a PDF file first.", "danger");
+        return;
+    }
+
+    // Generate upload ID for PHP progress tracking
+    const uploadId = Date.now().toString();
+    uploadIdField.value = uploadId;
+
+    // Start progress polling
+    pollLeaseUploadProgress(uploadId);
+
+    const formData = new FormData();
+    formData.append("file", fileInput.files[0]);
+
+    let uploadResponse;
+
+    try {
+        const response = await fetch("/upload-handler/lease-upload.php", {
+            method: "POST",
+            body: formData
+        });
+
+        uploadResponse = await response.json();
+
+        if (!uploadResponse.success) {
+            showActionMessage("Upload failed: " + (uploadResponse.error || "Unknown error"), "danger");
+            return;
+        }
+
+    } catch (err) {
+        console.error("Upload error:", err);
+        showActionMessage("Network error while uploading PDF.", "danger");
+        return;
+    }
+
+    // Now call Java backend to attach lease
+    try {
+        const backendResponse = await fetch("/mcquaids/reservation/attachLease", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                reservationID: reservationID,
+                filename: uploadResponse.filename,
+                path: uploadResponse.path
+            })
+        });
+
+        const data = await backendResponse.json();
+
+        if (data.status === "success") {
+            showActionMessage("Signed lease uploaded successfully.", "success");
+            $('#uploadSignedLeaseModal').modal('hide');
+            location.reload();
+        } else {
+            showActionMessage(data.message || "Backend attach failed.", "danger");
+        }
+
+    } catch (err) {
+        console.error("Backend attach error:", err);
+        showActionMessage("Error attaching lease to reservation.", "danger");
+    }
+}
 
 
+function pollLeaseUploadProgress(id) {
+    fetch("/upload-handler/progress.php?id=" + id)
+        .then(r => r.json())
+        .then(data => {
+            const pct = data.progress;
+            document.getElementById("leaseUploadProgressBar").style.width = pct + "%";
+
+            if (pct < 100) {
+                setTimeout(() => pollLeaseUploadProgress(id), 300);
+            }
+        })
+        .catch(err => console.error("Progress error:", err));
+}
 
 window.removeLineItem = removeLineItem;
 window.substituteLineItem = substituteLineItem;
@@ -493,5 +579,11 @@ window.createDispatchPlan = createDispatchPlan;
 
 window.openCustomerLookup = openCustomerLookup;
 window.ajaxSaveCustomerFromModal = ajaxSaveCustomerFromModal;
+
+// Functions for lease PDF upload
+window.uploadSignedLeasePDF = uploadSignedLeasePDF;
+window.submitSignedLeasePDF = submitSignedLeasePDF;
+window.pollLeaseUploadProgress = pollLeaseUploadProgress;
+
 
 

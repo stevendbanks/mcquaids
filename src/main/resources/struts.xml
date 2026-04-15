@@ -277,15 +277,6 @@
         </result>
     </action>
 
-	<action name="AddEquipmentToReservationOLD"
-	        class="com.mcquaids.actions.reservation.lineItems.AddEquipmentToReservationAction">
-	    <result name="success" type="redirectAction">
-	        <param name="actionName">edit-reservation</param>
-	        <param name="reservationID">${reservationID}</param>
-	    </result>
-	     <result name="error" type="tiles">reservation-edit</result>
-	</action>
-	
 	<action name="AddEquipmentToReservation"
 	        class="com.mcquaids.actions.reservation.lineItems.AddEquipmentToReservationAction">
 		<result name="success" type="json">
@@ -295,9 +286,6 @@
 		        reservationLineItemDTO.*
 		    </param>
 		</result>
-
-		   
-        
 	     <result name="error" type="tiles">reservation-edit</result>
 	</action>
 
@@ -314,8 +302,6 @@
 			    <param name="reservationID">${reservationID}</param>
 			</result>
     </action>
-
-
 
     <action name="SaveReservedEquipmentAdditionalNote" method="execute"
         class="com.mcquaids.actions.reservation.lineItems.SaveReservedEquipmentAdditionalNoteAction">
@@ -372,6 +358,21 @@
         </param>
     </result>
 </action>
+
+<action name="attachLeaseOLD" class="com.mcquaids.actions.reservation.AttachLeaseAction">
+    <result type="json">
+        <param name="root">jsonResponse</param>
+    </result>
+</action>
+
+<action name="attachLease" class="com.mcquaids.actions.reservation.AttachLeaseAction">
+    <interceptor-ref name="json"/>
+    <interceptor-ref name="defaultStack"/>
+    <result type="json">
+        <param name="root">jsonResponse</param>
+    </result>
+</action>
+
 
 
     <action name="convertToLease" method="execute"
