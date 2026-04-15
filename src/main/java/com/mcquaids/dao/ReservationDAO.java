@@ -27,57 +27,65 @@ public class ReservationDAO {
         this.template = new NamedParameterJdbcTemplate(jdbcTemplate.getDataSource());
     }
 
-    // ------------------------------------------------------------
-    // CREATE
-    // ------------------------------------------------------------
-    public Integer createReservation(Reservation reservation) {
+ // ------------------------------------------------------------
+ // CREATE
+ // ------------------------------------------------------------
+ public Integer createReservation(Reservation reservation) {
 
-        String sql = "INSERT INTO reservation " +
-                     "(CustomerID, ReservationStatusCode, StartDate, EndDate, Instructions, LeaseID, " +
-                     "DeliveryStreet, DeliveryCity, DeliveryProvince, DeliveryPostalCode, DeliveryCountry, DeliverySameAsCustomer, " +
-                     "SecondaryStreet, SecondaryCity, SecondaryProvince, SecondaryPostalCode, SecondaryCountry, SecondaryDeliveryDate, " +
-                     "AdditionalPersonName, AdditionalPersonPhone, AdditionalPersonEmail, " +
-                     "DateCreated) " +
-                     "VALUES (:CustomerID, :ReservationStatusCode, :StartDate, :EndDate, :Instructions, :LeaseID, " +
-                     ":DeliveryStreet, :DeliveryCity, :DeliveryProvince, :DeliveryPostalCode, :DeliveryCountry, :DeliverySameAsCustomer, " +
-                     ":SecondaryStreet, :SecondaryCity, :SecondaryProvince, :SecondaryPostalCode, :SecondaryCountry, :SecondaryDeliveryDate, " +
-                     ":AdditionalPersonName, :AdditionalPersonPhone, :AdditionalPersonEmail, " +
-                     "NOW())";
+     String sql = "INSERT INTO reservation " +
+                  "(CustomerID, ReservationStatusCode, StartDate, EndDate, Instructions, LeaseID, " +
+                  "LeaseDocumentPath, LeaseSignedDate, LeaseSignedBy, " +   // NEW FIELDS
+                  "DeliveryStreet, DeliveryCity, DeliveryProvince, DeliveryPostalCode, DeliveryCountry, DeliverySameAsCustomer, " +
+                  "SecondaryStreet, SecondaryCity, SecondaryProvince, SecondaryPostalCode, SecondaryCountry, SecondaryDeliveryDate, " +
+                  "AdditionalPersonName, AdditionalPersonPhone, AdditionalPersonEmail, " +
+                  "DateCreated) " +
+                  "VALUES (:CustomerID, :ReservationStatusCode, :StartDate, :EndDate, :Instructions, :LeaseID, " +
+                  ":LeaseDocumentPath, :LeaseSignedDate, :LeaseSignedBy, " +  // NEW FIELDS
+                  ":DeliveryStreet, :DeliveryCity, :DeliveryProvince, :DeliveryPostalCode, :DeliveryCountry, :DeliverySameAsCustomer, " +
+                  ":SecondaryStreet, :SecondaryCity, :SecondaryProvince, :SecondaryPostalCode, :SecondaryCountry, :SecondaryDeliveryDate, " +
+                  ":AdditionalPersonName, :AdditionalPersonPhone, :AdditionalPersonEmail, " +
+                  "NOW())";
 
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("CustomerID", reservation.getCustomerID());
-        params.addValue("ReservationStatusCode", reservation.getReservationStatusCode());
-        params.addValue("StartDate", reservation.getStartDate());
-        params.addValue("EndDate", reservation.getEndDate());
-        params.addValue("Instructions", reservation.getInstructions());
-        params.addValue("LeaseID", reservation.getLeaseID());
+     MapSqlParameterSource params = new MapSqlParameterSource();
+     params.addValue("CustomerID", reservation.getCustomerID());
+     params.addValue("ReservationStatusCode", reservation.getReservationStatusCode());
+     params.addValue("StartDate", reservation.getStartDate());
+     params.addValue("EndDate", reservation.getEndDate());
+     params.addValue("Instructions", reservation.getInstructions());
+     params.addValue("LeaseID", reservation.getLeaseID());
 
-        // Primary delivery
-        params.addValue("DeliveryStreet", normalize(reservation.getDeliveryStreet()));
-        params.addValue("DeliveryCity", normalize(reservation.getDeliveryCity()));
-        params.addValue("DeliveryProvince", normalize(reservation.getDeliveryProvince()));
-        params.addValue("DeliveryPostalCode", normalize(reservation.getDeliveryPostalCode()));
-        params.addValue("DeliveryCountry", normalize(reservation.getDeliveryCountry()));        
-        params.addValue("DeliverySameAsCustomer", reservation.getDeliverySameAsCustomer());
+     // NEW LEASE FIELDS
+     params.addValue("LeaseDocumentPath", reservation.getLeaseDocumentPath());
+     params.addValue("LeaseSignedDate", reservation.getLeaseSignedDate());
+     params.addValue("LeaseSignedBy", reservation.getLeaseSignedBy());
 
-        // Secondary delivery
-        params.addValue("SecondaryStreet", normalize(reservation.getSecondaryStreet()));
-        params.addValue("SecondaryCity", normalize(reservation.getSecondaryCity()));
-        params.addValue("SecondaryProvince", normalize(reservation.getSecondaryProvince()));
-        params.addValue("SecondaryPostalCode", normalize(reservation.getSecondaryPostalCode()));
-        params.addValue("SecondaryCountry", normalize(reservation.getSecondaryCountry()));
-        params.addValue("SecondaryDeliveryDate", reservation.getSecondaryDeliveryDate());
+     // Primary delivery
+     params.addValue("DeliveryStreet", normalize(reservation.getDeliveryStreet()));
+     params.addValue("DeliveryCity", normalize(reservation.getDeliveryCity()));
+     params.addValue("DeliveryProvince", normalize(reservation.getDeliveryProvince()));
+     params.addValue("DeliveryPostalCode", normalize(reservation.getDeliveryPostalCode()));
+     params.addValue("DeliveryCountry", normalize(reservation.getDeliveryCountry()));
+     params.addValue("DeliverySameAsCustomer", reservation.getDeliverySameAsCustomer());
 
-        // Additional Person (MVP fields)
-        params.addValue("AdditionalPersonName", reservation.getAdditionalPersonName());
-        params.addValue("AdditionalPersonPhone", reservation.getAdditionalPersonPhone());
-        params.addValue("AdditionalPersonEmail", reservation.getAdditionalPersonEmail());
+     // Secondary delivery
+     params.addValue("SecondaryStreet", normalize(reservation.getSecondaryStreet()));
+     params.addValue("SecondaryCity", normalize(reservation.getSecondaryCity()));
+     params.addValue("SecondaryProvince", normalize(reservation.getSecondaryProvince()));
+     params.addValue("SecondaryPostalCode", normalize(reservation.getSecondaryPostalCode()));
+     params.addValue("SecondaryCountry", normalize(reservation.getSecondaryCountry()));
+     params.addValue("SecondaryDeliveryDate", reservation.getSecondaryDeliveryDate());
 
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        template.update(sql, params, keyHolder);
+     // Additional Person (MVP fields)
+     params.addValue("AdditionalPersonName", reservation.getAdditionalPersonName());
+     params.addValue("AdditionalPersonPhone", reservation.getAdditionalPersonPhone());
+     params.addValue("AdditionalPersonEmail", reservation.getAdditionalPersonEmail());
 
-        return keyHolder.getKey().intValue();
-    }
+     KeyHolder keyHolder = new GeneratedKeyHolder();
+     template.update(sql, params, keyHolder);
+
+     return keyHolder.getKey().intValue();
+ }
+
     
 
     private String normalize(String value) {
@@ -101,70 +109,86 @@ public class ReservationDAO {
  // ------------------------------------------------------------
  // UPDATE
  // ------------------------------------------------------------
-    public void updateReservation(Reservation reservation) {
-   	 
-        String sql = "UPDATE reservation SET " +
-                     "CustomerID = :CustomerID, " +
-                     "ReservationStatusCode = :ReservationStatusCode, " +
-                     "StartDate = :StartDate, " +
-                     "EndDate = :EndDate, " +
-                     "Instructions = :Instructions, " +
-                     "LeaseID = :LeaseID, " +
-                     "DeliveryStreet = :DeliveryStreet, " +
-                     "DeliveryCity = :DeliveryCity, " +
-                     "DeliveryProvince = :DeliveryProvince, " +
-                     "DeliveryPostalCode = :DeliveryPostalCode, " +
-                     "DeliveryCountry = :DeliveryCountry, " +
-                     "DeliverySameAsCustomer = :DeliverySameAsCustomer, " +
+ // ------------------------------------------------------------
+ // UPDATE
+ // ------------------------------------------------------------
+ public void updateReservation(Reservation reservation) {
 
-                     // Secondary delivery
-                     "SecondaryStreet = :SecondaryStreet, " +
-                     "SecondaryCity = :SecondaryCity, " +
-                     "SecondaryProvince = :SecondaryProvince, " +
-                     "SecondaryPostalCode = :SecondaryPostalCode, " +
-                     "SecondaryCountry = :SecondaryCountry, " +
-                     "SecondaryDeliveryDate = :SecondaryDeliveryDate, " +
+     String sql = "UPDATE reservation SET " +
+                  "CustomerID = :CustomerID, " +
+                  "ReservationStatusCode = :ReservationStatusCode, " +
+                  "StartDate = :StartDate, " +
+                  "EndDate = :EndDate, " +
+                  "Instructions = :Instructions, " +
+                  "LeaseID = :LeaseID, " +
 
-                     // Additional Person (MVP fields)
-                     "AdditionalPersonName = :AdditionalPersonName, " +
-                     "AdditionalPersonPhone = :AdditionalPersonPhone, " +
-                     "AdditionalPersonEmail = :AdditionalPersonEmail, " +
+                  // NEW LEASE FIELDS
+                  "LeaseDocumentPath = :LeaseDocumentPath, " +
+                  "LeaseSignedDate = :LeaseSignedDate, " +
+                  "LeaseSignedBy = :LeaseSignedBy, " +
 
-                     "DateUpdated = NOW() " +
-                     "WHERE ReservationID = :ReservationID";
+                  // Delivery address
+                  "DeliveryStreet = :DeliveryStreet, " +
+                  "DeliveryCity = :DeliveryCity, " +
+                  "DeliveryProvince = :DeliveryProvince, " +
+                  "DeliveryPostalCode = :DeliveryPostalCode, " +
+                  "DeliveryCountry = :DeliveryCountry, " +
+                  "DeliverySameAsCustomer = :DeliverySameAsCustomer, " +
 
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("ReservationID", reservation.getReservationID());
-        params.addValue("CustomerID", reservation.getCustomerID());
-        params.addValue("ReservationStatusCode", reservation.getReservationStatusCode());
-        params.addValue("StartDate", reservation.getStartDate());
-        params.addValue("EndDate", reservation.getEndDate());
-        params.addValue("Instructions", reservation.getInstructions());
-        params.addValue("LeaseID", reservation.getLeaseID());
+                  // Secondary delivery
+                  "SecondaryStreet = :SecondaryStreet, " +
+                  "SecondaryCity = :SecondaryCity, " +
+                  "SecondaryProvince = :SecondaryProvince, " +
+                  "SecondaryPostalCode = :SecondaryPostalCode, " +
+                  "SecondaryCountry = :SecondaryCountry, " +
+                  "SecondaryDeliveryDate = :SecondaryDeliveryDate, " +
 
-        // Delivery address
-        params.addValue("DeliveryStreet", normalize(reservation.getDeliveryStreet()));
-        params.addValue("DeliveryCity", normalize(reservation.getDeliveryCity()));
-        params.addValue("DeliveryProvince", normalize(reservation.getDeliveryProvince()));
-        params.addValue("DeliveryPostalCode", normalize(reservation.getDeliveryPostalCode()));
-        params.addValue("DeliveryCountry", normalize(reservation.getDeliveryCountry()));
-        params.addValue("DeliverySameAsCustomer", reservation.getDeliverySameAsCustomer());
-        
-        // Secondary delivery
-        params.addValue("SecondaryStreet", normalize(reservation.getSecondaryStreet()));
-        params.addValue("SecondaryCity", normalize(reservation.getSecondaryCity()));
-        params.addValue("SecondaryProvince", normalize(reservation.getSecondaryProvince()));
-        params.addValue("SecondaryPostalCode", normalize(reservation.getSecondaryPostalCode()));
-        params.addValue("SecondaryCountry", normalize(reservation.getSecondaryCountry()));
-        params.addValue("SecondaryDeliveryDate", reservation.getSecondaryDeliveryDate());
+                  // Additional Person (MVP fields)
+                  "AdditionalPersonName = :AdditionalPersonName, " +
+                  "AdditionalPersonPhone = :AdditionalPersonPhone, " +
+                  "AdditionalPersonEmail = :AdditionalPersonEmail, " +
 
-        // Additional Person (MVP fields)
-        params.addValue("AdditionalPersonName", reservation.getAdditionalPersonName());
-        params.addValue("AdditionalPersonPhone", reservation.getAdditionalPersonPhone());
-        params.addValue("AdditionalPersonEmail", reservation.getAdditionalPersonEmail());
+                  "DateUpdated = NOW() " +
+                  "WHERE ReservationID = :ReservationID";
 
-        template.update(sql, params);
-    }
+     MapSqlParameterSource params = new MapSqlParameterSource();
+     params.addValue("ReservationID", reservation.getReservationID());
+     params.addValue("CustomerID", reservation.getCustomerID());
+     params.addValue("ReservationStatusCode", reservation.getReservationStatusCode());
+     params.addValue("StartDate", reservation.getStartDate());
+     params.addValue("EndDate", reservation.getEndDate());
+     params.addValue("Instructions", reservation.getInstructions());
+     params.addValue("LeaseID", reservation.getLeaseID());
+
+     // NEW LEASE FIELDS
+     params.addValue("LeaseDocumentPath", reservation.getLeaseDocumentPath());
+     params.addValue("LeaseSignedDate", reservation.getLeaseSignedDate());
+     params.addValue("LeaseSignedBy", reservation.getLeaseSignedBy());
+
+     // Delivery address
+     params.addValue("DeliveryStreet", normalize(reservation.getDeliveryStreet()));
+     params.addValue("DeliveryCity", normalize(reservation.getDeliveryCity()));
+     params.addValue("DeliveryProvince", normalize(reservation.getDeliveryProvince()));
+     params.addValue("DeliveryPostalCode", normalize(reservation.getDeliveryPostalCode()));
+     params.addValue("DeliveryCountry", normalize(reservation.getDeliveryCountry()));
+     params.addValue("DeliverySameAsCustomer", reservation.getDeliverySameAsCustomer());
+
+     // Secondary delivery
+     params.addValue("SecondaryStreet", normalize(reservation.getSecondaryStreet()));
+     params.addValue("SecondaryCity", normalize(reservation.getSecondaryCity()));
+     params.addValue("SecondaryProvince", normalize(reservation.getSecondaryProvince()));
+     params.addValue("SecondaryPostalCode", normalize(reservation.getSecondaryPostalCode()));
+     params.addValue("SecondaryCountry", normalize(reservation.getSecondaryCountry()));
+     params.addValue("SecondaryDeliveryDate", reservation.getSecondaryDeliveryDate());
+
+     // Additional Person (MVP fields)
+     params.addValue("AdditionalPersonName", reservation.getAdditionalPersonName());
+     params.addValue("AdditionalPersonPhone", reservation.getAdditionalPersonPhone());
+     params.addValue("AdditionalPersonEmail", reservation.getAdditionalPersonEmail());
+
+     template.update(sql, params);
+ }
+
 
     // ------------------------------------------------------------
     // DELETE
@@ -188,30 +212,34 @@ public class ReservationDAO {
             String customerID
     ) {
 
-        StringBuilder sql = new StringBuilder(
-            "SELECT ReservationID, CustomerID, ReservationStatusCode, StartDate, EndDate, " +
-            "Instructions, LeaseID, DateCreated, DateUpdated, " +
+    	StringBuilder sql = new StringBuilder(
+    		    "SELECT ReservationID, CustomerID, ReservationStatusCode, StartDate, EndDate, " +
+    		    "Instructions, LeaseID, DateCreated, DateUpdated, " +
 
-            // Primary delivery
-            "DeliveryStreet, DeliveryCity, DeliveryProvince, DeliveryPostalCode, DeliveryCountry, DeliverySameAsCustomer, " +
+    		    // NEW LEASE FIELDS
+    		    "LeaseDocumentPath, LeaseSignedDate, LeaseSignedBy, " +
 
-            // Secondary delivery
-            "SecondaryStreet, SecondaryCity, SecondaryProvince, SecondaryPostalCode, SecondaryCountry, SecondaryDeliveryDate, " +
+    		    // Primary delivery
+    		    "DeliveryStreet, DeliveryCity, DeliveryProvince, DeliveryPostalCode, DeliveryCountry, DeliverySameAsCustomer, " +
 
-            // Additional Person (MVP fields)
-            "AdditionalPersonName, AdditionalPersonPhone, AdditionalPersonEmail, " +
+    		    // Secondary delivery
+    		    "SecondaryStreet, SecondaryCity, SecondaryProvince, SecondaryPostalCode, SecondaryCountry, SecondaryDeliveryDate, " +
 
-            // Customer fields
-            "CustomerNotes, CustomerCreatedDateTime, CustomerCreatedUserID, " +
+    		    // Additional Person (MVP fields)
+    		    "AdditionalPersonName, AdditionalPersonPhone, AdditionalPersonEmail, " +
 
-            // User fields
-            "FirstName, LastName, Phone, Email, street, City, Province, Country, PostalCode, " +
+    		    // Customer fields
+    		    "CustomerNotes, CustomerCreatedDateTime, CustomerCreatedUserID, " +
 
-            // Status description
-            "reservationStatusDescription " +
+    		    // User fields
+    		    "FirstName, LastName, Phone, Email, street, City, Province, Country, PostalCode, " +
 
-            "FROM reservation_view WHERE 1=1 "
-        );
+    		    // Status description
+    		    "reservationStatusDescription " +
+
+    		    "FROM reservation_view WHERE 1=1 "
+    		);
+  
 
         MapSqlParameterSource params = new MapSqlParameterSource();
 
@@ -271,7 +299,7 @@ public class ReservationDAO {
 	        "FROM reservation_line_item rli " +
 	        "JOIN reservation r ON r.ReservationID = rli.ReservationID " +
 	        "WHERE rli.EquipmentNumber = :equipmentNumber " +
-	        "  AND r.ReservationStatusCode IN ('1001-02', '1001-03', '1001-04', '1001-05') " +
+	        "  AND r.ReservationStatusCode IN ('1001-01', '1001-02', '1001-03', '1001-04', '1001-05') " +
 	        "  AND r.StartDate <= NOW() " +
 	        "  AND r.EndDate >= NOW()";
 

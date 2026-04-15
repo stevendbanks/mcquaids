@@ -19,6 +19,7 @@ public class ReservationService {
     private final ReservationLineItemDAO reservationLineItemDAO;
 
     private final CustomerService customerService;
+    private final AvailabilityService availabilityService;
 
     private String errorMessage;
 
@@ -29,6 +30,7 @@ public class ReservationService {
 
         new EquipmentService();
         this.customerService = new CustomerService();
+		this.availabilityService = new AvailabilityService();
     }
 
     // ------------------------------------------------------------
@@ -114,6 +116,12 @@ public class ReservationService {
                             notes
                     ); 
 
+            changeReservationStatus(reservationID, "1001-02");  // Pending Signature
+            
+            
+            // Mark equipment as reserved/unavailable
+            availabilityService.recalculate(equipmentNumber);            
+            
             return reservationLineItemDAO.viewReservationLineItem(reservationLineItemID);
 
         } catch (DuplicateKeyException e) {
@@ -121,6 +129,15 @@ public class ReservationService {
             return null;
         }
     }
+
+	/**
+	 * @param reservationStatusCode
+	 */
+	private void changeReservationStatus(Integer reservationID, String reservationStatusCode) {
+		System.out.println("reservationID=" + reservationID  + "; reservationStatusCode=" + reservationStatusCode);
+		Reservation reservation = reservationDAO.getReservation(reservationID);
+		reservation.setReservationStatusCode(reservationStatusCode);
+		reservationDAO.updateReservation(reservation);	}
 
     public boolean updateReservedEquipment(ReservationLineItem reservedEquipment) {
         return reservationLineItemDAO.updateReservationLineItem(reservedEquipment);
@@ -133,6 +150,10 @@ public class ReservationService {
     	
     	if (y.getReservationStatusCode().equals("1001-01")) {
     		reservationLineItemDAO.deleteReservationLineItem(reservationLineItemID);
+
+            // NEW: Mark equipment as reserved/unavailable
+            availabilityService.recalculate(x.getEquipmentNumber());            
+    		
     	} else {
     		System.out.println("Invalid ReservationStatusCode:" + y.getReservationStatusCode() );
  		    this.errorMessage = "Error - Reservation Status must be DRAFT in order to remove the equipment. Please use the other actions";

@@ -6,6 +6,8 @@ function safeGet(id) {
 }
 
 function buildReservationParams() {
+ console.error("SDBANKS Building reservation params from DOM elements. This is brittle and should be replaced with a more robust solution, such as passing a JSON blob or using a shared state management approach.");
+
     const params = new URLSearchParams();
 
     // Identify the workflow
@@ -88,6 +90,14 @@ window.navigateToCustomerSearch = function() {
 
 
 function navigateToEquipmentSearch() {
+    const reservationStatusCode =  safeGet("reservationStatusCode")
+    // Only allow removal in Draft status
+    if (reservationStatusCode == "1001-03") {
+    console.warn(`SDBANKS-XXX Attempting to DisplayEquipmentSearch  with reservation status ${reservationStatusCode}`);
+        showActionMessage("You can only Add equipment when the reservation status is Draft or Pending.", "danger");
+        return;
+    }
+
     const params = buildReservationParams();
     window.location.href = '/mcquaids/equipment/index?' + params.toString();
 }

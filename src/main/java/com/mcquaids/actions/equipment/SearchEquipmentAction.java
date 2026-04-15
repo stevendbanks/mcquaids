@@ -16,11 +16,10 @@ import com.opensymphony.xwork2.ActionSupport;
 	private Integer equipmentType;
 	private String equipmentSubType;
 	
-	private String availabilityStatusCode;
 	private String  conditionStatusCode;
 	private String  maintenanceStatusCode;
 	private String  cleaningStatusCode;
-	private String  bookingStatusCode;
+	private String derivedAvailabilityStatus;
 	
 
 	/**
@@ -33,7 +32,7 @@ import com.opensymphony.xwork2.ActionSupport;
 	public String execute() {
 		try {
 			if ((null == equipmentNumber)   || equipmentNumber.equals("")) {
-				equipments = equipmentService.queryEquipment(this.equipmentType, equipmentSubType, availabilityStatusCode, conditionStatusCode, maintenanceStatusCode, cleaningStatusCode, bookingStatusCode );
+				equipments = equipmentService.queryEquipment(this.equipmentType, equipmentSubType, derivedAvailabilityStatus, conditionStatusCode, maintenanceStatusCode, cleaningStatusCode );
 				if (equipmentService.getErrors() != null) {
 			        // Check if there are any errors returned from the service
 			        if (!equipmentService.getErrors().isEmpty()) {
@@ -114,19 +113,22 @@ import com.opensymphony.xwork2.ActionSupport;
 	
 
 
+
 	/**
-	 * @return the availabilityStatusCode
+	 * @return the derivedAvailabilityStatus
 	 */
-	public String getAvailabilityStatusCode() {
-		return availabilityStatusCode;
+	public String getDerivedAvailabilityStatus() {
+		return derivedAvailabilityStatus;
 	}
 
 	/**
-	 * @param availabilityStatusCode the availabilityStatusCode to set
+	 * @param derivedAvailabilityStatus the derivedAvailabilityStatus to set
 	 */
-	public void setAvailabilityStatusCode(String availabilityStatusCode) {
-		this.availabilityStatusCode = availabilityStatusCode;
+	public void setDerivedAvailabilityStatus(String derivedAvailability) {
+		this.derivedAvailabilityStatus = derivedAvailability;
 	}
+
+
 
 	/**
 	 * @return the conditionStatusCode
@@ -168,20 +170,6 @@ import com.opensymphony.xwork2.ActionSupport;
 	 */
 	public void setCleaningStatusCode(String cleaningStatusCode) {
 		this.cleaningStatusCode = cleaningStatusCode;
-	}
-
-	/**
-	 * @return the bookingStatusCode
-	 */
-	public String getBookingStatusCode() {
-		return bookingStatusCode;
-	}
-
-	/**
-	 * @param bookingStatusCode the bookingStatusCode to set
-	 */
-	public void setBookingStatusCode(String bookingStatusCode) {
-		this.bookingStatusCode = bookingStatusCode;
 	}
 
 	/**

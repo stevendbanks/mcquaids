@@ -63,17 +63,23 @@
             </select>
         </div>
 
-        <div class="form-group col-sm-2">
-            <select id="availabilityStatusCode" name="availabilityStatusCode" class="form-control"
-                    onchange="searchEquipment();">
-                <option value="">All Availability</option>
-                <s:iterator value="codeValues.availabilityStatuses" var="status">
-                    <option value="<s:property value='#status.key'/>">
-                        <s:property value="#status.value"/>
-                    </option>
-                </s:iterator>
-            </select>
-        </div>
+<div class="form-group col-sm-2">
+    <select id="derivedAvailabilityStatus" name="derivedAvailabilityStatus" 
+            class="form-control" onchange="searchEquipment();">
+
+        <option value="">All Availability</option>
+
+        <option value="Available">Available</option>
+        <option value="Reserved">Reserved</option>
+        <option value="In Field">In Field</option>
+        <option value="Unsafe">Unsafe</option>
+        <option value="Under Maintenance">Under Maintenance</option>
+        <option value="Needs Cleaning">Needs Cleaning</option>
+        <option value="Unknown">Unknown</option>
+
+    </select>
+</div>
+
 
         <div class="form-group col-sm-2">
             <select id="conditionStatusCode" name="conditionStatusCode" class="form-control"
@@ -99,7 +105,7 @@
             <th scope="col">Equipment Number</th>
             <th scope="col">Equipment SubType</th>
             <th scope="col">Availability</th>
-            <th scope="col">Special Notes</th>
+            <th scope="col">Equipment Notes</th>
             <c:if test="${caller == 'RESERVE' || caller == 'LEASE'  || caller == 'SUBSTITUTE'}">
                 <th scope="col">Action</th>
             </c:if>
@@ -128,7 +134,7 @@ function searchEquipment(e) {
             equipmentNumber: $('#equipmentNumber').val(),
             equipmentType:   $('#equipmentType').val(),
             equipmentSubType: $('#equipmentSubType').val(),
-            availabilityStatusCode: $('#availabilityStatusCode').val(),
+            derivedAvailabilityStatus: $('#derivedAvailabilityStatus').val(),
             conditionStatusCode: $('#conditionStatusCode').val()
         },
 
@@ -145,7 +151,7 @@ function searchEquipment(e) {
                     row.append($('<td>').html('<a href="/mcquaids/equipment/edit?equipmentNumber='
                         + searchItem.equipmentNumber + '">' + searchItem.equipmentNumber + '</a>'));
                     row.append($('<td>').text(searchItem.equipmentSubTypeText));
-                    row.append($('<td>').text(searchItem.availabilityStatusText));
+                    row.append($('<td>').text(searchItem.derivedAvailabilityStatus));
                     row.append($('<td>').text(searchItem.specialNotes));
 
                     var actionCell = buildActionCell(

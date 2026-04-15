@@ -36,15 +36,15 @@ public class EquipmentService {
 			return equipmentDAO.queryEquipmentByEquipmentNUmber(equipmentNumber);  
    }
 
-	public List<EquipmentQueryDTO> queryEquipment(Integer pEquipmentType, String pEquipmentSubType, String availabilityStatusCode,
-			String conditionStatusCode, String maintenanceStatusCode, String cleaningStatusCode, String bookingStatusCode) {
+	public List<EquipmentQueryDTO> queryEquipment(Integer pEquipmentType, String pEquipmentSubType, String derivedAvailabilityStatus,
+			String conditionStatusCode, String maintenanceStatusCode, String cleaningStatusCode) {
  
 	    if (pEquipmentType == null) {
    	        errors.put("Equipment Type","Equipment Type is a required Field");
    	        return null;
    	   } 
 
-	    return equipmentDAO.queryEquipment(pEquipmentType, pEquipmentSubType, availabilityStatusCode, conditionStatusCode, maintenanceStatusCode, cleaningStatusCode, bookingStatusCode);
+	    return equipmentDAO.queryEquipment(pEquipmentType, pEquipmentSubType, derivedAvailabilityStatus, conditionStatusCode, maintenanceStatusCode, cleaningStatusCode);
   
 	
 	}

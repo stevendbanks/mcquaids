@@ -147,7 +147,7 @@
 					    <s:property value="#a.reservationLineItemDTO.equipmentSubTypeText"/>
 					</td>                           
 
-                                    <td><s:property value="#a.actionType"/></td>
+                                    <td><s:property value="#a.actionType"/> (<s:property value="#a.status"/>)</td>
 <td>
     <s:if test="#a.fromYardId != null">
         <s:property value="#a.fromLocationName"/>

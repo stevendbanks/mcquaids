@@ -17,6 +17,8 @@ public class ReservationLineItemDTO extends ReservationLineItem {
     
     
     private Map<String, String> equipmentProperties;
+    
+    private EquipmentLocationHistory equipmentLocation;
    
 
     public String getEquipmentTypeText() {
@@ -80,7 +82,21 @@ public class ReservationLineItemDTO extends ReservationLineItem {
     }    
     
 
-    @Override
+    /**
+	 * @return the equipmentLocation
+	 */
+	public EquipmentLocationHistory getEquipmentLocation() {
+		return equipmentLocation;
+	}
+
+	/**
+	 * @param equipmentLocation the equipmentLocation to set
+	 */
+	public void setEquipmentLocation(EquipmentLocationHistory equipmentLocation) {
+		this.equipmentLocation = equipmentLocation;
+	}
+
+	@Override
     public String toString() {
         return "ReservationLineItemDTO{" +
                 "equipmentTypeText='" + equipmentTypeText + '\'' +

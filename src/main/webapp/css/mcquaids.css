@@ -117,6 +117,18 @@ textarea.auto-expand {
 }
 
 
+#errorMessage {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5000;
+    width: auto;
+    max-width: 90%;
+    display: none; /* stays hidden until JS shows it */
+}
+
+
 /* Print mode */
 @media print {
     .no-print, .noprint {

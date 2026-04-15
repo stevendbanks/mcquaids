@@ -29,3 +29,6 @@ export function showActionMessage(message, type = "success") {
         msgBox.style.display = "none";
     }, 4000);
 }
+
+
+window.showActionMessage = showActionMessage;
