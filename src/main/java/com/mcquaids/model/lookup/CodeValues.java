@@ -41,8 +41,10 @@ public class CodeValues { // extends CodeTypes {
 	private static HashMap<String, String> containerDoors = new HashMap<String, String>();	
 	
 	private static HashMap<String, String> reservationStatuses = new HashMap<String, String>();	
-	
-	
+
+	private static HashMap<String, String> moveTypes = new HashMap<String, String>();	
+
+	private static HashMap<String, String> movementStatuses = new HashMap<String, String>();	
 	
 	
 
@@ -75,10 +77,19 @@ public class CodeValues { // extends CodeTypes {
 		queryLookupTable(codeValueService, trailerLengths, "lkp_trailerlengths");
 		queryLookupTable(codeValueService, doorLocations, "lkp_doorlocations");
 		queryLookupTable(codeValueService, doorTypes, "lkp_doortypes");
+		queryLookupTable(codeValueService, moveTypes, "lkp_movetypes");
 
+		movementStatuses.put("NEW", "New");
+		movementStatuses.put("CONFIRMED", "Confirmed");
+		movementStatuses.put("IN_PROGRESS", "In Progress");
+		movementStatuses.put("COMPLETED", "Completed");
+		movementStatuses.put("CANCELLED", "Cancelled");
+
+		
 		queryLookupTable(codeValueService, floorTypes, "lkp_floortypes");
 		queryLookupTable(codeValueService, axelTypes, "lkp_axeltypes");
 
+		
 		
 		
 		queryLookupTable(codeValueService, leaseTerminationReasonCodes, "lkp_leaseterminationreasoncodes");
@@ -226,6 +237,15 @@ public class CodeValues { // extends CodeTypes {
         return reservationStatuses;
     }	
     
+    public Map<String, String> getMoveTypes() {
+        return moveTypes;
+    }	
+
+
+    public Map<String, String> getMovementStatuses() {
+        return movementStatuses;
+    }	
+    
     
 
 	/**
@@ -345,6 +365,16 @@ public class CodeValues { // extends CodeTypes {
 	            map = floorTypes;
 	            break;
 
+	        case "moveType":
+	            map = moveTypes;
+	            break;
+	            
+	        case "movementStatus":
+	            map = movementStatuses;
+	            break;
+
+	            
+	            
 	        default:
 	            return value;
 	    }

@@ -7,8 +7,10 @@ import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.mcquaids.dao.EquipmentDAO;
+import com.mcquaids.dao.EquipmentWithLocationDAO;
 import com.mcquaids.model.Equipment;
 import com.mcquaids.model.EquipmentQueryDTO;
+import com.mcquaids.model.EquipmentWithLocation;
 import com.mcquaids.model.Flatbed;
 import com.mcquaids.model.Forklift;
 import com.mcquaids.model.ShippingContainer;
@@ -17,13 +19,16 @@ import com.mcquaids.utils.PropertyHydrator;
 public class EquipmentService {
     private EquipmentDAO equipmentDAO;
 
-	private Map<String, String> errors = new HashMap<>();	
+	private Map<String, String> errors = new HashMap<>();
+
+	private final EquipmentWithLocationDAO equipmentWithLocationDAO;
 	
 
 
     public EquipmentService() {
         JdbcTemplate jdbcTemplate = DaoDataSource.jdbcTemplate;
         this.equipmentDAO = new EquipmentDAO(jdbcTemplate);
+        this.equipmentWithLocationDAO = new EquipmentWithLocationDAO();
     }
 
 	public Equipment edit(Integer pEquipmentNumber) {
@@ -118,7 +123,7 @@ public class EquipmentService {
 	}
 
 	/**
-	 * @param errors the errors to set
+	 * @param errors the errors to set 
 	 */
 	public void setErrors(Map<String, String> errors) {
 		this.errors = errors;
@@ -133,7 +138,18 @@ public class EquipmentService {
 	public Long getPreferredYardId(Integer equipmentNumber) {
 		return equipmentDAO.getPreferredYardId(equipmentNumber);
 	}
+
+	public List<EquipmentWithLocation> getEquipmentWithLocation(List<Integer> equipmentNumbers) {
+	    return equipmentWithLocationDAO.getEquipmentList(equipmentNumbers);
+	}
 	
+	public EquipmentWithLocation getEquipmentWithLocation(Integer equipmentNumber) {
+	    List<EquipmentWithLocation> list =
+	        equipmentWithLocationDAO.getEquipmentList(List.of(equipmentNumber));
+	    return list.isEmpty() ? null : list.get(0);
+	}
+
+
 	
 	
     

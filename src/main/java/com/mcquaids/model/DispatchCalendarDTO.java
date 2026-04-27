@@ -1,192 +1,156 @@
 package com.mcquaids.model;
 
-
 import java.time.ZonedDateTime;
 
 public class DispatchCalendarDTO {
 
-    public Long dispatchActionId;
-	public Integer reservationId;
-    public String customerName;
-    public String customerEmail;
+    private Long dispatchActionId;
 
-    public String equipmentType;
-    public String equipmentSubType;
-    public Integer equipmentNumber;
+    // Reservation-specific (nullable for Movement Orders)
+    private Integer reservationId;
+    private String customerName;
+    private String customerEmail;
+    private String equipmentType;
+    private String equipmentSubType;
 
-    public String fromAddress;
-    public String toAddress;
+    // Common fields
+    private Integer equipmentNumber;
+    private String fromAddress;
+    private String toAddress;
 
-    public ZonedDateTime start;
-    public ZonedDateTime end;
+    private ZonedDateTime start;
+    private ZonedDateTime end;
 
-    public String notes;
+    private String notes;
 
-	/**
-	 * @return the dispatchActionId
-	 */
-	public Long getDispatchActionId() {
-		return dispatchActionId;
-	}
+    // NEW — identifies Reservation vs Movement Order
+    private DispatchSourceType sourceType;
 
-	/**
-	 * @param dispatchActionId the dispatchActionId to set
-	 */
-	public void setDispatchActionId(Long dispatchActionId) {
-		this.dispatchActionId = dispatchActionId;
-	}
+    // NEW — unified calendar event fields
+    private String eventTitle;
+    private String eventDescription;
 
-	/**
-	 * @return the reservationId
-	 */
-	public Integer getReservationId() {
-		return reservationId;
-	}
+    // ------------------------------------------------------------
+    // Getters / Setters
+    // ------------------------------------------------------------
 
-	/**
-	 * @param reservationId the reservationId to set
-	 */
-	public void setReservationId(Integer reservationId) {
-		this.reservationId = reservationId;
-	}
+    public Long getDispatchActionId() {
+        return dispatchActionId;
+    }
 
-	/**
-	 * @return the customerName
-	 */
-	public String getCustomerName() {
-		return customerName;
-	}
+    public void setDispatchActionId(Long dispatchActionId) {
+        this.dispatchActionId = dispatchActionId;
+    }
 
-	/**
-	 * @param customerName the customerName to set
-	 */
-	public void setCustomerName(String customerName) {
-		this.customerName = customerName;
-	}
+    public Integer getReservationId() {
+        return reservationId;
+    }
 
-	/**
-	 * @return the customerEmail
-	 */
-	public String getCustomerEmail() {
-		return customerEmail;
-	}
+    public void setReservationId(Integer reservationId) {
+        this.reservationId = reservationId;
+    }
 
-	/**
-	 * @param customerEmail the customerEmail to set
-	 */
-	public void setCustomerEmail(String customerEmail) {
-		this.customerEmail = customerEmail;
-	}
+    public String getCustomerName() {
+        return customerName;
+    }
 
-	/**
-	 * @return the equipmentType
-	 */
-	public String getEquipmentType() {
-		return equipmentType;
-	}
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
 
-	/**
-	 * @param equipmentType the equipmentType to set
-	 */
-	public void setEquipmentType(String equipmentType) {
-		this.equipmentType = equipmentType;
-	}
+    public String getCustomerEmail() {
+        return customerEmail;
+    }
 
-	/**
-	 * @return the equipmentSubType
-	 */
-	public String getEquipmentSubType() {
-		return equipmentSubType;
-	}
+    public void setCustomerEmail(String customerEmail) {
+        this.customerEmail = customerEmail;
+    }
 
-	/**
-	 * @param equipmentSubType the equipmentSubType to set
-	 */
-	public void setEquipmentSubType(String equipmentSubType) {
-		this.equipmentSubType = equipmentSubType;
-	}
+    public String getEquipmentType() {
+        return equipmentType;
+    }
 
-	/**
-	 * @return the equipmentNumber
-	 */
-	public Integer getEquipmentNumber() {
-		return equipmentNumber;
-	}
+    public void setEquipmentType(String equipmentType) {
+        this.equipmentType = equipmentType;
+    }
 
-	/**
-	 * @param equipmentNumber the equipmentNumber to set
-	 */
-	public void setEquipmentNumber(Integer equipmentNumber) {
-		this.equipmentNumber = equipmentNumber;
-	}
+    public String getEquipmentSubType() {
+        return equipmentSubType;
+    }
 
-	/**
-	 * @return the fromAddress
-	 */
-	public String getFromAddress() {
-		return fromAddress;
-	}
+    public void setEquipmentSubType(String equipmentSubType) {
+        this.equipmentSubType = equipmentSubType;
+    }
 
-	/**
-	 * @param fromAddress the fromAddress to set
-	 */
-	public void setFromAddress(String fromAddress) {
-		this.fromAddress = fromAddress;
-	}
+    public Integer getEquipmentNumber() {
+        return equipmentNumber;
+    }
 
-	/**
-	 * @return the toAddress
-	 */
-	public String getToAddress() {
-		return toAddress;
-	}
+    public void setEquipmentNumber(Integer equipmentNumber) {
+        this.equipmentNumber = equipmentNumber;
+    }
 
-	/**
-	 * @param toAddress the toAddress to set
-	 */
-	public void setToAddress(String toAddress) {
-		this.toAddress = toAddress;
-	}
+    public String getFromAddress() {
+        return fromAddress;
+    }
 
-	/**
-	 * @return the start
-	 */
-	public ZonedDateTime getStart() {
-		return start;
-	}
+    public void setFromAddress(String fromAddress) {
+        this.fromAddress = fromAddress;
+    }
 
-	/**
-	 * @param start the start to set
-	 */
-	public void setStart(ZonedDateTime start) {
-		this.start = start;
-	}
+    public String getToAddress() {
+        return toAddress;
+    }
 
-	/**
-	 * @return the end
-	 */
-	public ZonedDateTime getEnd() {
-		return end;
-	}
+    public void setToAddress(String toAddress) {
+        this.toAddress = toAddress;
+    }
 
-	/**
-	 * @param end the end to set
-	 */
-	public void setEnd(ZonedDateTime end) {
-		this.end = end;
-	}
+    public ZonedDateTime getStart() {
+        return start;
+    }
 
-	/**
-	 * @return the notes
-	 */
-	public String getNotes() {
-		return notes;
-	}
+    public void setStart(ZonedDateTime start) {
+        this.start = start;
+    }
 
-	/**
-	 * @param notes the notes to set
-	 */
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
+    public ZonedDateTime getEnd() {
+        return end;
+    }
+
+    public void setEnd(ZonedDateTime end) {
+        this.end = end;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public DispatchSourceType getSourceType() {
+        return sourceType;
+    }
+
+    public void setSourceType(DispatchSourceType sourceType) {
+        this.sourceType = sourceType;
+    }
+
+    public String getEventTitle() {
+        return eventTitle;
+    }
+
+    public void setEventTitle(String eventTitle) {
+        this.eventTitle = eventTitle;
+    }
+
+    public String getEventDescription() {
+        return eventDescription;
+    }
+
+    public void setEventDescription(String eventDescription) {
+        this.eventDescription = eventDescription;
+    }
 }

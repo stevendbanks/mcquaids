@@ -50,4 +50,13 @@ public class YardService {
 		// TODO Auto-generated method stub
 		return yardDAO.getYardById(preferredYardId);
 	}
+
+	/**
+	 * @return the cachedYards
+	 */
+	public List<Yard> getYards() {
+		return cachedYards;
+	}
+
+
 }

@@ -100,6 +100,10 @@ public class ReservationLineItemDAO {
     // VIEW (single)
     // ------------------------------------------------------------
     public ReservationLineItemDTO viewReservationLineItem(Integer reservationLineItemID) {
+    	if (reservationLineItemID == null) {
+    		return null;  //  Not all dispatch actions originate from a reservation.  They could come from a movement.
+    	}
+    	
         String sql = "SELECT * FROM reservation_line_item_view "
                    + "WHERE reservationLineItem = :reservationLineItem";
 

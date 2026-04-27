@@ -1,100 +1,84 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <div class="container">
 
-    <script src="/mcquaids/javascript/common/workflow.js"></script>
-    <script type="module" src="/mcquaids/javascript/workflows/reservation-delivery-address-workflow.js"></script>
-    <script type="module" src="/mcquaids/javascript/pages/reservation-edit.js"></script>
-
     <!-- Error Message -->
-    <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
+    <div id="errorMessage" class="alert alert-danger" style="display:none;"></div>
 
-    <!-- Read caller + reservationId -->
-    <c:set var="caller" value="${param.caller}" />
-    <c:set var="reservationId" value="${param['reservation.reservationID']}" />
-
-    <!-- Header Card -->
+    <!-- ========================= -->
+    <!-- HEADER CARD (SOURCE-AWARE) -->
+    <!-- ========================= -->
     <div class="card mb-4">
         <div class="card-body">
 
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="card-title mb-0">
-                    Dispatch Plan for Reservation #
-                    <s:property value="reservation.reservationID"/>
+                    Dispatch Plan
                     <span class="badge badge-info ml-2">
-                        <s:property value="reservation.reservationStatusText"/>
+                        <s:property value="dispatchPlanStatusText"/>
                     </span>
                 </h5>
+
+                <!-- Back Button -->
+                <c:choose>
+                    <c:when test="${sourceType eq 'RESERVATION'}">
+                        <a href="/mcquaids/reservation/edit.action?reservation.reservationID=${sourceId}"
+                           class="btn btn-secondary">
+                            Back to Reservation
+                        </a>
+                    </c:when>
+
+                    <c:when test="${sourceType eq 'MOVEMENT'}">
+                        <a href="/mcquaids/movement/viewMovementOrder.action?movementOrderId=${sourceId}"
+                           class="btn btn-secondary">
+                            Back to Movement Order
+                        </a>
+                    </c:when>
+
+                    <c:otherwise>
+                        <a href="/dispatch/list.action" class="btn btn-secondary">Back</a>
+                    </c:otherwise>
+                </c:choose>
             </div>
 
-            <!-- Reservation Summary -->
+            <!-- Source Summary -->
             <div class="row">
 
-                <!-- CUSTOMER -->
                 <div class="col-sm-4">
-                    <div class="form-group">
-                        <label>Customer</label>
-                        <s:textfield
-                                name="reservation.customer.fullName"
-                                cssClass="form-control"
-                                disabled="true"
-                                theme="simple"/>
-                    </div>
+                    <strong>Source:</strong><br/>
+                    <c:choose>
+                        <c:when test="${sourceType eq 'RESERVATION'}">
+                            Reservation #${sourceId}
+                        </c:when>
+                        <c:when test="${sourceType eq 'MOVEMENT'}">
+                            Movement Order #${sourceId}
+                        </c:when>
+                        <c:otherwise>
+                            Unknown
+                        </c:otherwise>
+                    </c:choose>
                 </div>
 
-                <!-- START DATE -->
-                <div class="col-sm-3">
-                    <div class="form-group">
-                        <label>Required Date</label>
-<s:textfield type="datetime-local"
-             name="reservation.startDate"
-             cssClass="form-control"
-             disabled="true"
-             theme="simple"/>
-                    </div>
+                <div class="col-sm-4">
+                    <strong>Created:</strong><br/>
+                    <s:property value="createdDateTime"/>
                 </div>
 
-                <!-- END DATE -->
-                <div class="col-sm-3">
-                    <div class="form-group">
-                        <label>Return Date</label>
-                        <s:textfield type="datetime-local"
-                                     name="reservation.endDate"
-                                     cssClass="form-control"
-                                     disabled="true"
-                                     theme="simple"/>
-                    </div>
+                <div class="col-sm-4">
+                    <strong>Last Updated:</strong><br/>
+                    <s:date name="lastUpdatedDateTime" format="MMM dd, yyyy h:mm a"/>
                 </div>
 
-            </div>
-
-            <!-- NOTES -->
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="form-group">
-                        <label>Reservation Notes</label>
-                        <s:textarea name="reservation.instructions"
-                                    cssClass="form-control"
-                                    disabled="true"
-                                    theme="simple"/>
-                    </div>
-                </div>
             </div>
 
         </div>
     </div>
 
-<c:if test="${reservation.endDate == null}">
-    <div class="alert alert-warning mb-3">
-        No return date specified - equipment will remain on site until a pickup is scheduled.
-    </div>
-</c:if>
-
-
-    <!-- Dispatch Groups -->
-    <div class="card">
+    <!-- ========================= -->
+    <!-- DISPATCH GROUPS -->
+    <!-- ========================= -->
+    <div class="card mb-4">
         <div class="card-body">
 
             <h5 class="card-title mb-3">Dispatch Actions</h5>
@@ -107,102 +91,130 @@
                     </div>
 
                     <div class="card-body p-0">
+
                         <table class="table table-striped mb-0">
                             <thead>
                             <tr>
-                                <th></th>
+                                <th style="width:40px;"></th>
                                 <th>Equipment</th>
                                 <th>Action</th>
                                 <th>From</th>
                                 <th>To</th>
                                 <th>Source</th>
-                                <th>Date</th>
-                                <th>Push</th>
+                                <th>Scheduled Date</th>
+                                <th>Calendar</th>
                             </tr>
                             </thead>
 
                             <tbody>
+
                             <s:iterator value="#group.actions" var="a">
+
                                 <tr>
 
-									<td>
-<s:if test="#a.removedFromReservation">
-    <span class="badge bg-danger ms-2">
-        Removed
-    </span>
+                                    <!-- Removed badge -->
+                                    <td>
+                                        <s:if test="(#a.removedFromReservation == true)">
+                                            <span class="badge badge-danger ml-1">Removed</span>
 
-    <span class="ms-1 text-muted"
-          data-bs-toggle="popover"
-          data-bs-trigger="hover focus"
-          title="Removed From Reservation"
-          data-bs-content="This equipment was removed from the reservation, but it is still part of the Dispatch Plan and may still be on Google Calendar. Review and remove it if it is no longer needed.">
-        <i class="bi bi-question-circle"></i>
-    </span>
-</s:if>
-									</td>
-					<td>
-					    <s:property value="#a.equipmentNumber"/><br/>
-					    <s:property value="#a.reservationLineItemDTO.equipmentTypeText"/>
-					    &nbsp;
-					    <s:property value="#a.reservationLineItemDTO.equipmentSubTypeText"/>
-					</td>                           
+                                            <span class="text-muted ml-1"
+                                                  data-toggle="popover"
+                                                  data-trigger="hover focus"
+                                                  title="Removed From Source"
+                                                  data-content="This item was removed from the source workflow but remains in the Dispatch Plan. Review and remove it if no longer needed.">
+                                                <i class="fa fa-question-circle"></i>
+                                            </span>
+                                        </s:if>
+                                    </td>
 
-                                    <td><s:property value="#a.actionType"/> (<s:property value="#a.status"/>)</td>
-<td>
-    <s:if test="#a.fromYardId != null">
-        <s:property value="#a.fromLocationName"/>
-    </s:if>
-    <s:else>
-        <s:property value="#a.fromAddress.street"/>,
-        <s:property value="#a.fromAddress.city"/>
-    </s:else>
-</td>
+                                    <!-- Equipment -->
+                                    <td>
+                                        <s:property value="#a.equipmentNumber"/><br/>
+                                        <small>
+                                            <s:property value="#a.reservationLineItemDTO.equipmentTypeText"/>
+                                            &nbsp;
+                                            <s:property value="#a.reservationLineItemDTO.equipmentSubTypeText"/>
+                                        </small>
+                                    </td>
 
-<td>
-    <s:if test="#a.toYardId != null">
-        <s:property value="#a.toLocationName"/>
-    </s:if>
-    <s:else>
-        <s:property value="#a.toAddress.street"/>,
-        <s:property value="#a.toAddress.city"/>
-    </s:else>
-</td>
-                                    <td><s:property value="#a.sourceType"/></td>
-                                    <td><s:date name="#a.scheduledDateTime" format="MMM dd, yyyy"/></td>
-<td>
-<td>
-    <!-- Case 1: Not removed, no event yet -->
-    <s:if test="!#a.removedFromReservation && #a.googleEventId == null">
-        <a href="javascript:void(0);"
-           class="btn btn-sm btn-outline-primary push-to-calendar"
-           data-dispatch-action-id="<s:property value='#a.dispatchActionId'/>">
-            Push to Calendar
-        </a>
-    </s:if>
+                                    <!-- Action -->
+                                    <td>
+                                        <s:property value="#a.actionType"/>
+                                        (<s:property value="#a.status"/>)
+                                    </td>
 
-    <!-- Case 2: Not removed, event exists -->
-    <s:if test="!#a.removedFromReservation && #a.googleEventId != null">
-        <a href="https://calendar.google.com/calendar/u/0/r/eventedit/<s:property value='#a.universalEidUrl'/>"
-           target="_blank"
-           class="btn btn-sm btn-outline-success">
-            View Calendar
-        </a>
-    </s:if>
+                                    <!-- From -->
+                                    <td>
+                                        <s:if test="(#a.fromYardId != null)">
+                                            <s:property value="#a.fromLocationName"/>
+                                        </s:if>
+                                        <s:if test="(#a.fromYardId == null)">
+                                            <s:property value="#a.fromAddress.street"/>,
+                                            <s:property value="#a.fromAddress.city"/>
+                                        </s:if>
+                                    </td>
 
-    <!-- Case 3: Removed from reservation, event exists -->
-    <s:if test="#a.removedFromReservation && #a.googleEventId != null">
-        <a href="javascript:void(0);"
-           class="btn btn-sm btn-outline-danger remove-from-calendar"
-           data-dispatch-action-id="<s:property value='#a.dispatchActionId'/>">
-            Remove from Calendar
-        </a>
-    </s:if>
-</td>
-</td>
+                                    <!-- To -->
+                                    <td>
+                                        <s:if test="(#a.toYardId != null)">
+                                            <s:property value="#a.toLocationName"/>
+                                        </s:if>
+                                        <s:if test="(#a.toYardId == null)">
+                                            <s:property value="#a.toAddress.street"/>,
+                                            <s:property value="#a.toAddress.city"/>
+                                        </s:if>
+                                    </td>
+
+                                    <!-- Source Type -->
+                                    <td>
+                                        <s:property value="#a.sourceType"/>
+                                    </td>
+
+                                    <!-- Date -->
+                                    <td>
+                                        <s:date name="#a.scheduledDateTime" format="MMM dd, yyyy h:mm a"/>
+                                        
+                                    </td>
+
+                                    <!-- Calendar -->
+                                    <td>
+
+                                        <!-- Case 1: Not removed, no event -->
+                                        <s:if test="((#a.removedFromReservation == false) && (#a.googleEventId == null))">
+                                            <a href="javascript:void(0);"
+                                               class="btn btn-sm btn-outline-primary push-to-calendar"
+                                               data-dispatch-action-id="<s:property value='#a.dispatchActionId'/>">
+                                                Push
+                                            </a>
+                                        </s:if>
+
+                                        <!-- Case 2: Not removed, event exists -->
+                                        <s:if test="((#a.removedFromReservation == false) && (#a.googleEventId != null))">
+                                            <a href="https://calendar.google.com/calendar/u/0/r/eventedit/<s:property value='#a.universalEidUrl'/>"
+                                               target="_blank"
+                                               class="btn btn-sm btn-outline-success">
+                                                View
+                                            </a>
+                                        </s:if>
+
+                                        <!-- Case 3: Removed, event exists -->
+                                        <s:if test="((#a.removedFromReservation == true) && (#a.googleEventId != null))">
+                                            <a href="javascript:void(0);"
+                                               class="btn btn-sm btn-outline-danger remove-from-calendar"
+                                               data-dispatch-action-id="<s:property value='#a.dispatchActionId'/>">
+                                                Remove
+                                            </a>
+                                        </s:if>
+
+                                    </td>
+
                                 </tr>
+
                             </s:iterator>
+
                             </tbody>
                         </table>
+
                     </div>
                 </div>
 
@@ -213,8 +225,8 @@
 
 </div>
 
-
-<script type="module"> 
+<!-- Calendar JS -->
+<script type="module">
 import { initDispatchCalendarButtons } from '/mcquaids/javascript/common/dispatch-calendar.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -222,13 +234,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+<!-- Bootstrap 4 Popovers -->
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('[data-bs-toggle="popover"]').forEach(function (el) {
-        new bootstrap.Popover(el, { 
-            container: 'body',
-            trigger: 'hover focus'
-        });
+$(function () {
+    $('[data-toggle="popover"]').popover({
+        container: 'body',
+        trigger: 'hover focus'
     });
 });
 </script>

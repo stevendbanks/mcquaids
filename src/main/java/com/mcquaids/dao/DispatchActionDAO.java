@@ -1,17 +1,23 @@
 package com.mcquaids.dao;
 
-import com.mcquaids.model.Address;
-import com.mcquaids.model.DispatchAction;
-import com.mcquaids.model.DispatchActionStatus;
-import com.mcquaids.model.DispatchActionType;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.time.Instant;
+import java.util.List;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
-import java.sql.*;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.List;
+import com.mcquaids.model.Address;
+import com.mcquaids.model.DispatchAction;
+import com.mcquaids.model.DispatchActionStatus;
+import com.mcquaids.model.DispatchActionType;
+import com.mcquaids.model.DispatchSourceType;
 
 public class DispatchActionDAO {
 
@@ -21,140 +27,156 @@ public class DispatchActionDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 
- // ------------------------------------------------------------
- // INSERT
- // ------------------------------------------------------------
- public DispatchAction insert(DispatchAction action) {
-
-     String sql =
-         "INSERT INTO dispatch_action (" +
-         " reservation_id," +
-         " reservation_line_item_id," +
-         " equipment_number," +
-         " action_type," +
-         " status," +
-         " from_street, from_city, from_province, from_postal, from_country," +
-         " from_yard_id, from_location_name," +
-         " to_street, to_city, to_province, to_postal, to_country," +
-         " to_yard_id, to_location_name," +
-         " scheduled_datetime," +
-         " driver_id," +
-         " driver_token," +
-         " notes," +
-         " completed_at" +
-         ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-     KeyHolder keyHolder = new GeneratedKeyHolder();
-
-     jdbcTemplate.update(connection -> {
-         PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-
-         ps.setObject(1, action.getReservationID());
-         ps.setObject(2, action.getReservationLineItemID());
-         ps.setInt(3, action.getEquipmentNumber());
-         ps.setString(4, action.getActionType().name());
-         ps.setString(5, action.getStatus().name());
-
-         // FROM address
-         Address from = action.getFromAddress();
-         if (from != null) {
-             ps.setString(6, from.getStreet());
-             ps.setString(7, from.getCity());
-             ps.setString(8, from.getProvince());
-             ps.setString(9, from.getPostalCode());
-             ps.setString(10, from.getCountry());
-         } else {
-             ps.setNull(6, Types.VARCHAR);
-             ps.setNull(7, Types.VARCHAR);
-             ps.setNull(8, Types.VARCHAR);
-             ps.setNull(9, Types.VARCHAR);
-             ps.setNull(10, Types.VARCHAR);
-         }
-
-         // FROM yard metadata
-         ps.setObject(11, action.getFromYardId());
-         ps.setString(12, action.getFromLocationName());
-
-         // TO address
-         Address to = action.getToAddress();
-         if (to != null) {
-             ps.setString(13, to.getStreet());
-             ps.setString(14, to.getCity());
-             ps.setString(15, to.getProvince());
-             ps.setString(16, to.getPostalCode());
-             ps.setString(17, to.getCountry());
-         } else {
-             ps.setNull(13, Types.VARCHAR);
-             ps.setNull(14, Types.VARCHAR);
-             ps.setNull(15, Types.VARCHAR);
-             ps.setNull(16, Types.VARCHAR);
-             ps.setNull(17, Types.VARCHAR);
-         }
-
-         // TO yard metadata
-         ps.setObject(18, action.getToYardId());
-         ps.setString(19, action.getToLocationName());
-
-         // Scheduled date
-         if (action.getScheduledDateTime() != null) {
-             ps.setObject(20, action.getScheduledDateTime());
-         } else {
-             ps.setNull(20, Types.TIMESTAMP);
-         }
-
-         ps.setObject(21, action.getDriverId());
-         ps.setObject(22, action.getDriverToken());
-         ps.setString(23, action.getNotes());
-
-         // ⭐ NEW: completed_at
-         if (action.getCompletedAt() != null) {
-             ps.setTimestamp(24, Timestamp.valueOf(action.getCompletedAt()));
-         } else {
-             ps.setNull(24, Types.TIMESTAMP);
-         }
-
-         return ps;
-     }, keyHolder);
-
-     if (keyHolder.getKey() != null) {
-         action.setDispatchActionId(keyHolder.getKey().longValue());
-     }
-
-     return action;
- }
-
     // ------------------------------------------------------------
-    // FIND BY RESERVATION
+    // INSERT
     // ------------------------------------------------------------
-    public List<DispatchAction> findByReservationId(Integer reservationId) {
+    public DispatchAction insert(DispatchAction action) {
 
-        String sql = "SELECT * FROM dispatch_action WHERE reservation_id = ? ORDER BY dispatch_action_id";
+        String sql =
+            "INSERT INTO dispatch_action (" +
+            " reservation_id," +                 // 1
+            " reservation_line_item_id," +       // 2
+            " MovementOrderID," +                // 3
+            " MovementOrderLineID," +            // 4
+            " equipment_number," +               // 5
+            " action_type," +                    // 6
+            " status," +                         // 7
+            " source_type," +                    // ⭐ 8 NEW
+            " from_street, from_city, from_province, from_postal, from_country," + // 9–13
+            " from_yard_id, from_location_name," +                                 // 14–15
+            " to_street, to_city, to_province, to_postal, to_country," +           // 16–20
+            " to_yard_id, to_location_name," +                                     // 21–22
+            " scheduled_datetime," +                                                // 23
+            " driver_id," +                                                         // 24
+            " driver_token," +                                                      // 25
+            " notes," +                                                             // 26
+            " completed_at" +                                                       // 27
+            ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        return jdbcTemplate.query(sql, new Object[]{reservationId}, (rs, rowNum) -> mapRow(rs));
+        // ⭐ TOTAL PLACEHOLDERS = 27
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            ps.setObject(1, action.getReservationID());
+            ps.setObject(2, action.getReservationLineItemID());
+            ps.setObject(3, action.getMovementOrderID());
+            ps.setObject(4, action.getMovementOrderLineID());
+            ps.setInt(5, action.getEquipmentNumber());
+            ps.setString(6, action.getActionType().name());
+            ps.setString(7, action.getStatus().name());
+
+            // ⭐ NEW: source_type
+            ps.setString(8, action.getSourceType() != null ? action.getSourceType().name() : null);
+
+            Address from = action.getFromAddress();
+            if (from != null) {
+                ps.setString(9, from.getStreet());
+                ps.setString(10, from.getCity());
+                ps.setString(11, from.getProvince());
+                ps.setString(12, from.getPostalCode());
+                ps.setString(13, from.getCountry());
+            } else {
+                ps.setNull(9, Types.VARCHAR);
+                ps.setNull(10, Types.VARCHAR);
+                ps.setNull(11, Types.VARCHAR);
+                ps.setNull(12, Types.VARCHAR);
+                ps.setNull(13, Types.VARCHAR);
+            }
+
+            ps.setObject(14, action.getFromYardId());
+            ps.setString(15, action.getFromLocationName());
+
+            Address to = action.getToAddress();
+            if (to != null) {
+                ps.setString(16, to.getStreet());
+                ps.setString(17, to.getCity());
+                ps.setString(18, to.getProvince());
+                ps.setString(19, to.getPostalCode());
+                ps.setString(20, to.getCountry());
+            } else {
+                ps.setNull(16, Types.VARCHAR);
+                ps.setNull(17, Types.VARCHAR);
+                ps.setNull(18, Types.VARCHAR);
+                ps.setNull(19, Types.VARCHAR);
+                ps.setNull(20, Types.VARCHAR);
+            }
+
+            ps.setObject(21, action.getToYardId());
+            ps.setString(22, action.getToLocationName());
+
+            if (action.getScheduledDateTime() != null) {
+                ps.setObject(23, action.getScheduledDateTime());
+            } else {
+                ps.setNull(23, Types.TIMESTAMP);
+            }
+
+            ps.setObject(24, action.getDriverId());
+            ps.setObject(25, action.getDriverToken());
+            ps.setString(26, action.getNotes());
+
+            if (action.getCompletedAt() != null) {
+                ps.setTimestamp(27, Timestamp.valueOf(action.getCompletedAt()));
+            } else {
+                ps.setNull(27, Types.TIMESTAMP);
+            }
+
+            return ps;
+        }, keyHolder);
+
+        if (keyHolder.getKey() != null) {
+            action.setDispatchActionId(keyHolder.getKey().longValue());
+        }
+
+        return action;
     }
 
     // ------------------------------------------------------------
-    // FIND BY ID
+    // FINDERS
     // ------------------------------------------------------------
     public DispatchAction getByDispatchActionID(Long dispatchActionId) {
-
         String sql = "SELECT * FROM dispatch_action WHERE dispatch_action_id = ?";
-
         return jdbcTemplate.query(sql, ps -> ps.setLong(1, dispatchActionId), rs -> {
             if (!rs.next()) return null;
             return mapRow(rs);
         });
     }
 
+    public List<DispatchAction> findByReservationId(Integer reservationId) {
+        return jdbcTemplate.query(
+            "SELECT * FROM dispatch_action WHERE reservation_id = ? ORDER BY dispatch_action_id",
+            new Object[]{reservationId},
+            (rs, rowNum) -> mapRow(rs)
+        );
+    }
+
+    public List<DispatchAction> findByMovementOrderLineId(Long movementOrderLineId) {
+        return jdbcTemplate.query(
+            "SELECT * FROM dispatch_action WHERE MovementOrderLineID = ? ORDER BY dispatch_action_id",
+            new Object[]{movementOrderLineId},
+            (rs, rowNum) -> mapRow(rs)
+        );
+    }
+
+    public List<DispatchAction> findByMovementOrderId(Long movementOrderId) {
+        return jdbcTemplate.query(
+            "SELECT * FROM dispatch_action WHERE MovementOrderID = ? ORDER BY dispatch_action_id",
+            new Object[]{movementOrderId},
+            (rs, rowNum) -> mapRow(rs)
+        );
+    }
+
     // ------------------------------------------------------------
-    // UPDATE (status + removed flag)
+    // UPDATE
     // ------------------------------------------------------------
     public void update(DispatchAction action) {
-
         String sql =
             "UPDATE dispatch_action SET " +
             " removed_from_reservation = ?, " +
             " status = ?, " +
+            " source_type = ?, " +  // ⭐ NEW
             " from_yard_id = ?, from_location_name = ?, " +
             " to_yard_id = ?, to_location_name = ? " +
             "WHERE dispatch_action_id = ?";
@@ -162,6 +184,7 @@ public class DispatchActionDAO {
         jdbcTemplate.update(sql,
             action.isRemovedFromReservation(),
             action.getStatus().name(),
+            action.getSourceType() != null ? action.getSourceType().name() : null,
             action.getFromYardId(),
             action.getFromLocationName(),
             action.getToYardId(),
@@ -169,51 +192,29 @@ public class DispatchActionDAO {
             action.getDispatchActionId()
         );
     }
-    
-    
-    public void markCompleted(DispatchAction action) {
+
+    // ------------------------------------------------------------
+    // CALENDAR SYNC
+    // ------------------------------------------------------------
+    public void updateCalendarLinkage(Long dispatchActionId, String eventId, String calendarId, Instant now) {
 
         String sql =
             "UPDATE dispatch_action SET " +
-            " status = ?, " +
-            " notes = ?, " +
-            " completed_at = ? " +
+            " google_event_id = ?, " +
+            " google_calendar_id = ?, " +
+            " last_calendar_sync_at = ? " +
             "WHERE dispatch_action_id = ?";
 
         jdbcTemplate.update(sql,
-            DispatchActionStatus.COMPLETED.name(),
-            action.getNotes(),
-            action.getCompletedAt() != null ? Timestamp.valueOf(action.getCompletedAt()) : null,
-            action.getDispatchActionId()
+            eventId,
+            calendarId,
+            Timestamp.from(now),
+            dispatchActionId
         );
-
-        action.setStatus(DispatchActionStatus.COMPLETED);
-    }
-
-    public void markCancelled(DispatchAction action) {
-        String sql = "UPDATE dispatch_action SET status = ? WHERE dispatch_action_id = ?";
-        jdbcTemplate.update(sql, DispatchActionStatus.CANCELLED.name(), action.getDispatchActionId());
-        action.setStatus(DispatchActionStatus.CANCELLED);
     }
     
-    
-    public void markInProgress(DispatchAction action) {
-        String sql = "UPDATE dispatch_action SET status = ? WHERE dispatch_action_id = ?";
-        jdbcTemplate.update(sql, DispatchActionStatus.IN_PROGRESS.name(), action.getDispatchActionId());
-        action.setStatus(DispatchActionStatus.IN_PROGRESS);
-    }
-
-    public void markPending(DispatchAction action) {
-        String sql = "UPDATE dispatch_action SET status = ? WHERE dispatch_action_id = ?";
-        jdbcTemplate.update(sql, DispatchActionStatus.PENDING.name(), action.getDispatchActionId());
-        action.setStatus(DispatchActionStatus.PENDING);
-    }
-    
-    
-    
-
     // ------------------------------------------------------------
-    // UPDATE FROM CALENDAR SYNC
+    // CALENDAR SYNC (full update from Google event)
     // ------------------------------------------------------------
     public void updateFromCalendarSync(DispatchAction action) {
 
@@ -246,38 +247,8 @@ public class DispatchActionDAO {
         );
     }
 
-    public void updateCalendarLinkage(Long dispatchActionId, String eventId, String calendarId, Instant now) {
-
-        String sql =
-            "UPDATE dispatch_action " +
-            "SET google_event_id = ?, " +
-            "    google_calendar_id = ?, " +
-            "    last_calendar_sync_at = ? " +
-            "WHERE dispatch_action_id = ?";
-
-        jdbcTemplate.update(sql,
-                eventId,
-                calendarId,
-                Timestamp.from(now),
-                dispatchActionId
-        );
-    }    
-    
     // ------------------------------------------------------------
-    // FIND BY GOOGLE EVENT ID
-    // ------------------------------------------------------------
-    public DispatchAction getByGoogleEventId(String googleEventId) {
-
-        String sql = "SELECT * FROM dispatch_action WHERE google_event_id = ?";
-
-        return jdbcTemplate.query(sql, ps -> ps.setString(1, googleEventId), rs -> {
-            if (!rs.next()) return null;
-            return mapRow(rs);
-        });
-    }
-
-    // ------------------------------------------------------------
-    // CLEAR CALENDAR LINKAGE
+    // CLEAR CALENDAR LINKAGE BY EVENT ID
     // ------------------------------------------------------------
     public void clearCalendarLinkageByEventId(String eventId) {
 
@@ -291,6 +262,12 @@ public class DispatchActionDAO {
         jdbcTemplate.update(sql, eventId);
     }
 
+    private Timestamp toTimestamp(Instant instant) {
+        return instant == null ? null : Timestamp.from(instant);
+    }
+    
+    
+
     // ------------------------------------------------------------
     // ROW MAPPER
     // ------------------------------------------------------------
@@ -301,20 +278,29 @@ public class DispatchActionDAO {
         action.setDispatchActionId(rs.getLong("dispatch_action_id"));
         action.setReservationID(rs.getInt("reservation_id"));
         action.setReservationLineItemID(rs.getObject("reservation_line_item_id", Integer.class));
+
+        action.setMovementOrderID(rs.getObject("MovementOrderID", Long.class));
+        action.setMovementOrderLineID(rs.getObject("MovementOrderLineID", Long.class));
+
         action.setEquipmentNumber(rs.getInt("equipment_number"));
         action.setActionType(DispatchActionType.valueOf(rs.getString("action_type")));
         action.setStatus(DispatchActionStatus.valueOf(rs.getString("status")));
+
+        // ⭐ NEW: source_type
+        String src = rs.getString("source_type");
+        if (src != null) {
+            action.setSourceType(DispatchSourceType.valueOf(src));
+        }
 
         action.setGoogleEventId(rs.getString("google_event_id"));
         action.setGoogleCalendarId(rs.getString("google_calendar_id"));
 
         Timestamp syncTs = rs.getTimestamp("last_calendar_sync_at");
         action.setLastCalendarSyncAt(syncTs != null ? syncTs.toInstant() : null);
-        
+
         Timestamp completedTs = rs.getTimestamp("completed_at");
         action.setCompletedAt(completedTs != null ? completedTs.toLocalDateTime() : null);
 
-        // FROM address
         String fromStreet = rs.getString("from_street");
         if (fromStreet != null) {
             action.setFromAddress(new Address(
@@ -326,11 +312,9 @@ public class DispatchActionDAO {
             ));
         }
 
-        // FROM yard metadata
         action.setFromYardId(rs.getObject("from_yard_id", Long.class));
         action.setFromLocationName(rs.getString("from_location_name"));
 
-        // TO address
         String toStreet = rs.getString("to_street");
         if (toStreet != null) {
             action.setToAddress(new Address(
@@ -342,7 +326,6 @@ public class DispatchActionDAO {
             ));
         }
 
-        // TO yard metadata
         action.setToYardId(rs.getObject("to_yard_id", Long.class));
         action.setToLocationName(rs.getString("to_location_name"));
 
@@ -354,9 +337,5 @@ public class DispatchActionDAO {
         action.setNotes(rs.getString("notes"));
 
         return action;
-    }
-
-    private Timestamp toTimestamp(Instant instant) {
-        return instant == null ? null : Timestamp.from(instant);
     }
 }
