@@ -25,70 +25,83 @@ public class GoogleCalendarService {
         this.dispatchActionDao = new DispatchActionDAO(jdbcTemplate);
     }
 
-    public String pushReservationToCalendar(DispatchCalendarDTO dto) throws Exception {
+    public String pushDispatchToCalendar(DispatchCalendarDTO dto) throws Exception {
 
-        String key = "calendar." + dto.equipmentType
-                .toLowerCase()
-                .replace(" ", "_")
-                .replace("-", "_");
-        
-       
-//        key = "calendar.shunt_truck";
-        System.out.println("Pushing to this calendar=" + key);
+        // --------------------------------------------
+        // 1. Determine calendar key
+        // --------------------------------------------
+        String calendarKey;
 
-        String calendarId = CalendarConfig.getCalendarId(key);
-try {
-        
-        if (calendarId == null) {
-            throw new RuntimeException("No calendar configured for equipment type: " + dto.equipmentType);
+        if (dto.getEquipmentType() != null && !dto.getEquipmentType().isEmpty()) {
+            calendarKey = "calendar." + dto.getEquipmentType()
+                    .toLowerCase()
+                    .replace(" ", "_")
+                    .replace("-", "_");
+        } else {
+            // Movement Orders may not have equipmentType
+            calendarKey = "calendar.default";
         }
 
-        Event event = new Event()
-                .setSummary("Dispatch: " + dto.equipmentType + " - " + dto.equipmentSubType + " {#" + dto.equipmentNumber + "} ");
-//                .setLocation(dto.fromAddress);
-   
-        // Put this here so that if the event is moved to a different calendar, we can find out what was changed on out system
-        event.setExtendedProperties(
-        	    new Event.ExtendedProperties()
-        	        .setPrivate(Collections.singletonMap("dispatch_action_id", String.valueOf(dto.dispatchActionId)))
-        	);
-        
+        System.out.println("Pushing to calendar key = " + calendarKey);
 
-        StringBuilder desc = new StringBuilder();
-        desc.append("Reservation #: ").append(dto.reservationId).append("\n");
-        desc.append("Customer: ").append(dto.customerName).append("\n");
-        desc.append("Email: ").append(dto.customerEmail).append("\n\n");
-        desc.append("From: ").append(dto.fromAddress).append("\n");
-        desc.append("To: ").append(dto.toAddress).append("\n");
-        desc.append("Notes: ").append(dto.notes).append("\n");
+        String calendarId = CalendarConfig.getCalendarId(calendarKey);
+        if (calendarId == null) {
+            throw new RuntimeException("No calendar configured for key: " + calendarKey);
+        }
 
-        event.setDescription(desc.toString());
+        try {
+            // --------------------------------------------
+            // 2. Build Google Calendar Event
+            // --------------------------------------------
+            Event event = new Event()
+                    .setSummary(dto.getEventTitle())
+                    .setDescription(dto.getEventDescription());
 
-        event.setStart(new EventDateTime()
-                .setDateTime(new DateTime(dto.start.toInstant().toEpochMilli()))
-                .setTimeZone(dto.start.getZone().getId()));
+            // Extended properties allow us to track the dispatch action
+            event.setExtendedProperties(
+                    new Event.ExtendedProperties()
+                            .setPrivate(Collections.singletonMap(
+                                    "dispatch_action_id",
+                                    String.valueOf(dto.getDispatchActionId())
+                            ))
+            );
 
-        event.setEnd(new EventDateTime()
-                .setDateTime(new DateTime(dto.end.toInstant().toEpochMilli()))
-                .setTimeZone(dto.end.getZone().getId()));
+            // --------------------------------------------
+            // 3. Set start/end times
+            // --------------------------------------------
+            event.setStart(new EventDateTime()
+                    .setDateTime(new DateTime(dto.getStart().toInstant().toEpochMilli()))
+                    .setTimeZone(dto.getStart().getZone().getId()));
 
-        Event created = calendarClient.events().insert(calendarId, event).execute();
-        
-        // Store linkage
-        dispatchActionDao.updateCalendarLinkage(
-            dto.dispatchActionId,
-            created.getId(),
-            calendarId,
-            Instant.now()
-        );
-        
-        return created.getHtmlLink();        
-} catch (Exception ex) {
-	ex.printStackTrace();
-}
-     return null; 
+            event.setEnd(new EventDateTime()
+                    .setDateTime(new DateTime(dto.getEnd().toInstant().toEpochMilli()))
+                    .setTimeZone(dto.getEnd().getZone().getId()));
 
+            // --------------------------------------------
+            // 4. Insert event into Google Calendar
+            // --------------------------------------------
+            Event created = calendarClient.events()
+                    .insert(calendarId, event)
+                    .execute();
+
+            // --------------------------------------------
+            // 5. Store linkage in DB
+            // --------------------------------------------
+            dispatchActionDao.updateCalendarLinkage(
+                    dto.getDispatchActionId(),
+                    created.getId(),
+                    calendarId,
+                    Instant.now()
+            );
+
+            return created.getHtmlLink();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new Exception("Failed to push event to Google Calendar: " + ex.getMessage(), ex);
+        }
     }
+ 
     
     public void deleteEvent(String calendarId, String eventId) throws Exception {
 

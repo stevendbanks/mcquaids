@@ -3,6 +3,7 @@ package com.mcquaids.service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,6 +20,10 @@ import com.mcquaids.model.DispatchActionType;
 import com.mcquaids.model.DispatchCalendarDTO;
 import com.mcquaids.model.DispatchSourceType;
 import com.mcquaids.model.EquipmentLocationHistory;
+import com.mcquaids.model.EquipmentQueryDTO;
+import com.mcquaids.model.MovementOrderHeader;
+import com.mcquaids.model.MovementOrderHeader.TargetLocationType;
+import com.mcquaids.model.MovementOrderLine;
 import com.mcquaids.model.Reservation;
 import com.mcquaids.model.ReservationLineItemDTO;
 import com.mcquaids.model.Yard;
@@ -28,14 +33,14 @@ public class DispatchActionService {
     private final DispatchActionDAO dispatchActionDao;
     private final EquipmentLocationHistoryService locationService;
     private final YardService yardService;
-	private ReservationDAO reservationDAO;
-	private CustomerDAO customerDAO;
-	private ReservationLineItemDAO lineItemDAO;
-	private EquipmentService equipmentService;
-	
-	private GoogleCalendarService googleCalendarService;
+    private ReservationDAO reservationDAO;
+    private CustomerDAO customerDAO;
+    private ReservationLineItemDAO lineItemDAO;
+    private EquipmentService equipmentService;
 
-    public DispatchActionService() { 
+    private GoogleCalendarService googleCalendarService;
+
+    public DispatchActionService() {
         JdbcTemplate jdbcTemplate = DaoDataSource.jdbcTemplate;
         this.dispatchActionDao = new DispatchActionDAO(jdbcTemplate);
         this.locationService = new EquipmentLocationHistoryService();
@@ -45,79 +50,82 @@ public class DispatchActionService {
         this.reservationDAO = new ReservationDAO(jdbcTemplate);
         this.customerDAO = new CustomerDAO();
         this.lineItemDAO = new ReservationLineItemDAO(jdbcTemplate);
-        
-        this.googleCalendarService = new GoogleCalendarService();
 
-    
+        this.googleCalendarService = new GoogleCalendarService();
     }
 
-	public DispatchAction getActionById(Long id) {
-		DispatchAction x =  dispatchActionDao.getByDispatchActionID(id);
-		x.setReservationLineItemDTO(lineItemDAO.viewReservationLineItem(x.getReservationLineItemID()));
-		return x;
-	}	
-    
-    
+    public DispatchAction getActionById(Long id) {
+        DispatchAction x = dispatchActionDao.getByDispatchActionID(id);
+        if (x != null) {
+            x.setReservationLineItemDTO(lineItemDAO.viewReservationLineItem(x.getReservationLineItemID()));
+        }
+        return x;
+    }
+
+//    public String pushToCalendarOLD(Long dispatchActionId) throws Exception {
+//
+//        DispatchAction da = dispatchActionDao.getByDispatchActionID(dispatchActionId);
+//
+//        Reservation res = reservationDAO.getReservation(da.getReservationID());
+//        Customer cust = customerDAO.findByCustomerID(res.getCustomerID());
+//        ReservationLineItemDTO li = lineItemDAO.viewReservationLineItem(da.getReservationLineItemID());
+//
+//        DispatchCalendarDTO dto = new DispatchCalendarDTO();
+//        dto.setDispatchActionId(dispatchActionId);
+//        dto.reservationId = res.getReservationID();
+//        dto.customerName = cust.getFullName();
+//        dto.customerEmail = cust.getEmail();
+//        dto.equipmentType = li.getEquipmentTypeText();
+//        dto.equipmentSubType = li.getEquipmentSubTypeText();
+//        dto.equipmentNumber = da.getEquipmentNumber();
+//
+//        dto.fromAddress = da.getFromDisplay();
+//        dto.toAddress = da.getToDisplay();
+//
+//        dto.start = da.getScheduledDateTimeAtZone();
+//        dto.end = dto.start.plusHours(1);
+//        dto.notes = da.getNotes();
+//
+//        return googleCalendarService.pushReservationToCalendar(dto);
+//    }
+
     public String pushToCalendar(Long dispatchActionId) throws Exception {
 
         DispatchAction da = dispatchActionDao.getByDispatchActionID(dispatchActionId);
+        if (da == null) throw new Exception("DispatchAction not found: " + dispatchActionId);
 
-        Reservation res = reservationDAO.getReservation(da.getReservationID());
-        Customer cust = customerDAO.findByCustomerID(res.getCustomerID());
-        ReservationLineItemDTO li = lineItemDAO.viewReservationLineItem(da.getReservationLineItemID());
+        DispatchCalendarDTO dto = buildCalendarDTO(da);
 
-        DispatchCalendarDTO dto = new DispatchCalendarDTO();
-        dto.setDispatchActionId(dispatchActionId);
-        dto.reservationId = res.getReservationID();
-        dto.customerName = cust.getFullName();
-        dto.customerEmail = cust.getEmail();
-        dto.equipmentType = li.getEquipmentTypeText();
-        dto.equipmentSubType = li.getEquipmentSubTypeText();
-        dto.equipmentNumber = da.getEquipmentNumber();
-
-        // *** FIXED: yard-aware display ***
-        dto.fromAddress = da.getFromDisplay();
-        dto.toAddress = da.getToDisplay();
-
-        dto.start = da.getScheduledDateTimeAtZone();
-        dto.end = dto.start.plusHours(1);
-        dto.notes = da.getNotes();
-
-        return googleCalendarService.pushReservationToCalendar(dto);
-    }    
-
+        return googleCalendarService.pushDispatchToCalendar(dto);
+    }
+    
+    
+    
     
     public void removeFromCalendar(Long dispatchActionId) throws Exception {
 
-        // Load the dispatch action
         DispatchAction da = dispatchActionDao.getByDispatchActionID(dispatchActionId);
-        if (da == null) {
-            throw new Exception("DispatchAction not found for ID: " + dispatchActionId);
-        }
+        if (da == null) throw new Exception("DispatchAction not found for ID: " + dispatchActionId);
 
-        // If no event exists, nothing to delete — but still clear DB linkage
         String eventId = da.getGoogleEventId();
         String calendarId = da.getGoogleCalendarId();
 
         if (eventId != null && calendarId != null) {
-            // Delete event from Google Calendar
             googleCalendarService.deleteEvent(calendarId, eventId);
         }
 
-        // Clear DB linkage
         dispatchActionDao.updateCalendarLinkage(
             dispatchActionId,
-            null,   // google_event_id
-            null,   // google_calendar_id
+            null,
+            null,
             Instant.now()
         );
-    }    
-    
-    
+    }
 
     // ------------------------------------------------------------
-    // Generate actions for ALL equipment in a reservation
+    // RESERVATION DISPATCH GENERATION
     // ------------------------------------------------------------
+
     public List<DispatchAction> generateActionsForReservation(
             Reservation reservation,
             List<ReservationLineItemDTO> lineItems
@@ -131,31 +139,51 @@ public class DispatchActionService {
         return all;
     }
 
+    public List<DispatchAction> createActionsForMovementOrder(
+            MovementOrderHeader header,
+            MovementOrderLine line
+    ) {
+        List<DispatchAction> actions = new ArrayList<>();
+
+        // For now, Movement Orders only create a single MOVE action.
+        // But this method allows future expansion (multi-stop, swap, etc.)
+        DispatchAction action = createActionForMovementOrder(header, line);
+        actions.add(action);
+
+        return actions;
+    }
+
+    
     public List<DispatchAction> generateActionsForLineItem(
             Reservation reservation,
             ReservationLineItemDTO lineItem
     ) {
         EquipmentContext ctx = buildEquipmentContext(reservation, lineItem);
-        
-        System.out.println("CTX DEBUG: " + ctx);
 
-
-        if (ctx.isAtYard()) {
-            return handleCaseAtYard(ctx);
-        }
-
-        if (ctx.isAtPrimary()) {
-            return handleCaseAtPrimary(ctx);
-        }
-
-        if (ctx.isAtNonYardCustomer()) {
-            return handleCaseAtOtherCustomer(ctx);
-        }
+        if (ctx.isAtYard()) return handleCaseAtYard(ctx);
+        if (ctx.isAtPrimary()) return handleCaseAtPrimary(ctx);
+        if (ctx.isAtNonYardCustomer()) return handleCaseAtOtherCustomer(ctx);
 
         return handleCaseUnknownOrNoHistory(ctx);
-    }    
+    }
     
     
+ // In DispatchActionService
+    
+    public List<DispatchAction> getActionsByMovementOrderId(Long movementOrderId) {
+        if (movementOrderId == null) {
+            return Collections.emptyList();
+        }
+
+        return dispatchActionDao.findByMovementOrderId(movementOrderId);
+    }
+    
+
+    public List<DispatchAction> getActionsByMovementOrderLineId(Long movementOrderLineId) {
+        return dispatchActionDao.findByMovementOrderLineId(movementOrderLineId);
+    }
+
+
     private EquipmentContext buildEquipmentContext(
             Reservation reservation,
             ReservationLineItemDTO lineItem
@@ -166,11 +194,9 @@ public class DispatchActionService {
         ctx.lineItem = lineItem;
         ctx.equipmentNumber = lineItem.getEquipmentNumber();
 
-        // Preferred yard
         Long preferredYardId = equipmentService.getPreferredYardId(ctx.equipmentNumber);
         ctx.preferredYard = yardService.getYardById(preferredYardId);
 
-        // Current location
         EquipmentLocationHistory loc = locationService.getCurrentLocation(ctx.equipmentNumber);
 
         if (loc != null && "ON_PREMISE".equalsIgnoreCase(loc.getLocationType())) {
@@ -180,33 +206,29 @@ public class DispatchActionService {
         } else if (loc != null) {
             ctx.currentAddress = loc.toAddress();
         } else {
-            // No history – assume at preferred yard
             ctx.currentYard = ctx.preferredYard;
             ctx.currentAddress = null;
             ctx.atYard = true;
         }
 
-        
-        
-        ctx.hasSecondary = (reservation.getSecondaryDeliveryAddress() != null);
-        ctx.hasReturnDate = (reservation.getEndDate() != null);
+        ctx.hasSecondary = reservation.getSecondaryDeliveryAddress() != null;
+        ctx.hasReturnDate = reservation.getEndDate() != null;
 
         ctx.atPrimary = ctx.currentAddress != null
                 && ctx.currentAddress.equals(reservation.getDeliveryAddress());
 
         ctx.atNonYardCustomer = !ctx.atYard && !ctx.atPrimary;
-        
-        
-        
 
         return ctx;
-    }    
-    
-    // Case 1: Equipment currently at a yard
+    }
+
+    // ------------------------------------------------------------
+    // RESERVATION CASE HANDLERS
+    // ------------------------------------------------------------
+
     private List<DispatchAction> handleCaseAtYard(EquipmentContext ctx) {
         List<DispatchAction> actions = new ArrayList<>();
 
-        // DELIVER: yard -> primary
         actions.add(createAction(
                 ctx.reservation.getReservationID(),
                 ctx.lineItem.getReservationLineItemID(),
@@ -217,7 +239,6 @@ public class DispatchActionService {
                 ctx.reservation.getStartDate()
         ));
 
-        // MOVE: primary -> secondary (if any)
         if (ctx.hasSecondary) {
             actions.add(createAction(
                     ctx.reservation.getReservationID(),
@@ -230,7 +251,6 @@ public class DispatchActionService {
             ));
         }
 
-        // PICKUP: last customer location -> preferred yard (if return)
         if (ctx.hasReturnDate) {
             Address pickupFrom = ctx.hasSecondary
                     ? ctx.reservation.getSecondaryDeliveryAddress()
@@ -250,11 +270,9 @@ public class DispatchActionService {
         return persist(actions);
     }
 
-    // Case 2: Equipment currently at primary delivery address
     private List<DispatchAction> handleCaseAtPrimary(EquipmentContext ctx) {
         List<DispatchAction> actions = new ArrayList<>();
 
-        // If there's a secondary, we need a MOVE
         if (ctx.hasSecondary) {
             actions.add(createAction(
                     ctx.reservation.getReservationID(),
@@ -267,7 +285,6 @@ public class DispatchActionService {
             ));
         }
 
-        // If there's a return, PICKUP from last customer location to preferred yard
         if (ctx.hasReturnDate) {
             Address pickupFrom = ctx.hasSecondary
                     ? ctx.reservation.getSecondaryDeliveryAddress()
@@ -287,11 +304,9 @@ public class DispatchActionService {
         return persist(actions);
     }
 
-    // Case 3: Equipment currently at some other customer address
     private List<DispatchAction> handleCaseAtOtherCustomer(EquipmentContext ctx) {
         List<DispatchAction> actions = new ArrayList<>();
 
-        // First, PICKUP from currentAddress to preferred yard
         actions.add(createAction(
                 ctx.reservation.getReservationID(),
                 ctx.lineItem.getReservationLineItemID(),
@@ -299,10 +314,9 @@ public class DispatchActionService {
                 DispatchActionType.PICKUP,
                 ctx.currentAddress,
                 ctx.preferredYard,
-                ctx.reservation.getStartDate().minusDays(1) // adjust if you have a better rule
+                ctx.reservation.getStartDate().minusDays(1)
         ));
 
-        // Then, DELIVER from preferred yard to primary
         actions.add(createAction(
                 ctx.reservation.getReservationID(),
                 ctx.lineItem.getReservationLineItemID(),
@@ -313,7 +327,6 @@ public class DispatchActionService {
                 ctx.reservation.getStartDate()
         ));
 
-        // Secondary?
         if (ctx.hasSecondary) {
             actions.add(createAction(
                     ctx.reservation.getReservationID(),
@@ -326,7 +339,6 @@ public class DispatchActionService {
             ));
         }
 
-        // Return?
         if (ctx.hasReturnDate) {
             Address pickupFrom = ctx.hasSecondary
                     ? ctx.reservation.getSecondaryDeliveryAddress()
@@ -346,19 +358,87 @@ public class DispatchActionService {
         return persist(actions);
     }
 
-    // Case 4: Unknown / no history – treat as at preferred yard
     private List<DispatchAction> handleCaseUnknownOrNoHistory(EquipmentContext ctx) {
         ctx.currentYard = ctx.preferredYard;
         ctx.currentAddress = ctx.preferredYard.getAddress();
         ctx.atYard = true;
         return handleCaseAtYard(ctx);
-    }    
-    
-    
+    }
 
     // ------------------------------------------------------------
-    // Helper: Create a DispatchAction
+    // MOVEMENT ORDER DISPATCH CREATION
     // ------------------------------------------------------------
+
+    public DispatchAction createActionForMovementOrder(
+            MovementOrderHeader header,
+            MovementOrderLine line
+    ) {
+        int equipmentNumber = line.getEquipmentNumber();
+
+        EquipmentLocationHistory loc = locationService.getCurrentLocation(equipmentNumber);
+        Address fromAddress;
+        Yard fromYard = null;
+
+        if (loc != null && "ON_PREMISE".equalsIgnoreCase(loc.getLocationType())) {
+            fromYard = yardService.getYardById(loc.getYardID());
+            fromAddress = fromYard.getAddress();
+        } else if (loc != null) {
+            fromAddress = loc.toAddress();
+        } else {
+            Long preferredYardId = equipmentService.getPreferredYardId(equipmentNumber);
+            fromYard = yardService.getYardById(preferredYardId);
+            fromAddress = fromYard.getAddress();
+        }
+
+        Address toAddress;
+        Yard toYard = null;
+
+        if (header.getTargetLocationType() == TargetLocationType.ON_PREMISE) {
+            toYard = yardService.getYardById(header.getTargetYardId());
+            toAddress = toYard.getAddress();
+        } else {
+            toAddress = new Address(
+                    header.getTargetStreet(),
+                    header.getTargetCity(),
+                    header.getTargetProvince(),
+                    header.getTargetPostal(),
+                    header.getTargetCountry()
+            );
+        }
+
+        DispatchAction action = new DispatchAction();
+        action.setEquipmentNumber(equipmentNumber);
+        action.setActionType(DispatchActionType.MOVE);
+        action.setStatus(DispatchActionStatus.NEW);
+        action.setSourceType(DispatchSourceType.MOVEMENT_ORDER);
+
+        action.setMovementOrderID(header.getMovementOrderId());
+        action.setMovementOrderLineID(line.getMovementOrderLineId());
+
+        action.setFromAddress(fromAddress);
+        action.setToAddress(toAddress);
+
+        if (fromYard != null) {
+            action.setFromYardId(fromYard.getYardId());
+            action.setFromLocationName(fromYard.getName());
+        }
+
+        if (toYard != null) {
+            action.setToYardId(toYard.getYardId());
+            action.setToLocationName(toYard.getName());
+        }
+
+        action.setScheduledDateTime(LocalDateTime.now());
+
+        dispatchActionDao.insert(action);
+
+        return action;
+    }
+
+    // ------------------------------------------------------------
+    // RESERVATION DISPATCH CREATION HELPERS
+    // ------------------------------------------------------------
+
     private DispatchAction createAction(
             Integer reservationID,
             Integer reservationLineItemID,
@@ -373,13 +453,11 @@ public class DispatchActionService {
         action.setReservationLineItemID(reservationLineItemID);
         action.setEquipmentNumber(equipmentNumber);
         action.setActionType(type);
-        action.setStatus(DispatchActionStatus.PENDING);
+        action.setStatus(DispatchActionStatus.NEW);
 
-        // Address-based
         action.setFromAddress(from);
         action.setToAddress(to);
 
-        // Clear yard metadata
         action.setFromYardId(null);
         action.setFromLocationName(null);
         action.setToYardId(null);
@@ -390,8 +468,7 @@ public class DispatchActionService {
 
         return action;
     }
-    
-    
+
     private DispatchAction createAction(
             Integer reservationID,
             Integer reservationLineItemID,
@@ -415,8 +492,8 @@ public class DispatchActionService {
         action.setFromLocationName(fromYard.getName());
 
         return action;
-    }    
-    
+    }
+
     private DispatchAction createAction(
             Integer reservationID,
             Integer reservationLineItemID,
@@ -440,8 +517,8 @@ public class DispatchActionService {
         action.setToLocationName(toYard.getName());
 
         return action;
-    }    
-    
+    }
+
     private DispatchAction createAction(
             Integer reservationID,
             Integer reservationLineItemID,
@@ -467,12 +544,8 @@ public class DispatchActionService {
         action.setToLocationName(toYard.getName());
 
         return action;
-    }    
-    
+    }
 
-    // ------------------------------------------------------------
-    // Helper: Persist all actions
-    // ------------------------------------------------------------
     private List<DispatchAction> persist(List<DispatchAction> actions) {
         for (DispatchAction action : actions) {
             dispatchActionDao.insert(action);
@@ -480,27 +553,118 @@ public class DispatchActionService {
         return actions;
     }
 
+    public List<DispatchAction> getActionsByReservationId(Integer reservationID) {
+        return dispatchActionDao.findByReservationId(reservationID);
+    }
 
+    public void update(DispatchAction action) {
+        dispatchActionDao.update(action);
+    }
+    
+    private DispatchCalendarDTO buildCalendarDTO(DispatchAction da) throws Exception {
 
+        DispatchSourceType source = da.getSourceType();
 
-	public List<DispatchAction> getActionsByReservationId(Integer reservationID) {
-	    return dispatchActionDao.findByReservationId(reservationID);
+        switch (source) {
 
-	}
+            case RESERVATION:
+                return buildReservationCalendarDTO(da);
 
+            case MOVEMENT_ORDER:
+                return buildMovementOrderCalendarDTO(da);
 
+            default:
+                throw new Exception("Unsupported dispatch source type: " + source);
+        }
+    }
+    
+    private DispatchCalendarDTO buildReservationCalendarDTO(DispatchAction da) throws Exception {
 
-	public void update(DispatchAction action) {
-		  dispatchActionDao.update(action);
-		
-	}
-	
-	
-	
+        Reservation res = reservationDAO.getReservation(da.getReservationID());
+        Customer cust = customerDAO.findByCustomerID(res.getCustomerID());
+        ReservationLineItemDTO li = lineItemDAO.viewReservationLineItem(da.getReservationLineItemID());
+
+        DispatchCalendarDTO dto = new DispatchCalendarDTO();
+        dto.setDispatchActionId(da.getDispatchActionId());
+        dto.setSourceType(DispatchSourceType.RESERVATION);
+
+        dto.setReservationId(res.getReservationID());
+        dto.setCustomerName(cust.getFullName());
+        dto.setCustomerEmail(cust.getEmail());
+        dto.setEquipmentType(li.getEquipmentTypeText());
+        dto.setEquipmentSubType(li.getEquipmentSubTypeText());
+        dto.setEquipmentNumber(da.getEquipmentNumber());
+
+        dto.setFromAddress(da.getFromDisplay());
+        dto.setToAddress(da.getToDisplay());
+
+        dto.setStart(da.getScheduledDateTimeAtZone());
+        dto.setEnd(dto.getStart().plusHours(1));
+        dto.setNotes(da.getNotes());
+
+        // Unified event title + description
+        dto.setEventTitle("Reservation #" + res.getReservationID()
+                + " – " + da.getActionType().name()
+                + " Equipment " + da.getEquipmentNumber());
+
+        dto.setEventDescription(
+                "Customer: " + cust.getFullName() + "\n" +
+                "From: " + dto.getFromAddress() + "\n" +
+                "To: " + dto.getToAddress() + "\n" +
+                "Notes: " + (dto.getNotes() == null ? "" : dto.getNotes())
+        );
+
+        return dto;
+    }
+
+    private DispatchCalendarDTO buildMovementOrderCalendarDTO(DispatchAction da) throws Exception {
+
+        DispatchCalendarDTO dto = new DispatchCalendarDTO();
+        dto.setDispatchActionId(da.getDispatchActionId());
+        dto.setSourceType(DispatchSourceType.MOVEMENT_ORDER);
+
+        // ⭐ Load full equipment metadata
+        EquipmentQueryDTO eq = equipmentService.findEquipment(da.getEquipmentNumber());
+
+        dto.setEquipmentNumber(da.getEquipmentNumber());
+        dto.setEquipmentType(eq != null ? eq.getEquipmentTypeText() : "Equipment");
+        dto.setEquipmentSubType(eq != null ? eq.getEquipmentSubTypeText() : "");
+
+        dto.setCustomerName("Movement Order");
+        dto.setCustomerEmail(null);
+
+        dto.setFromAddress(da.getFromDisplay());
+        dto.setToAddress(da.getToDisplay());
+
+        dto.setStart(da.getScheduledDateTimeAtZone());
+        dto.setEnd(dto.getStart().plusHours(1));
+        dto.setNotes(da.getNotes());
+
+        // ⭐ Unified event title
+        dto.setEventTitle(
+            "Movement Order – " + da.getActionType().name() +
+            " Equipment " + da.getEquipmentNumber()
+        );
+
+        // ⭐ Unified event description
+        dto.setEventDescription(
+            "Equipment Type: " + dto.getEquipmentType() + "\n" +
+            "Equipment Subtype: " + dto.getEquipmentSubType() + "\n\n" +
+            "From: " + dto.getFromAddress() + "\n" +
+            "To: " + dto.getToAddress() + "\n" +
+            "Notes: " + (dto.getNotes() == null ? "" : dto.getNotes())
+        );
+
+        return dto;
+    }
+
+        
+    
 
     // ------------------------------------------------------------
-    // Inner context class (implementation detail of this service)
+    // Inner context class
     // ------------------------------------------------------------
+
     private static class EquipmentContext {
         Reservation reservation;
         ReservationLineItemDTO lineItem;
@@ -508,8 +672,8 @@ public class DispatchActionService {
         int equipmentNumber;
 
         Yard preferredYard;
-        Yard currentYard;          // nullable
-        Address currentAddress;    // where the unit is now
+        Yard currentYard;
+        Address currentAddress;
 
         boolean atYard;
         boolean atPrimary;
@@ -517,29 +681,11 @@ public class DispatchActionService {
         boolean hasSecondary;
         boolean hasReturnDate;
 
-        // --------------------------------------------------------
-        // Helper methods used by generateActionsForLineItem()
-        // --------------------------------------------------------
-        boolean isAtYard() {
-            return atYard;
-        }
-
-        boolean isAtPrimary() {
-            return atPrimary;
-        }
-
-        boolean isAtNonYardCustomer() {
-            return atNonYardCustomer;
-        }
-
-        boolean hasSecondaryMove() {
-            return hasSecondary;
-        }
-
-        boolean isReturning() {
-            return hasReturnDate;
-        }
+        boolean isAtYard() { return atYard; }
+        boolean isAtPrimary() { return atPrimary; }
+        boolean isAtNonYardCustomer() { return atNonYardCustomer; }
         
+
         @Override
         public String toString() {
             return "EquipmentContext{" +
@@ -553,10 +699,6 @@ public class DispatchActionService {
                     ", hasSecondary=" + hasSecondary +
                     ", hasReturnDate=" + hasReturnDate +
                     '}';
-        }        
-        
+        }
     }
-
-
-
 }

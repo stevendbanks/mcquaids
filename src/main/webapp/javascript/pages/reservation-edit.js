@@ -412,7 +412,7 @@ function openCustomerLookup() {
 }
 
 // Attach to window so it's globally visible
-window.selectCustomerForReservation = function(id, name) {
+selectCustomerForReservation = function(id, name) {
     console.info("selectCustomerForReservation called with ID:", id, "Name:", name);
     
     // Update the fields on your reservation form
@@ -577,8 +577,10 @@ window.DisplayEquipmentSearch = DisplayEquipmentSearch;
 window.addEquipmentToReservation = addEquipmentToReservation;
 window.createDispatchPlan = createDispatchPlan; 
 
+window.selectCustomerForReservation = selectCustomerForReservation
 window.openCustomerLookup = openCustomerLookup;
 window.ajaxSaveCustomerFromModal = ajaxSaveCustomerFromModal;
+
 
 // Functions for lease PDF upload
 window.uploadSignedLeasePDF = uploadSignedLeasePDF;

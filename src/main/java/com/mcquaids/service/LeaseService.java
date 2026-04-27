@@ -79,7 +79,7 @@ public class LeaseService {
         		return null;
         	}
         	
-        	if (!equipment.getAvailabilityStatusCode().equals(Constants.EQUIPMENT_AVAILABLE_TO_LEASE)) { 
+        	if (!equipment.isAvailable()) { 
         		CodeValue cv = codeValueService.findCodeValue(Constants.EQUIPMENT_AVAILABILTY_CODE_TYPES, equipment.getAvailabilityStatusCode());
         		this.errorMessage = "Error- Equipment Number {"  + equipmentNumber  +"} is not available to Lease. Availability Status Code = " + cv.getEnglishDescription();
         		return null;

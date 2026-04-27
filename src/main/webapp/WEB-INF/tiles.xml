@@ -177,6 +177,45 @@
     <put-attribute name="body"  value="/reservation/reserved-equipment-edit.jsp"/>
 </definition>
   
+ <!-- ========================================================= -->
+<!-- MOVEMENT ORDER TILES DEFINITIONS                          -->
+<!-- ========================================================= -->
+
+<definition name="movementOrder.list" extends="baseLayout">
+    <put-attribute name="title" value="Movement Orders" />
+    <put-attribute name="body" value="/movement/listMovementOrders.jsp" />
+</definition>
+
+
+<definition name="movementOrder.create" extends="baseLayout">
+    <put-attribute name="title" value="Create Movement Order"/>
+    <put-attribute name="body" value="/movement/createMovementOrder.jsp"/>
+</definition>
+
+
+<!-- View Movement Order -->
+<definition name="movementOrder.view" extends="baseLayout">
+    <put-attribute name="title" value="View Movement Order"/>
+    <put-attribute name="body"  value="/movement/viewMovementOrder.jsp"/>
+</definition>
+
+<!-- List Movement Orders -->
+<definition name="movementOrder.list" extends="baseLayout">
+    <put-attribute name="title" value="Movement Orders"/>
+    <put-attribute name="body"  value="/movement/listMovementOrders.jsp"/>
+</definition>
+
+<!-- View Swap Movement Order -->
+<definition name="movementOrder.swap.view" extends="baseLayout">
+    <put-attribute name="title" value="Swap Movement Order"/>
+    <put-attribute name="body"  value="/movement/viewSwapMovementOrder.jsp"/>
+</definition>
+
+<!-- View Bulk Movement Order -->
+<definition name="movementOrder.bulk.view" extends="baseLayout">
+    <put-attribute name="title" value="Bulk Movement Order"/>
+    <put-attribute name="body"  value="/movement/viewBulkMovementOrder.jsp"/>
+</definition>
  
   
 </tiles-definitions>

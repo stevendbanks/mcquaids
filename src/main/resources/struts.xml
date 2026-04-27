@@ -386,6 +386,114 @@
 		    
 	</package>
 	
+<!-- ========================================================= -->
+<!-- MOVEMENT ORDER PACKAGE                                    -->
+<!-- ========================================================= -->
+<package name="movement" extends="default" namespace="/movement">
+
+    <!-- List Movement Orders -->
+    <action name="listMovementOrders"
+            class="com.mcquaids.actions.movement.ListMovementOrdersAction">
+        <result name="success" type="tiles">movementOrder.list</result>
+    </action>
+
+	<action name="newMovementOrder"
+        class="com.mcquaids.actions.movement.CreateMovementOrderAction"
+        method="input">
+	    <result name="input" type="tiles">movementOrder.create</result>
+	</action>
+
+
+    <!-- Create Movement Order (JSON) -->
+<action name="createMovementOrder"
+        class="com.mcquaids.actions.movement.CreateMovementOrderAction">
+
+    <!-- POST: after execute() -->
+    <result name="successOLD" type="tiles">movementOrder.view</result>
+    <result name="success" type="redirectAction">
+        <param name="actionName">viewMovementOrder</param>
+        <param name="movementOrderId">${movementOrderId}</param>
+    </result>    
+    <result name="error" type="tiles">movementOrder.create</result>
+
+</action>
+
+
+
+    <!-- View Movement Order (Tiles/JSP) -->
+    <action name="viewMovementOrder"
+            class="com.mcquaids.actions.movement.ViewMovementOrderAction">
+        <result name="success" type="tiles">movementOrder.view</result>
+    </action>
+
+    <!-- List Movement Orders (Tiles/JSP) -->
+    <action name="listMovementOrders"
+            class="com.mcquaids.actions.movement.ListMovementOrdersAction">
+        <result name="success" type="tiles">movementOrder.list</result>
+    </action>
+
+    <!-- Update Line Status (JSON) -->
+    <action name="updateMovementOrderLineStatus"
+            class="com.mcquaids.actions.movement.UpdateMovementOrderLineStatusAction">
+        <result type="json" />
+    </action>
+
+    <!-- Assign Dispatch to Line (JSON) -->
+    <action name="assignDispatchToLine"
+            class="com.mcquaids.actions.movement.AssignDispatchToLineAction">
+        <result type="json" />
+    </action>
+
+    <!-- Create Swap Link (JSON) -->
+    <action name="createSwapLink"
+            class="com.mcquaids.actions.movement.CreateSwapLinkAction">
+        <result type="json" />
+    </action>
+
+    <!-- Confirm Movement Order (JSON) -->
+    <action name="confirmMovementOrder"
+            class="com.mcquaids.actions.movement.ConfirmMovementOrderAction">
+        <result type="json" />
+    </action>
+
+    <!-- Cancel Movement Order (JSON) -->
+    <action name="cancelMovementOrder"
+            class="com.mcquaids.actions.movement.CancelMovementOrderAction">
+        <result type="json" />
+    </action>
+
+    <!-- View Swap Movement Order (Tiles/JSP) -->
+    <action name="viewSwapMovementOrder"
+            class="com.mcquaids.actions.movement.ViewSwapMovementOrderAction">
+        <result name="success" type="tiles">movementOrder.swap.view</result>
+    </action>
+
+    <!-- View Bulk Movement Order (Tiles/JSP) -->
+    <action name="viewBulkMovementOrder"
+            class="com.mcquaids.actions.movement.ViewBulkMovementOrderAction">
+        <result name="success" type="tiles">movementOrder.bulk.view</result>
+    </action>
+
+    <!-- Add Equipment to Bulk Order (JSON) -->
+    <action name="addEquipmentToBulkOrder"
+            class="com.mcquaids.actions.movement.AddEquipmentToBulkOrderAction">
+        <result type="json" />
+    </action>
+
+    <!-- Remove Equipment from Bulk Order (JSON) -->
+    <action name="removeEquipmentFromBulkOrder"
+            class="com.mcquaids.actions.movement.RemoveEquipmentFromBulkOrderAction">
+        <result type="json" />
+    </action>
+    
+    <action name="createDispatchPlan"
+        class="com.mcquaids.actions.movement.MovementOrderDispatchAction">
+    		<result name="dispatchPlan" type="tiles">dispatch-plan</result>
+	</action>    
+
+</package>
+	
+	
 
 	<package name="lease" extends="default" namespace="/lease">
 	
@@ -480,6 +588,37 @@
         <result name="error">/WEB-INF/jsp/driver/action.jsp</result>
         <result name="completed">/WEB-INF/jsp/driver/complete.jsp</result>
     </action>
+    
+<!-- ========================================= -->
+<!--   UNIFIED DISPATCH CALENDAR ENDPOINTS     -->
+<!--   Works for BOTH Reservations + Movement  -->
+<!-- ========================================= -->
+
+<action name="pushToCalendar"
+        class="com.mcquaids.actions.dispatch.DispatchCalendarAction"
+        method="push">
+    <result type="json">
+        <param name="includeProperties">
+            actionMessages[],
+            actionErrors[],
+            calendarEventLink
+        </param>
+    </result>
+</action>
+
+<action name="removeFromCalendar"
+        class="com.mcquaids.actions.dispatch.DispatchCalendarAction"
+        method="remove">
+    <result type="json">
+        <param name="includeProperties">
+            actionMessages[],
+            actionErrors[]
+        </param>
+    </result>
+</action>
+
+    
+    
 
 </package>
 

@@ -5,7 +5,7 @@
     <!-- Header + Return button -->
     <div class="row mt-4 mb-3 align-items-center">
         <div class="col-sm-9">
-            <h1 class="mb-0">Customer Search</h1>
+            <h1 class="mb-0">Customer Search XXX</h1>
         </div>
     </div>
 
@@ -82,6 +82,7 @@
 function searchCustomer(e) {
 
     if (e) { e.preventDefault(); }
+    console.warn("SDBANKS-000");
     $.ajax({
         url: '/mcquaids/customer/search',
         type: 'get',
